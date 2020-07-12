@@ -27,7 +27,7 @@ def get_content_df(chat_path):
     :param chat_path: the path of the relevant chat file (str)
     :return: data frame with the data from the chat
     """
-    with open(chat_path, "r") as file:
+    with open(chat_path, "r", encoding="utf-8") as file:
         data = [re.search(conf.CHAT_PATTERN, line).groups() for line in file if re.match(conf.CHAT_PATTERN, line)]
     return pd.DataFrame(data, columns=conf.COLUMNS_NAMES)
 
