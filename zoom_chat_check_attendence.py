@@ -1,13 +1,13 @@
 """
 ----------- zoom check attendance -----------
 Program implementations:
-a. gets a text file - zoom chat from class (can search for it in the folder as well)
+a. gets a text file - zoom chat from class
 b. find when an attendance check has been initiated and look for all the participators who wrote
 something in the chat before or after the check
 c. finds the connection between the zoom name and the student full name (Could be from a cache of these connections
 in a json file, after getting all the connections, update the json file with all the new occurrences (if were some)
 d. prints all the missing students by subtracting the participators from the total students in class
-e. this program can run over multiple attendane check in the same file
+e. this program can run over multiple attendance check in the same file
 
 a config file is attached to this program with all the related variables
 """
@@ -19,24 +19,6 @@ from difflib import get_close_matches
 import json
 import re
 import conf
-
-
-def find_relevant_file_path():
-    """
-    finds the relevant chat file from the directory - zoom format
-    assuming all the directories are in one directory that contains this file
-    :return: path of the relevant chat file
-    """
-    for folder in os.listdir(conf.ZOOM_FILES_PATH):
-        class_date = datetime.strptime(conf.CLASS_DATE, '%Y-%m-%d %H:%M:%S')
-        if "Zoom Meeting" in folder:
-            zoom_timing_string = re.search(conf.ZOOM_FOLDER_PATTERN, folder).group()
-
-            zoom_timing = datetime.strptime(zoom_timing_string, '%Y-%m-%d %H.%M.%S')
-            if zoom_timing >= class_date - timedelta(hours=1) or zoom_timing <= class_date + timedelta(hours=1):
-                folder_path = os.path.join(conf.ZOOM_FILES_PATH, folder)
-                file_path = os.path.join(folder_path, os.listdir(folder_path)[0])
-                return file_path
 
 
 def get_content_df(chat_path):
@@ -142,7 +124,6 @@ def add_zoom_name_to_fullname_json(zoom_participants_list, full_names_participan
 
 
 def main():
-    #chat_path = find_relevant_file_path()
     df = get_content_df(conf.FILE_NAME)
     attend_indexes = get_indexes_of_start_attend_check(df)
 

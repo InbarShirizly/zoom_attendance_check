@@ -3,7 +3,7 @@ import numpy as np
 
 
 # variables to change
-FILE_NAME = "meeting_saved_chat3.txt"
+FILE_NAME = ".\chat files\meeting_saved_chat3.txt"
 SENTENCE_START = "attendance check"
 TIME_DELTA = np.timedelta64(6, 'm')  # time period
 COLUMNS_NAMES = ["time", "users", "chat"]
@@ -22,7 +22,3 @@ class_names = ['Andrey Bakhmat', 'Areej Eweida', 'Ariela Strimling',
                'Tammuz Dubnov', 'Yuval Herman']
 
 
-# get the zoom chat file from the folder
-CLASS_DATE = "2020-07-05 09:30:00"
-ZOOM_FILES_PATH = r"C:\Users\Inbar Shirizly\Documents\python\useful\ITC_programs"
-ZOOM_FOLDER_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}\s\d{2}.\d{2}.\d{2}")
