@@ -1,11 +1,12 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from Server import app, bcrypt, db
 from Server.forms import LoginForm, RegistrationForm
 from Server.models import User
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route('/home')
+# @login_required
 def home():
     return render_template('home.html')
 
@@ -48,6 +49,7 @@ def register():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
