@@ -2,3 +2,7 @@
 *.log
 .idea
 meeting*
+*.vscode
+.ipynb_checkpoints
+*.xlsx
+checking_parsing.ipynb
