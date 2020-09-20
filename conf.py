@@ -3,10 +3,17 @@ import numpy as np
 
 
 # variables to change
-FILE_NAME = ".\chat files\meeting_saved_chat3.txt"
+FILE_NAME = ".\chat files\meeting_example_full_name.txt"
+EXCEL_PATH = "דוגמה לרשימת תלמידים.xlsx"
+
+
 SENTENCE_START = "attendance check"
-TIME_DELTA = np.timedelta64(6, 'm')  # time period
+TIME_DELTA = 6  # time period in minuts
 COLUMNS_NAMES = ["time", "users", "chat"]
+EXCEL_COLS = {"Name": "שם התלמיד",
+              "ID": "תעודת זהות",
+              "Phone": "טלפון"}
+
 WORDS_FOR_NOT_INCLUDED_PARTICIPATORS = ["ITC", "Tech", "Challenge"]
 
 

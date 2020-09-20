@@ -12,131 +12,97 @@ e. this program can run over multiple attendance check in the same file
 a config file is attached to this program with all the related variables
 """
 
-import os
-from datetime import datetime, timedelta
+from datetime import datetime
+import numpy as np
 import pandas as pd
-from difflib import get_close_matches
-import json
 import re
 import conf
 
 
-def get_content_df(chat_path):
-    """
-    convert the chat text file to a data frame
-    :param chat_path: the path of the relevant chat file (str)
-    :return: data frame with the data from the chat
-    """
-    with open(chat_path, "r", encoding="utf-8") as file:
-        data = [re.search(conf.CHAT_PATTERN, line).groups() for line in file if re.match(conf.CHAT_PATTERN, line)]
-    return pd.DataFrame(data, columns=conf.COLUMNS_NAMES)
+class attendance:
+
+    def __init__(self, chat_path, filter_modes):
+        """
+        convert the chat text file to a data frame.
+        change time to date and remove "\n" from the chat
+        :param chat_path: the path of the relevant chat file (str)
+        :return: data frame with the data from the chat
+        """
+        with open(chat_path, "r", encoding="utf-8") as file:
+            data = [re.search(conf.CHAT_PATTERN, line).groups() for line in file if re.match(conf.CHAT_PATTERN, line)]
+        df = pd.DataFrame(data, columns=conf.COLUMNS_NAMES)
+        df['chat'] = df['chat'].str[:-1]
+        df["time"] = df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
+
+        self.full_chat_df = df
+        start_indices = df.index[df['chat'].apply(lambda string: conf.SENTENCE_START.lower() in string.lower())]
+        self.time_delta = np.timedelta64(conf.TIME_DELTA, 'm')
+        self.df_sessions = [self.get_df_of_time_segment(start_index) for start_index in start_indices]
+        self.filter_modes = filter_modes
+        self.df_students = pd.read_excel(conf.EXCEL_PATH, usecols=conf.EXCEL_COLS.values()).astype("str")
+        self.attendance_df = self.df_students
+
+    def get_df_of_time_segment(self, start_index):
+        time_segment_start = self.full_chat_df.loc[start_index, "time"]
+        time_filt = (self.full_chat_df["time"] >= time_segment_start) & \
+                    (self.full_chat_df["time"] <= time_segment_start + self.time_delta)
+
+        return self.full_chat_df.loc[time_filt]
 
 
-def get_indexes_of_start_attend_check(df_chat):
-    """
-    find all sessions of attendance check
-    :param df_chat: data frame with the data from the chat
-    :return: indexes in the df when the attendance check started (list of int)
-    """
-    df_chat["time"] = df_chat["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
-    return df_chat.index[df_chat['chat'].apply(lambda string: conf.SENTENCE_START.lower() in string.lower())]
+    def get_participants(self, df_chat):
+        """
+        parse the data frame of the chat data to find the participants in the meeting that
+        wrote something in a period of time after a specific sentence had been writen
+        zoom user with name that will be probably the lecturer is deleted
+        :param df_chat: data frame of the chat content
+        :param start_index: start index of session
+        :return: participants in the zoom meeting (exclude lecturer) - (list_
+        """
+        final_df = None
+        for mode in self.filter_modes:
+            merged_df = pd.merge(self.df_students, df_chat, left_on=conf.EXCEL_COLS[mode], right_on="chat", how="left")
+            final_df = pd.concat([merged_df, final_df])
 
+        final_df.sort_values(by="time", inplace=True)
+        df_participated = final_df.drop(columns=["chat", "time"])
+        df_participated = df_participated.groupby("users").first().reset_index()
 
-def get_list_of_participants(df_chat, start_index):
-    """
-    parse the data frame of the chat data to find the participants in the meeting that
-    wrote something in a period of time before or after a specific sentence had been writen
-    zoom user with name that will be probably the lecturer is deleted
-    :param df_chat: data frame of the chat content
-    :param start_index: start index of session
-    :return: participants in the zoom meeting (exclude lecturer) - (list_
-    """
+        df_participated_updated = pd.merge(self.df_students, df_participated, left_on=conf.EXCEL_COLS["Name"],
+                                           right_on=conf.EXCEL_COLS["Name"], how="left", suffixes=["_x", ""])
+        overlapping_columns = df_participated_updated.columns[df_participated_updated.columns.str.contains("_x")]
+        df_participated_updated = df_participated_updated.drop(columns=overlapping_columns)
+        return df_participated_updated
 
-    time_segment_start = df_chat.loc[start_index, "time"]
-    filt = (df_chat["time"] >= time_segment_start - conf.TIME_DELTA) & \
-           (df_chat["time"] <= time_segment_start + conf.TIME_DELTA)
+    @staticmethod
+    def get_zoom_users_not_included(df_participated, df_chat):
+        filt = ~(df_chat['users'].isin(df_participated['users'].dropna())) & \
+               ~(df_chat['users'].str.contains('|'.join(conf.WORDS_FOR_NOT_INCLUDED_PARTICIPATORS)))
+        df_zoom_not_correct = df_chat[filt]
+        return df_zoom_not_correct.drop(columns=["time"]).set_index("users")
 
-    participants_list = sorted(df_chat.loc[filt, "users"].unique().tolist(), key=lambda word: word[0].lower())
-    # find and delete lecturer from the list
-    participants_list_final = participants_list.copy()
+    def get_attendance(self):
+        df_zoom_not_correct_list  = []
+        for i in range(len(self.df_sessions)):
 
-    for student in participants_list:
-        for phrase in conf.WORDS_FOR_NOT_INCLUDED_PARTICIPATORS:
-            if phrase in student:
-                participants_list_final.remove(student)
-                break
+            df_participated = self.get_participants(self.df_sessions[i])
+            self.attendance_df[f'session {i + 1}'] = df_participated['users']
+            df_zoom_not_correct = self.get_zoom_users_not_included(df_participated, self.df_sessions[i])
+            df_zoom_not_correct_list.append(df_zoom_not_correct)
 
-    return participants_list_final
-
-
-def find_student_full_names(zoom_participants):
-    """
-    converts zoom names of participants to their full name using
-    a list that contains all their names.
-    first, check in the json file that already contains names from previous sessions
-    if they don't appear, use diflib func to find the match - full name for the participator
-    :param zoom_participants: list of all participants parsed
-    :return: list of all participants full names
-    """
-    try:
-        with open(conf.JSON_FILE_NAME, "r") as json_file:
-            zoom_names_dict = json.load(json_file)
-    except FileNotFoundError:
-        zoom_names_dict = {}
-
-    class_first_names = [name.split(" ")[0] for name in conf.class_names]
-    students_in_zoom_full_name = []
-    for student in zoom_participants:
-        if student in zoom_names_dict:
-            students_in_zoom_full_name.append(zoom_names_dict[student])
-        else:
-            options = get_close_matches(student.split(" ")[0].title(), class_first_names, n=3, cutoff=0.95)
-            if len(options) == 0:
-                options = get_close_matches(student.split(" ")[-1].title(), class_first_names, n=3, cutoff=0.95)
-            if len(options) > 1:
-                relevant_full_names = [student for student in conf.class_names if options[0] in student]
-                for relevant_student in relevant_full_names:
-                    if relevant_student.split(" ")[-1][0].upper() == student.split(" ")[-1][0].upper():
-                        students_in_zoom_full_name.append(relevant_student)
-            else:
-                students_in_zoom_full_name.append([student.title() for student in conf.class_names if options[0] in student][0])
-    return students_in_zoom_full_name
-
-
-def add_zoom_name_to_fullname_json(zoom_participants_list, full_names_participants_list):
-    """
-    create or update json file contains conversion between zoom names to full names
-    :param zoom_participants_list: zoom names (list)
-    :param full_names_participants_list: full names of student (list)
-    """
-    try:
-        with open(conf.JSON_FILE_NAME, "r") as json_file:
-            zoom_names_dict = json.load(json_file)
-    except FileNotFoundError:
-        zoom_names_dict = {}
-
-    for zoon_name, full_name in zip(zoom_participants_list, full_names_participants_list):
-        if zoon_name not in zoom_names_dict:
-            zoom_names_dict[zoon_name] = full_name
-
-    with open(conf.JSON_FILE_NAME, "w") as json_file:
-        json.dump(zoom_names_dict, json_file, indent=2)
-
+        return self.attendance_df, df_zoom_not_correct_list
 
 def main():
-    df = get_content_df(conf.FILE_NAME)
-    attend_indexes = get_indexes_of_start_attend_check(df)
+    my_class = attendance(conf.FILE_NAME, ['Name', "ID", "Phone"])
 
-    for session, index_in_df in enumerate(attend_indexes):
-        participants_list = get_list_of_participants(df, index_in_df)
-        full_names_participants_list = find_student_full_names(participants_list)
+    attendance_df, df_zoom_not_correct_list = my_class.get_attendance()
 
-        # find the missing students - subtracting from the full list the participators
-        missing_students = sorted(set(conf.class_names) - set(full_names_participants_list))
-        print(f"text file: {conf.FILE_NAME}, session {session + 1},  missing students: {missing_students}")
+    print(attendance_df)
 
-        # update json file with connection between zoom name and full names
-        add_zoom_name_to_fullname_json(participants_list, full_names_participants_list)
+    for i in range(len(df_zoom_not_correct_list)):
+        print(f"zoom session {i + 1}")
+        print(df_zoom_not_correct_list[i])
+
 
 if __name__ == '__main__':
      main()
