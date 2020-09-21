@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
 
 class Classroom(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(70), unique=False, nullable=False)
     csv_students_file = db.Column(db.String(120), unique=True, nullable=False)
     teacher_id =  db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # TODO: also store the reports in the db
