@@ -5,8 +5,8 @@
             <div class="col-6">
                 <h3>My classes</h3>
             </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-success btn-block" data-toggle="collapse" data-target="#createClass">New Class</button>
+            <div class="col-1">
+                <button type="button" class="btn btn-success btn-block" data-toggle="collapse" data-target="#createClass"><span class="fas fa-plus"></span></button>
             </div>
         </div>
         <div class="row collapse justify-content-center" id="createClass">
@@ -55,7 +55,9 @@
             <div class="col">
                 <div class="list-group">
                     {% for classroom in current_user.classes %}                   
-                        <a href="#" class="list-group-item list-group-item-action">{{ classroom.name }}</a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            {{ classroom.name }}
+                        </a>
                     {% endfor %}
                 </div>
             </div>

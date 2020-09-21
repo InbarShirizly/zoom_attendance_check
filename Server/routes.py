@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from Server import app, bcrypt, db
 from Server.forms import LoginForm, RegistrationForm, CreateClassForm
 from Server.models import User, Classroom
@@ -41,7 +41,7 @@ def login():
             login_user(user, remember=form.remember.data)
             return redirect(url_for('home'))
         else:
-            print('failed login') # for now
+            flash(f'Invalid credentials', 'danger')
 
     return render_template('login.html', form=form)
 
@@ -61,6 +61,7 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
+        flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
