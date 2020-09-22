@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, Length, Email, ValidationError
 from Server.models import User
-from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
 class RegistrationForm(FlaskForm):
@@ -30,9 +29,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
-
-class CreateClassForm(FlaskForm):
-    name = StringField('Name of the class', validators=[DataRequired()])
-    students_file = FileField('Csv/Excel file of students', validators=[FileAllowed(['xlsx', 'csv']), FileRequired()])
-    submit = SubmitField('Create')

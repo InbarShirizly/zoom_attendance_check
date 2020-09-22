@@ -1,7 +1,5 @@
 from Server import db, login_manager, app
 from flask_login import UserMixin
-import os
-import pandas as pd
 
 
 @login_manager.user_loader
