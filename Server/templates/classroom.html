@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+		<div class="row justify-content-between">
+			<div class="col-6">
+				<h3>Class: {{ current_class.name }}</h3>
+			</div>
+			<div class="col-1">
+				<a role="button" class="btn btn-dark" href="{{ url_for('home') }}"><span class="fas fa-long-arrow-alt-left"></span></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">Student Name</th>
+							<th scope="col">Class</th>
+							<th scope="col">Id Number</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for student in current_class.students %}
+							<tr>
+								<td>{{ student.name }}</td>
+								<td>{{ student.school_class }}</td>
+								{% if student.id_number == None %}
+									<td>Don't exist</td>
+								{% else %}
+									<td>{{ student.id_number }}</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+{% endblock content %}

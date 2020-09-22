@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request, flash
 from Server import app, bcrypt, db
 from Server.forms import LoginForm, RegistrationForm, CreateClassForm
-from Server.models import User, Classroom
+from Server.models import User, Classroom, Student
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
@@ -22,10 +22,26 @@ def home():
     form = CreateClassForm()
     if form.validate_on_submit():
         file_name = save_file(form.students_file.data)
-        new_class = Classroom(name=form.name.data, csv_students_file=file_name, teacher=current_user)
+        new_class = Classroom(name=form.name.data, teacher=current_user)
         db.session.add(new_class)
         db.session.commit()
     return render_template('home.html', form=form)
+
+
+@app.route('/classroom/<class_id>')
+@login_required
+def classroom(class_id):
+    current_class = Classroom.query.filter_by(id=class_id, teacher=current_user).first() # Making sure the class belongs to the current user
+    if current_class is None:
+        flash('Invalid class!', 'danger')
+        return redirect(url_for('home'))
+    current_class.students = [
+        Student(school_class='יב 1', name='איתי'),
+        Student(school_class='יב 2', name='ענבר', id_number=212525489),
+        Student(school_class='יב 3', name='לירן', id_number=3),
+        Student(school_class='Liran', name='hello')
+    ]
+    return render_template('classroom.html', current_class=current_class)
 
 
 @app.route('/login', methods=['GET', 'POST'])

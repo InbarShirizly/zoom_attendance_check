@@ -55,7 +55,7 @@
             <div class="col">
                 <div class="list-group">
                     {% for classroom in current_user.classes %}                   
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="{{ url_for('classroom', class_id=classroom.id) }}" class="list-group-item list-group-item-action">
                             {{ classroom.name }}
                         </a>
                     {% endfor %}
