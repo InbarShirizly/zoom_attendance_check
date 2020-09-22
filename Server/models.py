@@ -29,6 +29,8 @@ class Classroom(db.Model):
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), unique=False, nullable=False)
-    id_number = db.Column(db.String(70), unique=True)
-    school_class = db.Column(db.String(20), unique=False, nullable=False)
+    id_number = db.Column(db.String(9), unique=False)
+    school_class = db.Column(db.String(20), unique=False)
+    gender = db.Column(db.Boolean, unique=False) # True means male
     class_id =  db.Column(db.Integer, db.ForeignKey('classroom.id'), nullable=False)
+

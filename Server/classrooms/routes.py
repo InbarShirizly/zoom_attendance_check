@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, Blueprint
-from Server import app, db
+from Server import db
 from Server.classrooms.forms import CreateClassForm
 from Server.models import Classroom, Student
 from flask_login import current_user, login_required

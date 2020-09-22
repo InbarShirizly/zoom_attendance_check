@@ -7,8 +7,6 @@ from Server.config import FlaskConfig
 app = Flask(__name__)
 app.config.from_object(FlaskConfig)
 
-app.config['SECRET_KEY'] = 'TEMP_SECRET_KEY'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
