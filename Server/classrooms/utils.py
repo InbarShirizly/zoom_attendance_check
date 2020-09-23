@@ -1,5 +1,6 @@
 import secrets
 import os
+from Server import app
 
 def save_file(form_file): #TODO: create better algorithem to save the files
     _, f_ext = os.path.splitext(form_file.filename) 
