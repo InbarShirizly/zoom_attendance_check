@@ -6,3 +6,6 @@ meeting*
 .ipynb_checkpoints
 *.xlsx
 checking_parsing.ipynb
+Server/site.db
+site.db
+*.xls
