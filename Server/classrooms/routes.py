@@ -1,9 +1,10 @@
-from flask import render_template, redirect, url_for, flash, Blueprint
+from flask import render_template, redirect, url_for, flash, Blueprint, request
 from Server import db
-from Server.classrooms.forms import CreateClassForm
+from Server.classrooms.forms import CreateClassForm, CreateReportForm
 from Server.models import Classroom, Student
 from flask_login import current_user, login_required
-from Server.classrooms.utils import save_file
+from Server.classrooms.loading_classroom_file import parse_excel
+import pandas as pd
 
 classrooms = Blueprint('classrooms', __name__)
 
@@ -14,10 +15,15 @@ classrooms = Blueprint('classrooms', __name__)
 def home():
     form = CreateClassForm()
     if form.validate_on_submit():
-        file_name = save_file(form.students_file.data)
+        students = parse_excel(form.students_file.data.filename, form.students_file.data)
         new_class = Classroom(name=form.name.data, teacher=current_user)
         db.session.add(new_class)
         db.session.commit()
+        students['class_id'] = pd.Series([new_class.id] * students.shape[0])
+        students.to_sql('student', con=db.engine, if_exists="append", index=False)
+
+
+        # return redirect(url_for('classrooms.classroom', class_id=new_class.id))
     return render_template('home.html', form=form)
 
 
@@ -28,11 +34,5 @@ def classroom(class_id):
     if current_class is None:
         flash('Invalid class!', 'danger')
         return redirect(url_for('classrooms.home'))
-    current_class.students = [ # Temporary hardocded data
-        Student(school_class='יב 1', name='איתי'), 
-        Student(school_class='יב 2', name='ענבר', id_number=212525489),
-        Student(school_class='יב 3', name='לירן', id_number=3),
-        Student(school_class='Liran', name='hello')
-    ]
-    return render_template('classroom.html', current_class=current_class)
-
+    form = CreateReportForm()
+    return render_template('classroom.html', current_class=current_class, form=form)

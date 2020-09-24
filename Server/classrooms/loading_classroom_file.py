@@ -11,14 +11,14 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
 engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=False)
 
 EXCEL_COLS = {
-            "Name": ["שם התלמיד", "תלמידים", "שמות", "שם", "סטודנט"],
-            "ID": ["תעודת זהות", "ת.ז.", "ת.ז", "תז"],
-            "Phone": ["טלפון", "מספר טלפון", "מס טלפון"],
-            "Gender": ["מין"],
+            "name": ["שם התלמיד", "תלמידים", "שמות", "שם", "סטודנט"],
+            "id_number": ["תעודת זהות", "ת.ז.", "ת.ז", "תז"],
+            "phone": ["טלפון", "מספר טלפון", "מס טלפון"],
+            "gender": ["מין"],
             "org_class": ["כיתה"]
             }
 
-MASHOW_COLS = ["Name", "org_class"]
+MASHOW_COLS = ["name", "org_class"]
 gender_dict = {1: ["זכר", "ז", "(ז)"], 0: ["נקבה", "נ", "(נ)"]}
 mashov_name_pattern = re.compile(r"([\u0590-\u05fe ]+)([(\u0590-\u05fe)]+)")
 
@@ -30,13 +30,13 @@ def gender_assign(string, gender_dict):
     return ""
 
 
-def parse_excel(file_path):
-    if file_path.endswith(".csv"):
-        df_students = pd.read_csv(file_path)
-    elif file_path.endswith(".xlsx"):
-        df_students = pd.read_excel(file_path)
+def parse_excel(file_name, file_data):
+    if file_name.endswith(".csv"):
+        df_students = pd.read_csv(file_data)
+    elif file_name.endswith(".xlsx"):
+        df_students = pd.read_excel(file_data)
     else:
-        df_students = pd.read_html(file_path, header=1)[0]
+        df_students = pd.read_html(file_data, header=1)[0]
 
     relevant_cols = [col for col in df_students.columns if not col.startswith("Unnamed")]
     current_excel_dict = {}
@@ -52,13 +52,13 @@ def parse_excel(file_path):
         df_students = pd.DataFrame(df_students.values[header_index + 1:-2], columns=df_students.iloc[header_index])
         df_students.dropna(axis=0, how='all', inplace=True)
         df_students.dropna(axis=1, how='all', inplace=True)
-        df_students.rename(columns={np.nan: 'Name', "פרטי תלמיד": 'Name', "כיתה": "org_class"}, inplace=True)
+        df_students.rename(columns={np.nan: 'name', "פרטי תלמיד": 'name', "כיתה": "org_class"}, inplace=True)
         df_students = df_students.loc[:, MASHOW_COLS]
 
-        df_name_gender = df_students.Name.str.extract(mashov_name_pattern, expand=False)
-        df_students['Gender'] = df_name_gender[1].str.extract("\(([\u0590-\u05fe ])\)")
-        df_students['Gender'] = df_students['Gender'].apply(gender_assign, gender_dict=gender_dict)
-        df_students['Name'] = df_name_gender[0]
+        df_name_gender = df_students['name'].str.extract(mashov_name_pattern, expand=False)
+        df_students['gender'] = df_name_gender[1].str.extract("\(([\u0590-\u05fe ])\)")
+        df_students['gender'] = df_students['gender'].apply(gender_assign, gender_dict=gender_dict)
+        df_students['name'] = df_name_gender[0]
 
     else:
         df_students = pd.DataFrame(current_excel_dict)
@@ -73,13 +73,15 @@ def parse_excel(file_path):
 
 
 if __name__ == '__main__':
-    for e_path in EXCEL_PATH:
+    for e_path in EXCEL_PATH[:1]:
         student_file_path = os.path.join(STUDENT_FILES_FOLDER, e_path)
         df_students = parse_excel(student_file_path)
+
+
         print(df_students)
 
-        df_students.to_sql('Students', con=engine, if_exists="append", index=False)
+        #df_students.to_sql('Students', con=engine, if_exists="append", index=False)
 
-    student_sql = engine.execute("SELECT * FROM Students").fetchall()
-    for student in student_sql:
-        print(student)
+    #student_sql = engine.execute("SELECT * FROM Students").fetchall()
+    #for student in student_sql:
+    #    print(student)
