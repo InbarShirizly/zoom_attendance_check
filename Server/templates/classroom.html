@@ -1,11 +1,31 @@
 {% extends "layout.html" %}
+{% from "_render_form_field.html" import render_field, render_file_field %}
+
 {% block content %}
 		<div class="row justify-content-between">
 			<div class="col-6">
 				<h3>Class: {{ current_class.name }}</h3>
 			</div>
+			<div class="col">
+                <button type="button" class="btn btn-success btn-block" data-toggle="collapse" data-target="#createReport">Create Report</button>
+            </div> 
 			<div class="col-1">
 				<a role="button" class="btn btn-dark" href="{{ url_for('classrooms.home') }}"><span class="fas fa-long-arrow-alt-left"></span></a>
+			</div>
+		</div>
+		<div class="row collapse" id="createReport">
+			<div class="col">
+				<div class="card card-body">
+					<form method="POST" action="" enctype="multipart/form-data" novalidate>
+						{{ form.hidden_tag() }}
+						{{ render_field(form.start_sentence) }}
+						{{ render_file_field(form.chat_file)}}
+						{{ render_field(form.time) }}
+						<div class="form-group">
+							{{ form.submit(class="btn btn-outline-info") }}
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -39,9 +59,9 @@
 								<td></td>
 								{% else %}
 									{% if student.gender %}
-										<td>ז</td>
+										<td>Male</td>
 									{% else %}
-										<td>נ</td>
+										<td>Female</td>
 									{% endif %}
 								{% endif %}
 							</tr>
@@ -50,24 +70,5 @@
 				</table>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col">
-				<div class="card card-body">
-					<form method="POST" action="" enctype="multipart/form-data" novalidate>
-						<div class="form-group">
-							{{ form.chat_file.label }}
-							{{ form.chat_file(class="form-control-file") }}
-							{% if form.chat_file.errors %}
-							{% for error in form.chat_file.errors %}
-								<span class="text-danger">{{ error }}</span>
-							{% endfor %}
-						{% endif %}
-						</div>
-						<div class="form-group">
-							{{ form.submit(class="btn btn-outline-info") }}
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
+
 {% endblock content %}

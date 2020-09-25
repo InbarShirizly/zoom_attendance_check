@@ -1,10 +1,11 @@
-from flask import render_template, redirect, url_for, flash, Blueprint, request
+from flask import render_template, redirect, url_for, flash, Blueprint, request, session
 from Server import db
 from Server.classrooms.forms import CreateClassForm, CreateReportForm
 from Server.models import Classroom, Student
 from flask_login import current_user, login_required
 from Server.classrooms.loading_classroom_file import parse_excel
 import pandas as pd
+from Server.classrooms.attendance_check import Attendance
 
 classrooms = Blueprint('classrooms', __name__)
 
@@ -21,18 +22,25 @@ def home():
         db.session.commit()
         students['class_id'] = pd.Series([new_class.id] * students.shape[0])
         students.to_sql('student', con=db.engine, if_exists="append", index=False)
-
-
-        # return redirect(url_for('classrooms.classroom', class_id=new_class.id))
+        return redirect(url_for('classrooms.classroom', class_id=new_class.id))
     return render_template('home.html', form=form)
 
 
-@classrooms.route('/classroom/<class_id>')
+@classrooms.route('/classroom/<class_id>', methods=['GET', 'POST'])
 @login_required
 def classroom(class_id):
     current_class = Classroom.query.filter_by(id=class_id, teacher=current_user).first() # Making sure the class belongs to the current user
     if current_class is None:
         flash('Invalid class!', 'danger')
         return redirect(url_for('classrooms.home'))
-    form = CreateReportForm()
+    
+    form = CreateReportForm() 
+    if form.validate_on_submit(): # If form was submited, creating report for the class
+        # TODO: Create report using Attendance class
+        return render_template("report.html")
+        
+
+
     return render_template('classroom.html', current_class=current_class, form=form)
+
+

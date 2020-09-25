@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import DataRequired
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, IntegerField
 
 
 class CreateClassForm(FlaskForm):
@@ -11,6 +11,7 @@ class CreateClassForm(FlaskForm):
 
 
 class CreateReportForm(FlaskForm):
-    start_sentence = StringField('Sentence to start the zoom check')
-    chat_file = FileField('Zoom chat file', validators=[FileRequired(), FileAllowed(['txt'])])
+    start_sentence = StringField('Sentence to start the zoom check', validators=[DataRequired()])
+    chat_file = FileField('Zoom chat file', validators=[FileRequired(), FileAllowed(['txt'])]) 
+    time = IntegerField('Number of minutes', validators=[DataRequired()])
     submit = SubmitField('Create Report')
