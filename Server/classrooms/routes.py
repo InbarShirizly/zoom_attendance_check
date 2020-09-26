@@ -3,9 +3,10 @@ from Server import db
 from Server.classrooms.forms import CreateClassForm, CreateReportForm
 from Server.models import Classroom, Student
 from flask_login import current_user, login_required
-from Server.classrooms.loading_classroom_file import parse_excel
 import pandas as pd
 from Server.classrooms.attendance_check import Attendance
+from Server.classrooms.utils import create_chat_df, create_students_df
+from Server.classrooms import parser
 
 classrooms = Blueprint('classrooms', __name__)
 
@@ -16,7 +17,8 @@ classrooms = Blueprint('classrooms', __name__)
 def home():
     form = CreateClassForm()
     if form.validate_on_submit():
-        students = parse_excel(form.students_file.data.filename, form.students_file.data)
+        students_df = create_students_df(form.students_file.data.filename, form.students_file.data)
+        students = parser.parse_df(students_df)
         new_class = Classroom(name=form.name.data, teacher=current_user)
         db.session.add(new_class)
         db.session.commit()
@@ -35,11 +37,14 @@ def classroom(class_id):
         return redirect(url_for('classrooms.home'))
     
     form = CreateReportForm() 
-    if form.validate_on_submit(): # If form was submited, creating report for the class
-        # TODO: Create report using Attendance class
+    if form.validate_on_submit(): # If form was submitted, creating report for the class
+        students_df = pd.read_sql(Student.query.filter_by(class_id=class_id).statement, con=db.engine)
+        chat_df = create_chat_df(form.chat_file.data.stream)
+
+        my_class = Attendance(chat_df, students_df, ['name', "id_number", "phone"], form.time.data, form.start_sentence.data)
+        attendance_df, df_zoom_not_correct_list = my_class.get_attendance(["ITC", "Tech", "Challenge"])
         return render_template("report.html")
         
-
 
     return render_template('classroom.html', current_class=current_class, form=form)
 
