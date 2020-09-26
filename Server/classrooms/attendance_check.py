@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 
+#TODO: need to return time of first message, time of first message in each session
+# TODO: return df unique to each session for the users that were present
+# TODO: df_zoom_not_correct_list - change to df of all chat messages that were not relevant and the messages that were included
 
 class Attendance:
     """

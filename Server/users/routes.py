@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, Blueprint
 from Server import bcrypt, db
 from Server.users.forms import LoginForm, RegistrationForm
-from Server.models import User
+from Server.models import Teacher
 from flask_login import login_user, current_user, logout_user, login_required
 
 users = Blueprint('users', __name__)
@@ -13,8 +13,8 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.auth.data).first() or \
-         User.query.filter_by(username=form.auth.data).first() # User can be validated with both username and email
+        user = Teacher.query.filter_by(email=form.auth.data).first() or \
+         Teacher.query.filter_by(username=form.auth.data).first() # User can be validated with both username and email
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             return redirect(url_for('classrooms.home'))
@@ -32,7 +32,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash((form.password.data)).decode('utf-8') 
-        user = User(
+        user = Teacher(
             username=form.username.data,
             password=hashed_password,
             email=form.email.data

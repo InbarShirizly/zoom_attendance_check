@@ -7,6 +7,7 @@ import pandas as pd
 from Server.classrooms.attendance_check import Attendance
 from Server.classrooms.utils import create_chat_df, create_students_df
 from Server.classrooms import parser
+from  datetime import datetime
 
 classrooms = Blueprint('classrooms', __name__)
 
@@ -38,6 +39,8 @@ def classroom(class_id):
     
     form = CreateReportForm() 
     if form.validate_on_submit(): # If form was submitted, creating report for the class
+        description = "this is the best class"  # TODO : add from the form file
+        report_date = datetime.now().date()    # TODO : add from the form file
         students_df = pd.read_sql(Student.query.filter_by(class_id=class_id).statement, con=db.engine)
         chat_df = create_chat_df(form.chat_file.data.stream)
 
