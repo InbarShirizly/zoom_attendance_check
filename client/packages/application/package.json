@@ -1,0 +1,21 @@
+{
+  "name": "application",
+  "version": "1.0.0",
+  "description": "Application orchestration module",
+  "license": "UNLICENSED",
+  "private": true,
+  "author": {
+    "name": "Jonathan Ohayon",
+    "email": "jonathanohayon0@gmail.com"
+  },
+  "devDependencies": {
+    "ts-loader": "^8.0.4",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "components": "1.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
