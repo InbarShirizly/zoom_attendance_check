@@ -1,0 +1,12 @@
+{
+  "name": "components",
+  "version": "1.0.0",
+  "description": "React components",
+  "main": "dist/index.js",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "jest"
+  }
+}
