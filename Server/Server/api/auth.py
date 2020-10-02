@@ -11,7 +11,7 @@ register_argparse.add_argument("password", type=str, help="Password is required"
 
 class RegisterResource(Resource):
     def post(self):
-        args = register_argparse.args()
+        args = register_argparse.parse_args()
         if TeacherModel.query.filter_by(username=args['username']).first():
             return abort(400, message="Username already taken")
         if TeacherModel.query.filter_by(username=args['email']).first():
@@ -27,5 +27,4 @@ class RegisterResource(Resource):
         return '', 200
         
          
-api.add_resource(LoginResource, "/login")
 api.add_resource(RegisterResource, "/register")
