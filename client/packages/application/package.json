@@ -8,10 +8,17 @@
     "name": "Jonathan Ohayon",
     "email": "jonathanohayon0@gmail.com"
   },
+  "scripts": {
+    "build": "NODE_ENV=production webpack",
+    "build:watch": "webpack --colors --watch --progress",
+    "serve": "webpack-dev-server"
+  },
   "devDependencies": {
     "ts-loader": "^8.0.4",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "components": "1.0.0",

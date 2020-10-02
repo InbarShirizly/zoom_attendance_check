@@ -2,7 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "jsx": "react",
-    "declaration": false
-  }
+    "jsx": "react"
+  },
+  "references": [
+    {
+      "path": "../services/tsconfig.json"
+    },
+    {
+      "path": "../components/tsconfig.json"
+    }
+  ]
 }
