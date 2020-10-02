@@ -43,6 +43,7 @@ class Attendance:
     def report_sessions(self):
         return self._sessions
 
+
 class Session:
 
     def __init__(self, df_students, df_session_chat, filter_modes, not_included_zoom_users):
