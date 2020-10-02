@@ -1,0 +1,12 @@
+{
+  "name": "services",
+  "version": "1.0.0",
+  "description": "External services",
+  "main": "dist/index.js",
+  "license": "UNLINCENSED",
+  "private": true,
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "jest"
+  }
+}
