@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "strict": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES5",
+    "lib": ["ESNext", "DOM"],
+    "preserveSymlinks": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "composite": true,
+    "baseUrl": "packages",
+    "paths": {
+      "services": ["services/src/index.ts"],
+      "components": ["components/src/index.ts"]
+    }
+  }
+}

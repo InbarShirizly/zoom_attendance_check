@@ -1,3 +1,9 @@
+dist
+.vscode/*
+!.vscode/launch.json
+tsconfig-build.tsbuildinfo
+tsconfig.tsbuildinfo
+yarn-error.log
 
 ### Node
 # Logs
