@@ -1,0 +1,16 @@
+{
+  "name": "services",
+  "version": "1.0.0",
+  "description": "External services",
+  "main": "dist/index.js",
+  "license": "UNLINCENSED",
+  "private": true,
+  "author": {
+    "name": "Jonathan Ohayon",
+    "email": "jonathanohayon0@gmail.com"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "jest"
+  }
+}

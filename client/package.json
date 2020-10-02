@@ -1,0 +1,38 @@
+{
+  "name": "zoom-attendence-client",
+  "version": "1.0.0",
+  "description": "React front end application",
+  "repository": "git@github.com:InbarShirizly/zoom_attendance_check.git",
+  "author": {
+    "name": "Jonathan Ohayon",
+    "email": "jonathanohayon0@gmail.com"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "eslint --max-warnings 0 'packages/*/**/*.{ts,js,json,d.ts}'",
+    "build": "tsc -b tsconfig-build.json",
+    "serve": "yarn workspace application serve"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.50",
+    "@types/react-dom": "^16.9.8",
+    "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/parser": "^4.3.0",
+    "eslint": "^7.10.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.21.2",
+    "eslint-plugin-standard": "^4.0.1",
+    "execa": "^4.0.3",
+    "jest": "^26.4.2",
+    "jest-circus": "^26.4.2",
+    "ts-jest": "^26.4.1",
+    "typescript": "^4.0.3"
+  }
+}

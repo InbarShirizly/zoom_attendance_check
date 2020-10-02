@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "files": [],
+  "references": [
+    {
+      "path": "packages/services/tsconfig.json"
+    },
+    {
+      "path": "packages/components/tsconfig.json"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "application",
+  "version": "1.0.0",
+  "description": "Application orchestration module",
+  "license": "UNLICENSED",
+  "private": true,
+  "author": {
+    "name": "Jonathan Ohayon",
+    "email": "jonathanohayon0@gmail.com"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production webpack",
+    "build:watch": "webpack --colors --watch --progress",
+    "serve": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^6.1.1",
+    "ts-loader": "^8.0.4",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "components": "1.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
