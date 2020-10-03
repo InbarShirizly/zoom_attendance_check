@@ -4,5 +4,5 @@ import { Application } from 'components'
 
 render(
   <Application />,
-  document.querySelector('body')
+  document.getElementById('root')
 )
