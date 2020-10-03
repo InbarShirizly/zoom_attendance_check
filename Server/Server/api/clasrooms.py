@@ -62,16 +62,19 @@ class ClassroomsResource(Resource):
 
 	def delete(self, class_id=None):
 		if class_id is None: # Deleting all classes
-			ClassroomModel.query.filter_by(teacher_model=auth.current_user()).delete()
+			teacher_classes_id = db.session.query(ClassroomModel.id).filter_by(teacher_model=auth.current_user()).all()
+			for class_data in teacher_classes_id:
+				current_class = ClassroomModel.query.filter_by(id=class_data.id, teacher_model=auth.current_user()).first()
+				db.session.delete(current_class)
 			db.session.commit()
 			return ""
 		
-	# 	current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
-	# 	if current_class is None:
-	# 		abort(400, message="Invalid class id")
+		current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
+		if current_class is None:
+			abort(400, message="Invalid class id")
 		
-	# 	db.session.delete(current_class)
-	# 	db.session.commit()
-	# 	return ""
+		db.session.delete(current_class)
+		db.session.commit()
+		return ""
 
 api.add_resource(ClassroomsResource, "/classrooms", "/classrooms/<int:class_id>") 

@@ -25,8 +25,8 @@ class ClassroomModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), unique=False, nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher_model.id'), nullable=False)
-    students = db.relationship('StudentModel', backref='classroom_model', lazy=True)
-    reports = db.relationship('ReportModel', backref='classroom_model', lazy=True)
+    students = db.relationship('StudentModel', backref='classroom_model', cascade="all,delete", lazy=True)
+    reports = db.relationship('ReportModel', backref='classroom_model', cascade="all,delete", lazy=True)
 
 
 class StudentModel(db.Model):
@@ -48,7 +48,7 @@ class ReportModel(db.Model):
     report_date = db.Column(db.Date(), unique=False, nullable=True) # date of the report - given by the user
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
-    sessions = db.relationship('SessionModel', backref='report_model', lazy=True)
+    sessions = db.relationship('SessionModel', backref='report_model',cascade="all,delete", lazy=True)
 
 
 class SessionModel(db.Model):
@@ -56,7 +56,7 @@ class SessionModel(db.Model):
     start_time = db.Column(db.DateTime(), unique=False, nullable=False) # first timestamp of chat session
 
     report_id = db.Column(db.Integer, db.ForeignKey('report_model.id'), nullable=False)
-    zoom_names = db.relationship('ZoomNamesModel', backref='session_model', lazy=True)
+    zoom_names = db.relationship('ZoomNamesModel', backref='session_model',cascade="all,delete", lazy=True)
 
 
 class ZoomNamesModel(db.Model):
@@ -65,7 +65,7 @@ class ZoomNamesModel(db.Model):
     session_id = db.Column(db.Integer, db.ForeignKey('session_model.id'), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey('student_model.id'), nullable=True) # if Null - means the student wasn't present in the session
 
-    chat = db.relationship('ChatModel', backref='zoom_names_model', lazy=True)
+    chat = db.relationship('ChatModel', backref='zoom_names_model',cascade="all,delete", lazy=True)
 
 
 class ChatModel(db.Model):
