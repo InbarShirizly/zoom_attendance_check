@@ -3,8 +3,7 @@ import { CssBaseline } from '@material-ui/core'
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
-import { Login } from './containers/Login'
-import { Register } from './containers/Register'
+import { Login, Register, Classes } from './containers'
 
 export const Application = () => (
   <>
@@ -20,6 +19,10 @@ export const Application = () => (
 
           <Route path='/register'>
             <Register />
+          </Route>
+
+          <Route path='/home'>
+            <Classes />
           </Route>
 
           <Route path='/'>
