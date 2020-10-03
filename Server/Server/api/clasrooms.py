@@ -27,9 +27,9 @@ classroom_resource_fields = { # Fields for a single classroom
 
 
 # arg parsing:
-classrooms_put_argparse = reqparse.RequestParser()
-classrooms_put_argparse.add_argument('name', type=str, help="Name of the class is required", required=True)
-classrooms_put_argparse.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
+classrooms_post_argparse = reqparse.RequestParser()
+classrooms_post_argparse.add_argument('name', type=str, help="Name of the class is required", required=True)
+classrooms_post_argparse.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
 
 
 class ClassroomsResource(Resource):
@@ -44,11 +44,11 @@ class ClassroomsResource(Resource):
 			abort(400, message="Invalid class id")
 		return marshal(current_class, classroom_resource_fields)
 
-	def put(self, class_id=None):
+	def post(self, class_id=None):
 		if class_id:
 			return abort(404, message="Invalid route")
-		args = classrooms_put_argparse.parse_args()
-		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman put request
+		args = classrooms_post_argparse.parse_args()
+		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
 		students_df = create_students_df(filename, stream)
 		students = parser.parse_df(students_df)
 		
