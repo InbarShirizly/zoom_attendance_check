@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { FormGroup, TextField, Typography, makeStyles, Theme, Button, TextFieldProps } from '@material-ui/core'
+import { OutlinedInput } from '../ui/OutlinedInput'
+import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
   label: {
@@ -9,16 +10,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2)
   }
 }))
-
-interface InputProps {
-  onValueChange(value: string): any
-}
-const Input = ({ onValueChange, ...props }: TextFieldProps & InputProps) =>
-  <TextField
-    variant='outlined'
-    {...props}
-    onChange={e => onValueChange(e.target.value)}
-  />
 
 export const Login = () => {
   const classes = useStyles()
@@ -42,12 +33,12 @@ export const Login = () => {
       </Typography>
       <form onSubmit={handleSubmit}>
         <FormGroup>
-          <Input
+          <OutlinedInput
             label='Username'
             className={classes.input}
             onValueChange={handleChange('username')}
           />
-          <Input
+          <OutlinedInput
             label='Password'
             className={classes.input}
             onValueChange={handleChange('password')}
