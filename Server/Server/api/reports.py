@@ -22,12 +22,12 @@ student_color_field = {
 }
 
 # args:
-report_put_args = reqparse.RequestParser()
-report_put_args.add_argument('description', type=str)
-report_put_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
-report_put_args.add_argument('time_delta', type=int, help="Time delta is required (In minutes)", required=True)
-report_put_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
-report_put_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
+report_post_args = reqparse.RequestParser()
+report_post_args.add_argument('description', type=str)
+report_post_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
+report_post_args.add_argument('time_delta', type=int, help="Time delta is required (In minutes)", required=True)
+report_post_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
+report_post_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
 
 
 class ReportsResource(Resource):
@@ -45,7 +45,7 @@ class ReportsResource(Resource):
 
 
     def post(self, class_id, report_id=None):
-        args = report_put_args.parse_args()
+        args = report_post_args.parse_args()
         if ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() is None:
             abort(400, message="Invalid class id")
         if report_id:
