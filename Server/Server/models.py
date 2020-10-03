@@ -39,7 +39,7 @@ class StudentModel(db.Model):
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
     zoom_names = db.relationship('ZoomNamesModel', backref='student_model', lazy=True)
-    student_color = db.relationship('StudentColor', backref='student_model', lazy=True)
+    student_color = db.relationship('StudentStatus', backref='student_model', lazy=True)
 
 
 class ReportModel(db.Model):
@@ -50,7 +50,7 @@ class ReportModel(db.Model):
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
     sessions = db.relationship('SessionModel', backref='report_model',cascade="all,delete", lazy=True)
-    student_color = db.relationship('StudentColor', backref='report_model', cascade="all,delete", lazy=True)
+    student_color = db.relationship('StudentStatus', backref='report_model', cascade="all,delete", lazy=True)
 
 
 class SessionModel(db.Model):
@@ -64,6 +64,7 @@ class SessionModel(db.Model):
 class ZoomNamesModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False, nullable=True)
+
     session_id = db.Column(db.Integer, db.ForeignKey('session_model.id'), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey('student_model.id'), nullable=True) # if Null - means the student wasn't present in the session
 
@@ -75,12 +76,13 @@ class ChatModel(db.Model):
     time = db.Column(db.DateTime, unique=False, nullable=False)  # time the message written
     message = db.Column(db.Text, unique=False, nullable=True)  # message zoom user wrote
     relevant = db.Column(db.Boolean, unique=False, nullable=False)  # True is message is part of the report
+
     zoom_names_id = db.Column(db.Integer, db.ForeignKey('zoom_names_model.id'), nullable=False)
 
 
-class StudentColor(db.Model):
+class StudentStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    color = db.Column(db.Integer, unique=False, nullable=False)
+    status = db.Column(db.Integer, unique=False, nullable=False)
 
     student_id = db.Column(db.Integer, db.ForeignKey('student_model.id'), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report_model.id'), nullable=False)

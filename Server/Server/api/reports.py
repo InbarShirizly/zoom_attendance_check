@@ -5,7 +5,7 @@ from werkzeug.datastructures import FileStorage
 from Server import db, auth
 from datetime import datetime
 import pandas as pd
-from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentColor
+from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
 from Server.utils.utils import create_chat_df
 
 
@@ -61,8 +61,8 @@ class ReportsResource(Resource):
         db.session.add(new_report)
         db.session.commit()
 
-        student_colors_df = report_object.student_color_table(new_report.id)
-        student_colors_df.to_sql('student_color', con=db.engine, if_exists="append", index=False)
+        student_status_df = report_object.student_status_table(new_report.id)
+        student_status_df.to_sql('student_status', con=db.engine, if_exists="append", index=False)
 
 
         for session_object in report_object.report_sessions:
@@ -79,5 +79,21 @@ class ReportsResource(Resource):
 
         return {"report_id": new_report.id}
 
+    def delete(self, class_id, report_id=None):
+        if report_id is None:  # Deleting all reports of class
+            class_reports_id = db.session.query(ReportModel.id).filter_by(class_id=class_id).all()
+            for report_data in class_reports_id:
+                current_report = ReportModel.query.filter_by(id=report_data.id).first()
+                db.session.delete(current_report)
+            db.session.commit()
+            return "", 204
+
+        current_report = ReportModel.query.filter_by(id=report_id).first()  # Making sure the class belongs to the current user
+        if current_report is None:
+            abort(400, message="Invalid report id")
+
+        db.session.delete(current_report)
+        db.session.commit()
+        return "", 204
 
 api.add_resource(ReportsResource, '/classrooms/<int:class_id>/reports', '/classrooms/<int:class_id>/reports/<int:report_id>')

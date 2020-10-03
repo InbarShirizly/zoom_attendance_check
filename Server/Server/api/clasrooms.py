@@ -67,7 +67,7 @@ class ClassroomsResource(Resource):
 				current_class = ClassroomModel.query.filter_by(id=class_data.id, teacher_model=auth.current_user()).first()
 				db.session.delete(current_class)
 			db.session.commit()
-			return ""
+			return "", 204
 		
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
@@ -75,6 +75,6 @@ class ClassroomsResource(Resource):
 		
 		db.session.delete(current_class)
 		db.session.commit()
-		return ""
+		return "", 204
 
 api.add_resource(ClassroomsResource, "/classrooms", "/classrooms/<int:class_id>") 
