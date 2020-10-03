@@ -6,6 +6,7 @@ from werkzeug.datastructures import FileStorage
 from Server.utils import parser
 from Server.utils.utils import create_students_df
 import pandas as pd
+import os
 
 # Fields:
 classrooms_list_fields = { # Fields list of classrooms
@@ -18,6 +19,7 @@ class StudentItemField(fields.Raw): # Custom field to parse StudentModel object
 		without_none = {k: v for k, v in value.__dict__ .items() if v is not None} # Getting only attributes which are not None
 		del without_none['_sa_instance_state']
 		return without_none
+
 classroom_resource_fields = { # Fields for a single classroom 
 	'name': fields.String,
 	'students': fields.List(StudentItemField)
@@ -42,27 +44,27 @@ class ClassroomsResource(Resource):
 			abort(400, message="Invalid class id")
 		return marshal(current_class, classroom_resource_fields)
 
-	# def put(self, class_id=None):
-	# 	if class_id:
-	# 		return abort(404, message="Invalid route")
-	# 	args = classrooms_put_argparse.parse_args()
-	# 	filename, stream = args['students_file'].filename, args['students_file'].stream
-	# 	print(args['students_file'].content_type)
-	# 	students_df = create_students_df(filename, stream)
-	# 	students = parser.parse_df(students_df)
+	def put(self, class_id=None):
+		if class_id:
+			return abort(404, message="Invalid route")
+		args = classrooms_put_argparse.parse_args()
+		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman put request
+		students_df = create_students_df(filename, stream)
+		students = parser.parse_df(students_df)
 		
-	# 	# new_class = ClassroomModel(name=args['name'], teacher_model=current_user)
-	# 	# db.session.add(new_class)
-	# 	# db.session.commit()
-	# 	# students['class_id'] = pd.Series([new_class.id] * students.shape[0])
+		new_class = ClassroomModel(name=args['name'], teacher_model=auth.current_user())
+		db.session.add(new_class)
+		db.session.commit()
 
-	# 	print(students)
+		students['class_id'] = pd.Series([new_class.id] * students.shape[0])
+		students.to_sql('student_model', con=db.engine, if_exists="append", index=False)
+		return "", 200
 
-	# def delete(self, class_id=None):
-	# 	if class_id is None: # Deleting all classes
-	# 		ClassroomModel.query.filter_by(teacher_model=auth.current_user()).delete()
-	# 		db.session.commit()
-	# 		return ""
+	def delete(self, class_id=None):
+		if class_id is None: # Deleting all classes
+			ClassroomModel.query.filter_by(teacher_model=auth.current_user()).delete()
+			db.session.commit()
+			return ""
 		
 	# 	current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
 	# 	if current_class is None:

@@ -14,7 +14,7 @@ class RegisterResource(Resource):
         args = register_argparse.parse_args()
         if TeacherModel.query.filter_by(username=args['username']).first():
             return abort(400, message="Username already taken")
-        if TeacherModel.query.filter_by(username=args['email']).first():
+        if TeacherModel.query.filter_by(email=args['email']).first():
             return abort(400, message="Email already taken")
         
         user = TeacherModel(
