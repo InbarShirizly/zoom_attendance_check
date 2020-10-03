@@ -3,9 +3,6 @@ import { OutlinedInput } from '../ui/OutlinedInput'
 import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
-  label: {
-    marginBottom: theme.spacing(3)
-  },
   input: {
     marginBottom: theme.spacing(2)
   }
@@ -32,7 +29,7 @@ export const Register = () => {
 
   return (
     <>
-      <Typography variant='h4' className={classes.label}>
+      <Typography variant='h4' gutterBottom>
         Register
       </Typography>
       <form onSubmit={handleSubmit}>
