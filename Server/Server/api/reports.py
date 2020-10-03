@@ -1,11 +1,11 @@
 from Server.api import api
-from flask_restful import Resource, reqparse, abort, marshal_with, fields
+from flask_restful import Resource, reqparse, abort, marshal, fields
 from Server.utils.attendance_check import Attendance
 from werkzeug.datastructures import FileStorage
 from Server import db, auth
 from datetime import datetime
 import pandas as pd
-from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel
+from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentColor
 from Server.utils.utils import create_chat_df
 
 
@@ -13,6 +13,12 @@ from Server.utils.utils import create_chat_df
 reports_list_fields = { # Fields list of classrooms
 	'description': fields.String,
 	'id': fields.Integer
+}
+
+student_color_field = {
+    'color': fields.String,
+    'student_name': fields.String(attribute='student_model.name'),
+    'student_id': fields.Integer
 }
 
 # args:
@@ -26,12 +32,16 @@ report_put_args.add_argument('not_included_zoom_users', default=[], type=str, he
 
 class ReportsResource(Resource):
     method_decorators = [auth.login_required]
-    @marshal_with(reports_list_fields)
     def get(self, class_id, report_id=None): # TODO: create decorator that validates class_id
         if ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() is None:
             abort(400, message="Invalid class id")
         if report_id is None:
-            return ReportModel.query.filter_by(class_id=class_id).all()
+            return marshal(ReportModel.query.filter_by(class_id=class_id).all(), reports_list_fields)
+        report = ReportModel.query.filter_by(class_id=class_id, id=report_id).first()
+        if report is None:
+            abort(400, message="Invalid report id")
+        return marshal(report.student_colors, student_color_field)
+        
 
 
     def post(self, class_id, report_id=None):

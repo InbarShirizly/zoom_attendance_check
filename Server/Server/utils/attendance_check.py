@@ -50,7 +50,7 @@ class Attendance:
         for i, session_object in enumerate(self.report_sessions):
             df_color_report[f"session_{i}"] = df_color_report["id"].apply(lambda x: 1 if x in session_object._relevant_chat["id"].values else np.nan)
 
-        color = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)
+        color = lambda row: "red" if row.isna().all() else ("yellow" if row.isna().any() else "green")
         df_color_report["color"] = df_color_report.loc[:, df_color_report.columns.str.startswith('session')].apply(color, axis=1)
         df_color_report['report_id'] = pd.Series([report_id] * df_color_report.shape[0])
         df_color_report.rename(columns={"id": "student_id"}, inplace=True)
