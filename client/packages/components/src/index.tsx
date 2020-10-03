@@ -4,6 +4,7 @@ import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
 import { Login } from './containers/Login'
+import { Register } from './containers/Register'
 
 export const Application = () => (
   <>
@@ -15,6 +16,10 @@ export const Application = () => (
         <Switch>
           <Route path='/login'>
             <Login />
+          </Route>
+
+          <Route path='/register'>
+            <Register />
           </Route>
 
           <Route path='/'>
