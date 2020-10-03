@@ -11,7 +11,7 @@ export const Application = () => (
     <Router>
       <CustomAppBar />
 
-      <Container maxWidth='lg'>
+      <Container maxWidth='md'>
         <Switch>
           <Route path='/'>
             <Login />
