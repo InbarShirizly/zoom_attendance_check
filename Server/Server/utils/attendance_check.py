@@ -23,11 +23,12 @@ class Attendance:
         self.first_message_time = chat_df["time"].sort_values().iloc[0]
         start_indices = chat_df.index[chat_df['message'].apply(lambda string: start_sentence.lower() in string.lower())] #TODO: slice by time or by next message
         df_students_for_report = students_df.set_index("id").astype(str).reset_index()  # set all columns to str except the id
+        self._df_students = df_students_for_report
 
         self._sessions = []
         for start_index in start_indices:
             df_session = Attendance.get_df_of_time_segment(chat_df, start_index, time_delta)
-            self._sessions.append(Session(df_students_for_report, df_session, filter_modes, not_included_zoom_users))
+            self._sessions.append(Session(self._df_students, df_session, filter_modes, not_included_zoom_users))
 
     @staticmethod
     def get_df_of_time_segment(df, start_index, time_delta):
@@ -44,13 +45,24 @@ class Attendance:
         return self._sessions
 
 
+    def student_color_table(self, report_id):
+        df_color_report = self._df_students.loc[:, ["id", "name"]]
+        for i, session_object in enumerate(self.report_sessions):
+            df_color_report[f"session_{i}"] = df_color_report["id"].apply(lambda x: 1 if x in session_object._relevant_chat["id"].values else np.nan)
+
+        color = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)
+        df_color_report["color"] = df_color_report.loc[:, df_color_report.columns.str.startswith('session')].apply(color, axis=1)
+        df_color_report['report_id'] = pd.Series([report_id] * df_color_report.shape[0])
+        df_color_report.rename(columns={"id": "student_id"}, inplace=True)
+        return df_color_report.loc[:, ["student_id", "report_id", "color"]]
+
+
 class Session:
 
-    def __init__(self, df_students, df_session_chat, filter_modes, not_included_zoom_users):
+    def __init__(self, students_df, df_session_chat, filter_modes, not_included_zoom_users):
 
         self._first_message_time = df_session_chat["time"].sort_values().iloc[0]
-        self._relevant_chat = self.get_participants_in_session(df_students,filter_modes, df_session_chat, not_included_zoom_users)
-
+        self._relevant_chat = self.get_participants_in_session(students_df, filter_modes, df_session_chat, not_included_zoom_users)
 
     @ staticmethod
     def get_participants_in_session(df_students, filter_modes, df_chat, not_included_zoom_users):
@@ -103,7 +115,8 @@ if __name__ == '__main__':
     df_students = create_students_df(file_name=excel_file_path.split("\\")[-1], file_data=excel_file_path)
 
     my_class = Attendance(chat_df, df_students, ['name', "id_number", "phone"], 5, "Attendance check", ["ITC", "Tech", "Challenge"])
-
-    df_part_session = my_class._sessions[0]
-    df_part_session.zoom_names_table(2)
+    a = my_class.student_color_table(1)
+    print(a)
+    # df_part_session = my_class._sessions[0]
+    # df_part_session.zoom_names_table(2)
 

@@ -39,6 +39,7 @@ class StudentModel(db.Model):
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
     zoom_names = db.relationship('ZoomNamesModel', backref='student_model', lazy=True)
+    student_color = db.relationship('StudentColor', backref='student_model', lazy=True)
 
 
 class ReportModel(db.Model):
@@ -49,6 +50,7 @@ class ReportModel(db.Model):
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
     sessions = db.relationship('SessionModel', backref='report_model',cascade="all,delete", lazy=True)
+    student_color = db.relationship('StudentColor', backref='report_model', cascade="all,delete", lazy=True)
 
 
 class SessionModel(db.Model):
@@ -76,4 +78,10 @@ class ChatModel(db.Model):
     zoom_names_id = db.Column(db.Integer, db.ForeignKey('zoom_names_model.id'), nullable=False)
 
 
+class StudentColor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    color = db.Column(db.Integer, unique=False, nullable=False)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('student_model.id'), nullable=False)
+    report_id = db.Column(db.Integer, db.ForeignKey('report_model.id'), nullable=False)
 

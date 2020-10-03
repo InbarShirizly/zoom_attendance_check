@@ -33,7 +33,6 @@ class ReportsResource(Resource):
         if report_id is None:
             return ReportModel.query.filter_by(class_id=class_id).all()
 
-        
 
     def post(self, class_id, report_id=None):
         args = report_put_args.parse_args()
@@ -51,6 +50,10 @@ class ReportsResource(Resource):
         new_report = ReportModel(description=args['description'], start_time=report_object.first_message_time, report_date=report_date, class_id=class_id)
         db.session.add(new_report)
         db.session.commit()
+
+        student_colors_df = report_object.student_color_table(new_report.id)
+        student_colors_df.to_sql('student_color', con=db.engine, if_exists="append", index=False)
+
 
         for session_object in report_object.report_sessions:
             session_table = SessionModel(start_time=session_object._first_message_time, report_id=new_report.id)
