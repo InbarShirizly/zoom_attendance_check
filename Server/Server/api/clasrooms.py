@@ -6,7 +6,6 @@ from werkzeug.datastructures import FileStorage
 from Server.utils import parser
 from Server.utils.utils import create_students_df
 import pandas as pd
-import os
 
 # Fields:
 classrooms_list_fields = { # Fields list of classrooms

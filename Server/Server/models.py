@@ -45,8 +45,7 @@ class StudentModel(db.Model):
 class ReportModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text(), unique=False, nullable=True)
-    start_time = db.Column(db.DateTime(), unique=False, nullable=False) # first timestamp of chat file
-    report_date = db.Column(db.Date(), unique=False, nullable=True) # date of the report - given by the user
+    report_time = db.Column(db.DateTime(), unique=False, nullable=False) # first timestamp of chat file, date by user or date of the request
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom_model.id'), nullable=False)
     sessions = db.relationship('SessionModel', backref='report_model',cascade="all,delete", lazy=True)

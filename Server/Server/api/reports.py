@@ -26,6 +26,7 @@ report_put_args = reqparse.RequestParser()
 report_put_args.add_argument('description', type=str)
 report_put_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
 report_put_args.add_argument('time_delta', type=int, help="Time delta is required (In minutes)", required=True)
+report_put_args.add_argument('date', type=lambda x: datetime.strptime(x, '%d/%m/%y'))
 report_put_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
 report_put_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
 
@@ -51,13 +52,19 @@ class ReportsResource(Resource):
         if report_id:
             abort(400, message="Invalid route")
 
-        report_date = datetime.now().date()    # TODO : add from the form file
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
+
 
         chat_file = args['chat_file'].stream.read().decode("utf-8").split("\n")
         chat_df = create_chat_df(chat_file)
         report_object = Attendance(chat_df, students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
-        new_report = ReportModel(description=args['description'], start_time=report_object.first_message_time, report_date=report_date, class_id=class_id)
+
+        report_date = args["date"] if args["date"] else datetime.now().date()
+        message_time = report_object.first_message_time
+        report_time = datetime(report_date.year, report_date.month, report_date.day,
+                               message_time.hour, message_time.minute, message_time.second)
+
+        new_report = ReportModel(description=args['description'], report_time=report_time, class_id=class_id)
         db.session.add(new_report)
         db.session.commit()
 
