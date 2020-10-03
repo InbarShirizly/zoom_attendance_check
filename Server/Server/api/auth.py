@@ -5,9 +5,10 @@ from Server.models import get_user, TeacherModel
 
 
 register_argparse = reqparse.RequestParser()
-register_argparse.add_argument("username", type=str, help="Username is required", required=True)
-register_argparse.add_argument("email", type=str, help="Email is required", required=True)
-register_argparse.add_argument("password", type=str, help="Password is required", required=True)
+register_argparse.add_argument("username", type=str, help="Username is required", location='json', required=True)
+register_argparse.add_argument("email", type=str, help="Email is required", location='json', required=True)
+register_argparse.add_argument("password", type=str, help="Password is required", location='json', required=True)
+
 
 class RegisterResource(Resource):
     def post(self):

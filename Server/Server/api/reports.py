@@ -46,7 +46,7 @@ class ReportsResource(Resource):
 
 
     def post(self, class_id, report_id=None):
-        args = report_put_args.parse_args()
+        args = report_post_args.parse_args()
         if ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() is None:
             abort(400, message="Invalid class id")
         if report_id:
