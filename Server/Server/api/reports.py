@@ -7,7 +7,7 @@ from datetime import datetime
 import pandas as pd
 from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
 from Server.utils.utils import create_chat_df
-
+from Server.api.utils import validate_classroom
 
 # marshals:
 reports_list_fields = { # Fields list of classrooms
@@ -23,7 +23,7 @@ student_status_field = {
 
 
 class ReportsResource(Resource):
-    method_decorators = [auth.login_required]
+    method_decorators = [validate_classroom, auth.login_required]
     
     def __init__(self):
         super().__init__()
@@ -35,9 +35,7 @@ class ReportsResource(Resource):
         self._post_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
         self._post_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
 
-    def get(self, class_id, report_id=None): # TODO: create decorator that validates class_id
-        if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
-            abort(400, message="Invalid class id")
+    def get(self, class_id, report_id=None):
         if report_id is None:
             return marshal(ReportModel.query.filter_by(class_id=class_id).all(), reports_list_fields)
         report = ReportModel.query.filter_by(class_id=class_id, id=report_id).first()
@@ -46,11 +44,9 @@ class ReportsResource(Resource):
         return marshal(report.student_statuses, student_status_field)
         
     def post(self, class_id, report_id=None):
-        args = self._post_args.parse_args()
-        if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
-            abort(400, message="Invalid class id")
         if report_id:
             abort(404, message="Invalid route")
+        args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
 
@@ -85,8 +81,6 @@ class ReportsResource(Resource):
         return {"report_id": new_report.id}
 
     def delete(self, class_id, report_id=None):
-        if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
-            abort(400, message="Invalid class id")
         if report_id is None:  # Deleting all reports of class
             class_reports_id = db.session.query(ReportModel.id).filter_by(class_id=class_id).all()
             for report_data in class_reports_id:
