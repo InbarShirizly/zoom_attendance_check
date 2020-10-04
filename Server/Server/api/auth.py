@@ -2,6 +2,7 @@ from Server import auth, bcrypt, db
 from flask_restful import Resource, reqparse, abort
 from Server.api import api
 from Server.models import get_user, TeacherModel
+from Server.config import RestErrors
 
 
 class RegisterResource(Resource):
@@ -15,9 +16,9 @@ class RegisterResource(Resource):
     def post(self):
         args = self._post_args.parse_args()
         if TeacherModel.query.filter_by(username=args['username']).first():
-            return abort(400, message="Username already taken")
+            return abort(400, message=RestErrors.USERNAME_TAKEN)
         if TeacherModel.query.filter_by(email=args['email']).first():
-            return abort(400, message="Email already taken")
+            return abort(400, message=RestErrors.EMAIL_TAKEN)
         
         user = TeacherModel(
             username=args['username'],

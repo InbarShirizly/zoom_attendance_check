@@ -2,6 +2,7 @@ from Server.api import api
 from flask_restful import Resource, reqparse, abort
 from Server import db, auth
 from Server.models import StudentStatus
+from Server.config import RestErrors
 
 STATUS_CHOICES = (0, 1, 2)
 
@@ -24,7 +25,7 @@ class StudentStatusResource(Resource):
         args = self._put_args.parse_args()
         status = StudentStatus.query.get(status_id)
         if status is None or status.report.classroom.teacher != auth.current_user():
-            abort(400, message="Invalid status id")
+            abort(400, message=RestErrors.INVALID_STATUS)
 
         status.status = args["new_status"]
         db.session.commit()

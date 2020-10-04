@@ -6,6 +6,9 @@ from werkzeug.datastructures import FileStorage
 from Server.utils import parser
 from Server.utils.utils import create_students_df
 import pandas as pd
+from Server.config import RestErrors
+
+
 
 # Fields:
 classrooms_list_fields = { # Fields list of classrooms
@@ -44,12 +47,12 @@ class ClassroomsResource(Resource):
 
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		return marshal(current_class, classroom_resource_fields)
 
 	def post(self, class_id=None):
 		if class_id:
-			return abort(404, message="Invalid route")
+			return abort(404, message=RestErrors.INVALID_ROUTE)
 		args = self._post_args.parse_args()
 		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
 		students_df = create_students_df(filename, stream)
@@ -65,11 +68,11 @@ class ClassroomsResource(Resource):
 
 	def put(self, class_id=None):
 		if class_id is None:
-			return abort(404, message="Invalid route")
+			return abort(404, message=RestErrors.INVALID_ROUTE)
 		args = self._put_args.parse_args()
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		current_class.name = args['new_name']
 		db.session.commit()
 		return "", 204
@@ -85,7 +88,7 @@ class ClassroomsResource(Resource):
 		
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		
 		db.session.delete(current_class)
 		db.session.commit()

@@ -8,6 +8,7 @@ import pandas as pd
 from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
 from Server.utils.utils import create_chat_df
 from Server.api.utils import validate_classroom
+from Server.config import RestErrors
 
 # marshals:
 reports_list_fields = { # Fields list of classrooms
@@ -40,12 +41,12 @@ class ReportsResource(Resource):
             return marshal(ReportModel.query.filter_by(class_id=class_id).all(), reports_list_fields)
         report = ReportModel.query.filter_by(class_id=class_id, id=report_id).first()
         if report is None:
-            abort(400, message="Invalid report id")
+            abort(400, message=RestErrors.INVALID_REPORT)
         return marshal(report.student_statuses, student_status_field)
         
     def post(self, class_id, report_id=None):
         if report_id:
-            abort(404, message="Invalid route")
+            abort(404, message=RestErrors.INVALID_REPORT)
         args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
@@ -91,7 +92,7 @@ class ReportsResource(Resource):
 
         current_report = ReportModel.query.filter_by(id=report_id).first()  # Making sure the class belongs to the current user
         if current_report is None:
-            abort(400, message="Invalid report id")
+            abort(400, message=RestErrors.INVALID_REPORT)
 
         db.session.delete(current_report)
         db.session.commit()
