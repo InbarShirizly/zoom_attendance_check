@@ -18,7 +18,7 @@ reports_list_fields = { # Fields list of classrooms
 student_status_field = {
     'status': fields.Integer,
     'student_name': fields.String(attribute='student.name'),
-    'student_id': fields.Integer
+    'status_id': fields.Integer(attribute="id")
 }
 
 # args:
