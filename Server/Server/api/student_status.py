@@ -7,7 +7,7 @@ STATUS_CHOICES = (0, 1, 2)
 
 # arg parsing:
 student_status_argparse = reqparse.RequestParser()
-student_status_argparse.add_argument('status', type=int,
+student_status_argparse.add_argument('new_status', type=int,
                                      help=f"Bad choice, please pick one of this choices {STATUS_CHOICES}",
                                      required=True, location="json", choices=STATUS_CHOICES)
 
@@ -20,7 +20,7 @@ class StudentStatusResource(Resource):
         if status is None or status.report.classroom.teacher != auth.current_user():
             abort(400, message="Invalid status id")
 
-        status.status = args["status"]
+        status.status = args["new_status"]
         db.session.commit()
 
         return "", 204

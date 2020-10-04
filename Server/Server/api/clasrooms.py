@@ -17,6 +17,7 @@ class StudentItemField(fields.Raw): # Custom field to parse StudentModel object
 	def format(self, value):
 		without_none = {k: v for k, v in value.__dict__ .items() if v is not None} # Getting only attributes which are not None
 		del without_none['_sa_instance_state']
+		del without_none['class_id']
 		return without_none
 
 classroom_resource_fields = { # Fields for a single classroom 
