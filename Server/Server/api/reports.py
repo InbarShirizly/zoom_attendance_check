@@ -21,19 +21,20 @@ student_status_field = {
     'status_id': fields.Integer(attribute="id")
 }
 
-# args:
-report_post_args = reqparse.RequestParser()
-report_post_args.add_argument('description', type=str)
-report_post_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
-report_post_args.add_argument('time_delta', default=1, type=int)
-report_post_args.add_argument('date', default=datetime.now().date(), type=lambda x: datetime.strptime(x, '%d/%m/%y'))
-report_post_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
-report_post_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
-
 
 class ReportsResource(Resource):
     method_decorators = [auth.login_required]
     
+    def __init__(self):
+        super().__init__()
+        self._post_args = reqparse.RequestParser()
+        self._post_args.add_argument('description', type=str)
+        self._post_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
+        self._post_args.add_argument('time_delta', default=1, type=int)
+        self._post_args.add_argument('date', default=datetime.now().date(), type=lambda x: datetime.strptime(x, '%d/%m/%y'))
+        self._post_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
+        self._post_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
+
     def get(self, class_id, report_id=None): # TODO: create decorator that validates class_id
         if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
             abort(400, message="Invalid class id")
@@ -45,7 +46,7 @@ class ReportsResource(Resource):
         return marshal(report.student_statuses, student_status_field)
         
     def post(self, class_id, report_id=None):
-        args = report_post_args.parse_args()
+        args = self._post_args.parse_args()
         if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
             abort(400, message="Invalid class id")
         if report_id:
