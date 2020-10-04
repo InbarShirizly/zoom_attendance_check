@@ -1,42 +1,27 @@
-from Server.api import api
-from flask_restful import Resource, reqparse, abort, fields, marshal
-from Server import auth, db
-from Server.models import TeacherModel, ClassroomModel
+from server.api import api
+from flask_restful import Resource, reqparse, abort, marshal
+from server import auth, db
+from server.models.orm import TeacherModel, ClassroomModel
 from werkzeug.datastructures import FileStorage
-from Server.utils import parser
-from Server.utils.utils import create_students_df
+from server.parsing import parser
+from server.parsing.utils import create_students_df
 import pandas as pd
-
-# Fields:
-classrooms_list_fields = { # Fields list of classrooms
-	'name': fields.String,
-	'id': fields.Integer
-}
-class StudentItemField(fields.Raw): # Custom field to parse StudentModel object
-
-	def format(self, value):
-		without_none = {k: v for k, v in value.__dict__ .items() if v is not None} # Getting only attributes which are not None
-		del without_none['_sa_instance_state']
-		del without_none['class_id']
-		return without_none
-
-classroom_resource_fields = { # Fields for a single classroom 
-	'name': fields.String,
-	'students': fields.List(StudentItemField)
-}
-
-
-# arg parsing:
-classrooms_post_argparse = reqparse.RequestParser()
-classrooms_post_argparse.add_argument('name', type=str, help="Name of the class is required", required=True)
-classrooms_post_argparse.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
-
-classroom_put_argparse = reqparse.RequestParser()
-classroom_put_argparse.add_argument('new_name', type=str, help="New name is required in order to update", location="json", required=True)
+from server.config import RestErrors
+from server.models.marshals import classrooms_list_fields, classroom_resource_fields
 
 
 class ClassroomsResource(Resource):
 	method_decorators = [auth.login_required]
+
+	def __init__(self):
+		super().__init__()
+		
+		self._post_args = reqparse.RequestParser()
+		self._post_args.add_argument('name', type=str, help="Name of the class is required", required=True)
+		self._post_args.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
+		
+		self._put_args = reqparse.RequestParser()
+		self._put_args.add_argument('new_name', type=str, help="New name is required in order to update", location="json", required=True)
 
 	def get(self, class_id=None):
 		if class_id is None:
@@ -44,13 +29,13 @@ class ClassroomsResource(Resource):
 
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		return marshal(current_class, classroom_resource_fields)
 
 	def post(self, class_id=None):
 		if class_id:
-			return abort(404, message="Invalid route")
-		args = classrooms_post_argparse.parse_args()
+			return abort(404, message=RestErrors.INVALID_ROUTE)
+		args = self._post_args.parse_args()
 		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
 		students_df = create_students_df(filename, stream)
 		students = parser.parse_df(students_df)
@@ -65,11 +50,11 @@ class ClassroomsResource(Resource):
 
 	def put(self, class_id=None):
 		if class_id is None:
-			return abort(404, message="Invalid route")
-		args = classroom_put_argparse.parse_args()
+			return abort(404, message=RestErrors.INVALID_ROUTE)
+		args = self._put_args.parse_args()
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		current_class.name = args['new_name']
 		db.session.commit()
 		return "", 204
@@ -85,7 +70,7 @@ class ClassroomsResource(Resource):
 		
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
-			abort(400, message="Invalid class id")
+			abort(400, message=RestErrors.INVALID_CLASS)
 		
 		db.session.delete(current_class)
 		db.session.commit()

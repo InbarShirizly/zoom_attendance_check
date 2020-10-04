@@ -1,4 +1,4 @@
-from Server import db, bcrypt, auth
+from server import db, bcrypt, auth
 from flask_login import UserMixin
 
 

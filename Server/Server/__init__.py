@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from Server.config import FlaskConfig
+from server.config import FlaskConfig
 from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 auth = HTTPBasicAuth(app)
 
 
-from Server.api import api_blueprint
+from server.api import api_blueprint
 
 app.register_blueprint(api_blueprint)
 
