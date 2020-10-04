@@ -30,6 +30,9 @@ classrooms_post_argparse = reqparse.RequestParser()
 classrooms_post_argparse.add_argument('name', type=str, help="Name of the class is required", required=True)
 classrooms_post_argparse.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
 
+classroom_put_argparse = reqparse.RequestParser()
+classroom_put_argparse.add_argument('new_name', type=str, help="New name is required in order to update", location="json", required=True)
+
 
 class ClassroomsResource(Resource):
 	method_decorators = [auth.login_required]
@@ -58,6 +61,17 @@ class ClassroomsResource(Resource):
 		students['class_id'] = pd.Series([new_class.id] * students.shape[0])
 		students.to_sql('student', con=db.engine, if_exists="append", index=False)
 		return {'class_id': new_class.id}
+
+	def put(self, class_id=None):
+		if class_id is None:
+			return abort(404, message="Invalid route")
+		args = classroom_put_argparse.parse_args()
+		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
+		if current_class is None:
+			abort(400, message="Invalid class id")
+		current_class.name = args['new_name']
+		db.session.commit()
+		return "", 204
 
 	def delete(self, class_id=None):
 		if class_id is None: # Deleting all classes

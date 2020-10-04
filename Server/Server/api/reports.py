@@ -85,6 +85,8 @@ class ReportsResource(Resource):
         return {"report_id": new_report.id}
 
     def delete(self, class_id, report_id=None):
+        if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:
+            abort(400, message="Invalid class id")
         if report_id is None:  # Deleting all reports of class
             class_reports_id = db.session.query(ReportModel.id).filter_by(class_id=class_id).all()
             for report_data in class_reports_id:
