@@ -29,7 +29,6 @@ class ParseClassFile:
                     current_excel_dict[key] = df_students[col]
 
         if len(current_excel_dict) == 0 and len(relevant_cols) <= 1:
-            print("Mashov file")
             header_index = df_students.notnull().sum(axis=1).argmax()
             df_students = pd.DataFrame(df_students.values[header_index + 1:-2], columns=df_students.iloc[header_index])
             df_students.dropna(axis=0, how='all', inplace=True)

@@ -15,12 +15,10 @@ def create_chat_df(chat_file):
 
 
 def create_students_df(file_name, file_data):
-
     if file_name.endswith(".csv"):
         df_students = pd.read_csv(file_data)
     elif file_name.endswith(".xlsx"):
         df_students = pd.read_excel(file_data)
     else:
         df_students = pd.read_html(file_data, header=1)[0]
-
     return df_students

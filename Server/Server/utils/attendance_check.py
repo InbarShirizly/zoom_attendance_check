@@ -4,30 +4,31 @@ import pandas as pd
 
 class Attendance:
     """
-    receives student class df, the zoom chat and other configuration. returns:
-     1. table of attendant students from the student class df
-     2. list of table of relevant data from zoom users that didn't add a student return
+    receives student class df, the zoom chat and other configuration.
+    returns:
+     1. report_sessions - session object
+     2. student_status_table - df of "student" table
     """
     def __init__(self, chat_df, students_df, filter_modes, time_delta, start_sentence, not_included_zoom_users):
         """
-        - convert the chat text file to a data frame and arrange columns.
-        - creates df for each session according the appearance of the start sentence and time delta
         :param chat_df: zoom chat in df (df)
         :param students_df: student class raw data (df)
         :param filter_modes: filters the user picked for parsing the text file (list of str)
         :param time_delta: max time from start sentence to the last message to parse in each session in minutes (int)
         :param start_sentence: start sentence that initiate sessions for parse (str)
+        :param not_included_zoom_users: zoom names that will not be considered (list of str)
         :return: data frame with the data from the chat
         """
 
-        self.first_message_time = chat_df["time"].sort_values().iloc[0]
+        self.first_message_time = chat_df["time"].sort_values().iloc[0] # get time of first message in the chat
         start_indices = chat_df.index[chat_df['message'].apply(lambda string: start_sentence.lower() in string.lower())] #TODO: slice by time or by next message
         df_students_for_report = students_df.set_index("id").astype(str).reset_index()  # set all columns to str except the id
+        self._df_students = df_students_for_report
 
         self._sessions = []
         for start_index in start_indices:
             df_session = Attendance.get_df_of_time_segment(chat_df, start_index, time_delta)
-            self._sessions.append(Session(df_students_for_report, df_session, filter_modes, not_included_zoom_users))
+            self._sessions.append(Session(self._df_students, df_session, filter_modes, not_included_zoom_users))
 
     @staticmethod
     def get_df_of_time_segment(df, start_index, time_delta):
@@ -43,14 +44,24 @@ class Attendance:
     def report_sessions(self):
         return self._sessions
 
+    def student_status_table(self, report_id):
+        df_status_report = self._df_students.loc[:, ["id", "name"]]
+        for i, session_object in enumerate(self.report_sessions):
+            df_status_report[f"session_{i}"] = df_status_report["id"].apply(lambda x: 1 if x in session_object._relevant_chat["id"].values else np.nan)
+
+        status = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)  # {0 : "red", 1: "yellow", 2: "green"}
+        df_status_report["status"] = df_status_report.loc[:, df_status_report.columns.str.startswith('session')].apply(status, axis=1)
+        df_status_report['report_id'] = pd.Series([report_id] * df_status_report.shape[0])
+        df_status_report.rename(columns={"id": "student_id"}, inplace=True)
+        return df_status_report.loc[:, ["student_id", "report_id", "status"]]
+
 
 class Session:
 
-    def __init__(self, df_students, df_session_chat, filter_modes, not_included_zoom_users):
+    def __init__(self, students_df, df_session_chat, filter_modes, not_included_zoom_users):
 
         self._first_message_time = df_session_chat["time"].sort_values().iloc[0]
-        self._relevant_chat = self.get_participants_in_session(df_students,filter_modes, df_session_chat, not_included_zoom_users)
-
+        self._relevant_chat = self.get_participants_in_session(students_df, filter_modes, df_session_chat, not_included_zoom_users)
 
     @ staticmethod
     def get_participants_in_session(df_students, filter_modes, df_chat, not_included_zoom_users):
@@ -103,7 +114,8 @@ if __name__ == '__main__':
     df_students = create_students_df(file_name=excel_file_path.split("\\")[-1], file_data=excel_file_path)
 
     my_class = Attendance(chat_df, df_students, ['name', "id_number", "phone"], 5, "Attendance check", ["ITC", "Tech", "Challenge"])
-
-    df_part_session = my_class._sessions[0]
-    df_part_session.zoom_names_table(2)
+    a = my_class.student_status_table(1)
+    print(a)
+    # df_part_session = my_class._sessions[0]
+    # df_part_session.zoom_names_table(2)
 
