@@ -38,7 +38,7 @@ class ClassroomsResource(Resource):
 		if class_id is None:
 			return marshal(auth.current_user().classrooms, classrooms_list_fields)
 
-		current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
+		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
 			abort(400, message="Invalid class id")
 		return marshal(current_class, classroom_resource_fields)
@@ -51,24 +51,24 @@ class ClassroomsResource(Resource):
 		students_df = create_students_df(filename, stream)
 		students = parser.parse_df(students_df)
 		
-		new_class = ClassroomModel(name=args['name'], teacher_model=auth.current_user())
+		new_class = ClassroomModel(name=args['name'], teacher=auth.current_user())
 		db.session.add(new_class)
 		db.session.commit()
 
 		students['class_id'] = pd.Series([new_class.id] * students.shape[0])
-		students.to_sql('student_model', con=db.engine, if_exists="append", index=False)
-		return "", 200
+		students.to_sql('student', con=db.engine, if_exists="append", index=False)
+		return {'class_id': new_class.id}
 
 	def delete(self, class_id=None):
 		if class_id is None: # Deleting all classes
-			teacher_classes_id = db.session.query(ClassroomModel.id).filter_by(teacher_model=auth.current_user()).all()
+			teacher_classes_id = db.session.query(ClassroomModel.id).filter_by(teacher=auth.current_user()).all()
 			for class_data in teacher_classes_id:
-				current_class = ClassroomModel.query.filter_by(id=class_data.id, teacher_model=auth.current_user()).first()
+				current_class = ClassroomModel.query.filter_by(id=class_data.id, teacher=auth.current_user()).first()
 				db.session.delete(current_class)
 			db.session.commit()
 			return "", 204
 		
-		current_class = ClassroomModel.query.filter_by(id=class_id, teacher_model=auth.current_user()).first() # Making sure the class belongs to the current user
+		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:
 			abort(400, message="Invalid class id")
 		

@@ -25,7 +25,7 @@ class RegisterResource(Resource):
         )
         db.session.add(user)
         db.session.commit()
-        return '', 200
+        return '', 204
         
          
 api.add_resource(RegisterResource, "/register")

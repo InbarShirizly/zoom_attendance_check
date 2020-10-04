@@ -7,7 +7,7 @@ class Attendance:
     receives student class df, the zoom chat and other configuration.
     returns:
      1. report_sessions - session object
-     2. student_status_table - df of "student_model" table
+     2. student_status_table - df of "student" table
     """
     def __init__(self, chat_df, students_df, filter_modes, time_delta, start_sentence, not_included_zoom_users):
         """
