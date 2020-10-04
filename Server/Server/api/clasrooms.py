@@ -1,31 +1,13 @@
-from Server.api import api
-from flask_restful import Resource, reqparse, abort, fields, marshal
-from Server import auth, db
-from Server.models import TeacherModel, ClassroomModel
+from server.api import api
+from flask_restful import Resource, reqparse, abort, marshal
+from server import auth, db
+from server.models.orm import TeacherModel, ClassroomModel
 from werkzeug.datastructures import FileStorage
-from Server.utils import parser
-from Server.utils.utils import create_students_df
+from server.parsing import parser
+from server.parsing.utils import create_students_df
 import pandas as pd
-from Server.config import RestErrors
-
-
-
-# Fields:
-classrooms_list_fields = { # Fields list of classrooms
-	'name': fields.String,
-	'id': fields.Integer
-}
-class StudentItemField(fields.Raw): # Custom field to parse StudentModel object
-	def format(self, value):
-		without_none = {k: v for k, v in value.__dict__ .items() if v is not None} # Getting only attributes which are not None
-		del without_none['_sa_instance_state']
-		del without_none['class_id']
-		return without_none
-
-classroom_resource_fields = { # Fields for a single classroom 
-	'name': fields.String,
-	'students': fields.List(StudentItemField)
-}
+from server.config import RestErrors
+from server.models.marshals import classrooms_list_fields, classroom_resource_fields
 
 
 class ClassroomsResource(Resource):

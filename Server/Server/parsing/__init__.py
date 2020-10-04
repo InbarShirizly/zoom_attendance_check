@@ -1,5 +1,5 @@
-from Server.config import ParseConfig
-from Server.utils.loading_classroom_file import ParseClassFile
+from server.config import ParseConfig
+from server.parsing.loading_classroom_file import ParseClassFile
 from collections import namedtuple
 
 

@@ -1,8 +1,8 @@
-from Server import auth, bcrypt, db
+from server import auth, bcrypt, db
 from flask_restful import Resource, reqparse, abort
-from Server.api import api
-from Server.models import get_user, TeacherModel
-from Server.config import RestErrors
+from server.api import api
+from server.models.orm import get_user, TeacherModel
+from server.config import RestErrors
 
 
 class RegisterResource(Resource):

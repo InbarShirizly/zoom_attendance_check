@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from session import Session
-#from Server.utils import AttendanceMetaData
+from server.parsing.session import Session
+#from server.parsing import AttendanceMetaData
 
 
 class Attendance:

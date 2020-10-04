@@ -10,10 +10,10 @@ API doc can be found [here](https://documenter.getpostman.com/view/4335694/TVRg6
 API will be running now at: `http://localhost:5000`
 
 ## Project structure
-The server code is inside Server package, and can be runned with the external module `run.py`.
+The server code is inside server package, and can be runned with the external module `run.py`.
 We decided to use `flask-restful` extenstion in order to create the endpoints, and `flaks-sqlalchemy` in order to create the database.
 
-The inside the `Server` package is organzied into the following sub-packages:
+The inside the `server` package is organzied into the following sub-packages:
 
 - `api` - package which is responsible for the api endpoints
 - `utils` - general utils for the application

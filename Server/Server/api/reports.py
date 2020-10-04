@@ -1,26 +1,15 @@
-from Server.api import api
-from flask_restful import Resource, reqparse, abort, marshal, fields
-from Server.utils.attendance_check import Attendance
+from server.api import api
+from flask_restful import Resource, reqparse, abort, marshal
+from server.parsing.attendance_check import Attendance
 from werkzeug.datastructures import FileStorage
-from Server import db, auth
+from server import db, auth
 from datetime import datetime
 import pandas as pd
-from Server.models import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
-from Server.utils.utils import create_chat_df
-from Server.api.utils import validate_classroom
-from Server.config import RestErrors
-
-# marshals:
-reports_list_fields = { # Fields list of classrooms
-	'description': fields.String,
-	'id': fields.Integer
-}
-
-student_status_field = {
-    'status': fields.Integer,
-    'student_name': fields.String(attribute='student.name'),
-    'status_id': fields.Integer(attribute="id")
-}
+from server.models.orm import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
+from server.parsing.utils import create_chat_df
+from server.api.utils import validate_classroom
+from server.config import RestErrors
+from server.models.marshals import student_status_field, reports_list_fields
 
 
 class ReportsResource(Resource):
