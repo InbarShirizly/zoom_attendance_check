@@ -22,6 +22,8 @@ class ValidatorsConfig:
     INVALID_USERNAME_CHARS = '!='
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
+    DATE_FORMAT = '%d/%m/%y'
+
 
 class RestErrors:
     INVALID_ROUTE = "Route does't exist"
@@ -33,3 +35,5 @@ class RestErrors:
     ILLEGAL_USERNAME_CHARS = f'Username can\'t contain the following characthers: "{ValidatorsConfig.INVALID_USERNAME_CHARS}"' 
     PASSWORD_TO_SHORT = f'Password to short, must be at least {ValidatorsConfig.MIN_PASSWORD_LEN} chars long'
     PASSWORD_MUST_CONTAIN = 'Password must contain at least one lower case letter one upper case letter and a digit'
+    INVALID_TIME_DELTA = "Time delta must be an int represnting number of minutes"
+    

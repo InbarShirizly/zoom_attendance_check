@@ -16,12 +16,12 @@ class ClassroomsResource(Resource):
 	def __init__(self):
 		super().__init__()
 		
-		self._post_args = reqparse.RequestParser()
-		self._post_args.add_argument('name', type=str, help="Name of the class is required", required=True)
+		self._post_args = reqparse.RequestParser(bundle_errors=True)
+		self._post_args.add_argument('name', type=str, required=True)
 		self._post_args.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
 		
-		self._put_args = reqparse.RequestParser()
-		self._put_args.add_argument('new_name', type=str, help="New name is required in order to update", location="json", required=True)
+		self._put_args = reqparse.RequestParser(bundle_errors=True)
+		self._put_args.add_argument('new_name', type=str, location="json", required=True)
 
 	def get(self, class_id=None):
 		if class_id is None:
