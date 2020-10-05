@@ -19,7 +19,7 @@ export const Application = (i18nProps: WithTranslateProps) => (
           </Route>
 
           <Route path='/register'>
-            <Register />
+            <Register {...i18nProps} />
           </Route>
 
           <Route path='/home'>

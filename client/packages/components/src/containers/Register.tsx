@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
+import { WithTranslateProps } from '../external-types'
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -8,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const Register = () => {
+export const Register = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
   const [state, setState] = useState({
     username: '',
@@ -30,7 +31,7 @@ export const Register = () => {
   return (
     <>
       <Typography variant='h4' gutterBottom>
-        Register
+        {t('register_title')}
       </Typography>
       <form onSubmit={handleSubmit}>
         <FormGroup>
