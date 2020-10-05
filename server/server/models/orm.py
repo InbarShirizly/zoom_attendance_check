@@ -1,16 +1,7 @@
-from server import db, bcrypt, auth
-from flask_login import UserMixin
+from server import db
 
 
-@auth.verify_password
-def get_user(username_or_email, password):
-    user = TeacherModel.query.filter_by(email=username_or_email).first() or \
-         TeacherModel.query.filter_by(username=username_or_email).first() # User can be validated with both username and email
-    if user and bcrypt.check_password_hash(user.password, password):
-        return user
-    
-
-class TeacherModel(db.Model, UserMixin):
+class TeacherModel(db.Model):
     __tablename__ = 'teacher'
 
     id = db.Column(db.Integer, primary_key=True)
