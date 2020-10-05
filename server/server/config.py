@@ -19,7 +19,7 @@ class ParseConfig:
 
 
 class ValidatorsConfig:
-    INVALID_USERNAME_CHARS = '!='
+    INVALID_USERNAME_CHARS = string.punctuation
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
     DATE_FORMAT = '%d/%m/%y'
@@ -40,3 +40,11 @@ class RestErrors:
     INVALID_TIME_DELTA = "Time delta must be an int represnting number of minutes"
     INVALID_STUDENTS_FILE = "Students file must be one of the following formats: " + str(ValidatorsConfig.STUDENTS_FILE_EXT)
     INVALID_CHAT_FILE = "Chat file must be one of the following formats: " + str(ValidatorsConfig.CHAT_FILE_EXT)
+    INVALID_CREDENTIALS = "Invalid credentials"
+    INVALID_TOKEN = "Token is invalid"
+    TOKEN_EXPIRED = "Token expired"
+    
+
+class SerializeConfig:
+    LOGIN_SALT = 'login'
+    LOIGN_TOKEN_AGE = 604800 # Week in seconds
