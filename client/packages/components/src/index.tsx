@@ -6,16 +6,16 @@ import { Container } from './layout/Container'
 import { Login, Register, Classes } from './containers'
 import { WithTranslateProps } from './external-types'
 
-export const Application = ({ t }: WithTranslateProps) => (
+export const Application = (i18nProps: WithTranslateProps) => (
   <>
     <CssBaseline />
     <Router>
-      <CustomAppBar />
+      <CustomAppBar {...i18nProps} />
 
       <Container maxWidth='md'>
         <Switch>
           <Route path='/login'>
-            <Login t={t} />
+            <Login {...i18nProps} />
           </Route>
 
           <Route path='/register'>
