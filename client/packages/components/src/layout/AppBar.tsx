@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
+import { RtlContext } from '../providers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles(() => ({
 export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const textDirection = useContext(RtlContext)
 
   const openMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
   const closeMenu = () => setAnchorEl(null)
