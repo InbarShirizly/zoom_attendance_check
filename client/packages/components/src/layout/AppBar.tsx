@@ -1,11 +1,17 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import {
   AppBar,
   Toolbar,
   Typography,
   makeStyles,
-  Button
+  Button,
+  IconButton,
+  Menu,
+  MenuItem
 } from '@material-ui/core'
+import { Language } from '@material-ui/icons'
+import { WithTranslateProps } from '../external-types'
+import { useRtlContext } from '../providers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,18 +22,54 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export const CustomAppBar = () => {
+export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   const classes = useStyles()
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const [_, setTextDirection] = useRtlContext()
+
+  const openMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
+  const closeMenu = () => setAnchorEl(null)
+  const handleMenuClick = (lang: string) => () => {
+    i18n.changeLanguage(lang)
+    setTextDirection({
+      type: lang === 'he' ? 'SET_RTL' : 'SET_LTR'
+    })
+    closeMenu()
+  }
 
   return (
     <AppBar position='fixed'>
       <Toolbar>
         <Typography variant='h6' className={classes.title}>
-          Zoom Attendence
+          {t('app_title')}
         </Typography>
 
-        <Button color='inherit'>Register</Button>
-        <Button color='inherit'>Login</Button>
+        <Button color='inherit'>
+          {t('register_title')}
+        </Button>
+        <Button color='inherit'>
+          {t('login_title')}
+        </Button>
+
+        <IconButton
+          color='inherit'
+          onClick={openMenu}
+        >
+          <Language />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          keepMounted
+          open={!!anchorEl}
+          onClose={closeMenu}
+        >
+          <MenuItem onClick={handleMenuClick('en')}>
+            {t('en_name')}
+          </MenuItem>
+          <MenuItem onClick={handleMenuClick('he')}>
+            {t('he_name')}
+          </MenuItem>
+        </Menu>
       </Toolbar>
     </AppBar>
   )

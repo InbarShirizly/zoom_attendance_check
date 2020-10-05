@@ -23,7 +23,9 @@
   },
   "dependencies": {
     "components": "1.0.0",
+    "i18next": "^19.8.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.3"
   }
 }
