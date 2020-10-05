@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { HelloWorld } from 'components'
+import { Application } from 'components'
 
 render(
-  <HelloWorld />,
-  document.querySelector('body')
+  <Application />,
+  document.getElementById('root')
 )
