@@ -4,12 +4,9 @@ import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
 import { Login, Register, Classes } from './containers'
+import { WithTranslateProps } from './external-types'
 
-interface ApplicationProps {
-  t(key: string): string | undefined | null
-}
-
-export const Application = ({ t }: ApplicationProps) => (
+export const Application = ({ t }: WithTranslateProps) => (
   <>
     <CssBaseline />
     <Router>

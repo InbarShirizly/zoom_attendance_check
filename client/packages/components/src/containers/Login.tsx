@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
+import { WithTranslateProps } from '../external-types'
 import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -8,18 +9,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-interface LoginProps {
-  t(key: string): string | undefined | null
-}
-
-export const Login = ({ t }: LoginProps) => {
+export const Login = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
   const [state, setState] = useState({
     username: '',
     password: ''
   })
-
-  console.log(t('login_title'))
 
   const handleChange = (field: string) => (value: string) =>
     setState({ ...state, [field]: value })
@@ -32,7 +27,7 @@ export const Login = ({ t }: LoginProps) => {
   return (
     <>
       <Typography variant='h4' gutterBottom>
-        Login
+        {t('login_title')}
       </Typography>
       <form onSubmit={handleSubmit}>
         <FormGroup>
