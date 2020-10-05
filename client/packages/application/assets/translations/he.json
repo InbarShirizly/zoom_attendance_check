@@ -2,6 +2,10 @@
   "app_title": "בדיקת נוכחות בזום",
   "login_title": "התחברות",
   "register_title": "הרשמה",
+  "username": "שם משתמש",
+  "password": "סיסמה",
+  "email": "אימייל",
+  "confirm_password": "אשר סיסמה",
   "en_name": "אנגלית",
   "he_name": "עברית"
 }

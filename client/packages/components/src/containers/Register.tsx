@@ -36,25 +36,25 @@ export const Register = ({ t }: WithTranslateProps) => {
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <OutlinedInput
-            label='Username'
+            label={t('username')}
             className={classes.input}
             onValueChange={handleChange('username')}
           />
           <OutlinedInput
-            label='Email'
+            label={t('email')}
             className={classes.input}
             type='email'
             onValueChange={handleChange('email')}
           />
           <OutlinedInput
-            label='Password'
+            label={t('password')}
             className={classes.input}
             type='password'
             error={!passwordsMatch}
             onValueChange={handleChange('password')}
           />
           <OutlinedInput
-            label='Confirm Password'
+            label={t('confirm_password')}
             className={classes.input}
             type='password'
             error={!passwordsMatch}
@@ -62,7 +62,7 @@ export const Register = ({ t }: WithTranslateProps) => {
             helperText={!passwordsMatch && 'Passwords don\'t match'}
           />
           <Button variant='contained' color='primary' size='large' type='submit'>
-            Register
+            {t('register_title')}
           </Button>
         </FormGroup>
       </form>

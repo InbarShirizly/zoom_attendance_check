@@ -32,17 +32,17 @@ export const Login = ({ t }: WithTranslateProps) => {
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <OutlinedInput
-            label='Username'
+            label={t('username')}
             className={classes.input}
             onValueChange={handleChange('username')}
           />
           <OutlinedInput
-            label='Password'
+            label={t('password')}
             className={classes.input}
             onValueChange={handleChange('password')}
           />
           <Button variant='contained' color='primary' size='large' type='submit'>
-            Login
+            {t('login_title')}
           </Button>
         </FormGroup>
       </form>
