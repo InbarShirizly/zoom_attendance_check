@@ -38,6 +38,9 @@ export const RtlProvider = ({ children }: RtlProviderProps) => {
   const [state, dispatch] = useReducer(rtlReducer, TextDirection.LTR)
   const theme = themeWithDirection(state)
 
+  // TODO - Check for best practices. This will happen on every render probably.
+  document.body.dir = state
+
   return (
     <ThemeProvider theme={theme}>
       <RtlStateContext.Provider value={state}>
