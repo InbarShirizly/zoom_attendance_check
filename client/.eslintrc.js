@@ -24,5 +24,22 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': ['error'],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['error']
-  }
+  },
+  overrides: [{
+    files: [
+      'packages/**/__tests__/*.{js,ts,jsx,tsx}'
+    ],
+    env: {
+      jest: true
+    },
+    plugins: [
+      'jest'
+    ],
+    rules: {
+      'jest/no-disabled-tests': ['warn'],
+      'jest/no-focused-tests': ['error'],
+      'jest/no-identical-title': ['error'],
+      'jest/valid-expect': ['error']
+    }
+  }]
 }
