@@ -49,7 +49,7 @@ export const RtlProvider = ({ children }: RtlProviderProps) => {
   )
 }
 
-export const useRtlContext = () => {
+export const useRtlContext = (): [TextDirection, Dispatch] => {
   const state = useContext(RtlStateContext)
   const dispatch = useContext(RtlDispatchContext)
 
@@ -57,5 +57,5 @@ export const useRtlContext = () => {
     throw new Error('useRtlContext must be used within a RtlProvider')
   }
 
-  return { state, dispatch }
+  return [state, dispatch]
 }

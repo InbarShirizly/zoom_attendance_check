@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
-import { RtlContext } from '../providers'
+import { useRtlContext } from '../providers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,12 +25,15 @@ const useStyles = makeStyles(() => ({
 export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const textDirection = useContext(RtlContext)
+  const [_, setTextDirection] = useRtlContext()
 
   const openMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
   const closeMenu = () => setAnchorEl(null)
   const handleMenuClick = (lang: string) => () => {
     i18n.changeLanguage(lang)
+    setTextDirection({
+      type: lang === 'he' ? 'SET_RTL' : 'SET_LTR'
+    })
     closeMenu()
   }
 
