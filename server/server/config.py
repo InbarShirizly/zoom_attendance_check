@@ -5,13 +5,13 @@ class FlaskConfig:
 
 class ParseConfig:
     FILE_COLS_DICT = {
-        "name": ["שם התלמיד", "תלמידים", "שמות", "שם", "סטודנט"],
-        "id_number": ["תעודת זהות", "ת.ז.", "ת.ז", "תז"],
-        "phone": ["טלפון", "מספר טלפון", "מס טלפון"],
-        "gender": ["מין"],
-        "org_class": ["כיתה"]
+        "name": ["שם התלמיד", "תלמידים", "שמות", "שם", "סטודנט", "name", "student_name", "student"],
+        "id_number": ["תעודת זהות", "ת.ז.", "ת.ז", "תז", "id", "number_id", "id_number"],
+        "phone": ["טלפון", "מספר טלפון", "מס טלפון", "phone", "phone_number"],
+        "gender": ["מין", "gender"],
+        "org_class": ["כיתה", "org_class", "class"]
     }
-    MASHOV_COLS = ["name", "org_class"]
+    MASHOV_COLS = ["name", "org_class", "id_number"]
     GENDER_DICT = {1: ["זכר", "ז", "(ז)"], 0: ["נקבה", "נ", "(נ)"]}
 
 

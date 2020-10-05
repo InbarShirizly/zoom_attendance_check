@@ -1,6 +1,6 @@
 from server.api import api
 from flask_restful import Resource, reqparse, abort, marshal
-from server.parsing.attendance_check import Attendance
+from server.parsing.attendance import Attendance
 from werkzeug.datastructures import FileStorage
 from server import db, auth
 from datetime import datetime
