@@ -23,6 +23,8 @@ class ValidatorsConfig:
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
     DATE_FORMAT = '%d/%m/%y'
+    CHAT_FILE_EXT = [".txt"]
+    STUDENTS_FILE_EXT = [".xls", ".xlsx", ".csv"]
 
 
 class RestErrors:
@@ -32,8 +34,9 @@ class RestErrors:
     INVALID_STATUS = "Invalid status id"
     USERNAME_TAKEN = "Username already taken"
     EMAIL_TAKEN = "Email already taken"
-    ILLEGAL_USERNAME_CHARS = f'Username can\'t contain the following characthers: "{ValidatorsConfig.INVALID_USERNAME_CHARS}"' 
+    ILLEGAL_USERNAME_CHARS = f'Username can\'t contain the following characthers: "{list(ValidatorsConfig.INVALID_USERNAME_CHARS)}"' 
     PASSWORD_TO_SHORT = f'Password to short, must be at least {ValidatorsConfig.MIN_PASSWORD_LEN} chars long'
     PASSWORD_MUST_CONTAIN = 'Password must contain at least one lower case letter one upper case letter and a digit'
     INVALID_TIME_DELTA = "Time delta must be an int represnting number of minutes"
-    
+    INVALID_STUDENTS_FILE = "Students file must be one of the following formats: " + str(ValidatorsConfig.STUDENTS_FILE_EXT)
+    INVALID_CHAT_FILE = "Chat file must be one of the following formats: " + str(ValidatorsConfig.CHAT_FILE_EXT)
