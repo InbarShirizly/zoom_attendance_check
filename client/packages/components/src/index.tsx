@@ -5,7 +5,11 @@ import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
 import { Login, Register, Classes } from './containers'
 
-export const Application = () => (
+interface ApplicationProps {
+  t(key: string): string | undefined | null
+}
+
+export const Application = ({ t }: ApplicationProps) => (
   <>
     <CssBaseline />
     <Router>
@@ -14,7 +18,7 @@ export const Application = () => (
       <Container maxWidth='md'>
         <Switch>
           <Route path='/login'>
-            <Login />
+            <Login t={t} />
           </Route>
 
           <Route path='/register'>

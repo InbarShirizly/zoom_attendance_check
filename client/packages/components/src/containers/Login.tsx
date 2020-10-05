@@ -8,12 +8,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const Login = () => {
+interface LoginProps {
+  t(key: string): string | undefined | null
+}
+
+export const Login = ({ t }: LoginProps) => {
   const classes = useStyles()
   const [state, setState] = useState({
     username: '',
     password: ''
   })
+
+  console.log(t('login_title'))
 
   const handleChange = (field: string) => (value: string) =>
     setState({ ...state, [field]: value })
