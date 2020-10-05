@@ -1,26 +1,27 @@
-import { createMount, createRender, createShallow } from '@material-ui/core/test-utils'
+import { unmountComponentAtNode } from 'react-dom'
 
 export const createTestEnvironment = () => {
-  let mount: ReturnType<typeof createMount>
-  let render: ReturnType<typeof createRender>
-  let shallow: ReturnType<typeof createShallow>
+  let container: HTMLDivElement | null = null
 
   const beforeAndAfter = () => {
-    beforeEach(() => {
-      mount = createMount()
-      render = createRender()
-      shallow = createShallow()
+    beforeAll(() => {
+      container = document.createElement('div')
+      document.body.appendChild(container)
     })
 
-    afterEach(() => {
-      mount.cleanUp()
+    afterAll(() => {
+      if (container !== null) {
+        unmountComponentAtNode(container)
+        container.remove()
+        container = null
+      }
     })
   }
 
+  const getContainer = () => container
+
   return {
-    mount,
-    render,
-    shallow,
+    getContainer,
     beforeAndAfter
   }
 }

@@ -20,7 +20,8 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsConfig: {
-        esModuleInterop: true
+        esModuleInterop: true,
+        jsx: 'react'
       }
     }
   }
