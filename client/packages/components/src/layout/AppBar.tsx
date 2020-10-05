@@ -39,8 +39,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           {t('app_title')}
         </Typography>
 
-        <Button color='inherit'>Register</Button>
-        <Button color='inherit'>Login</Button>
+        <Button color='inherit'>
+          {t('register_title')}
+        </Button>
+        <Button color='inherit'>
+          {t('login_title')}
+        </Button>
 
         <IconButton
           color='inherit'
