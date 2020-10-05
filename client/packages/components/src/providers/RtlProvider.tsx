@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer } from 'react'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core'
+import { createMuiTheme, jssPreset, StylesProvider, ThemeProvider } from '@material-ui/core'
+import { create as createJss } from 'jss'
+import jssRtl from 'jss-rtl'
 
 export enum TextDirection {
   RTL = 'rtl',
@@ -34,6 +36,8 @@ const rtlReducer = (state: TextDirection, action: Action) => {
   }
 }
 
+const jss = createJss({ plugins: [...jssPreset().plugins, jssRtl()] })
+
 export const RtlProvider = ({ children }: RtlProviderProps) => {
   const [state, dispatch] = useReducer(rtlReducer, TextDirection.LTR)
   const theme = themeWithDirection(state)
@@ -42,13 +46,15 @@ export const RtlProvider = ({ children }: RtlProviderProps) => {
   document.body.dir = state
 
   return (
-    <ThemeProvider theme={theme}>
-      <RtlStateContext.Provider value={state}>
-        <RtlDispatchContext.Provider value={dispatch}>
-          {children}
-        </RtlDispatchContext.Provider>
-      </RtlStateContext.Provider>
-    </ThemeProvider>
+    <StylesProvider jss={jss}>
+      <ThemeProvider theme={theme}>
+        <RtlStateContext.Provider value={state}>
+          <RtlDispatchContext.Provider value={dispatch}>
+            {children}
+          </RtlDispatchContext.Provider>
+        </RtlStateContext.Provider>
+      </ThemeProvider>
+    </StylesProvider>
   )
 }
 
