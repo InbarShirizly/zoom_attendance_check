@@ -19,7 +19,7 @@ class ParseConfig:
 
 
 class ValidatorsConfig:
-    INVALID_USERNAME_CHARS = '!='
+    INVALID_USERNAME_CHARS = string.punctuation
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
     DATE_FORMAT = '%d/%m/%y'
@@ -44,3 +44,7 @@ class RestErrors:
     INVALID_TOKEN = "Token is invalid"
     TOKEN_EXPIRED = "Token expired"
     
+
+class SerializeConfig:
+    LOGIN_SALT = 'login'
+    LOIGN_TOKEN_AGE = 604800 # Week in seconds
