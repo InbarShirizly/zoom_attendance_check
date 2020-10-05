@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useReducer } from 'react'
+import React from 'react'
 import { createMuiTheme, jssPreset, StylesProvider, ThemeProvider } from '@material-ui/core'
 import { create as createJss } from 'jss'
 import jssRtl from 'jss-rtl'
+import { createProvider } from './create-provider'
 
 export enum TextDirection {
   RTL = 'rtl',
@@ -16,10 +17,6 @@ const themeWithDirection = (direction: TextDirection) => createMuiTheme({
 })
 
 type Action = { type: 'SET_RTL' } | { type: 'SET_LTR' }
-type Dispatch = (action: Action) => void
-
-const RtlStateContext = createContext<TextDirection | undefined>(undefined)
-const RtlDispatchContext = createContext<Dispatch | undefined>(undefined)
 
 interface RtlProviderProps {
   children: React.ReactNodeArray
@@ -36,10 +33,15 @@ const rtlReducer = (state: TextDirection, action: Action) => {
   }
 }
 
+const {
+  Provider: TextDirectionProvider,
+  useProvider: useTextDirection
+} = createProvider('TextDirection', rtlReducer, TextDirection.LTR)
+
 const jss = createJss({ plugins: [...jssPreset().plugins, jssRtl()] })
 
-export const RtlProvider = ({ children }: RtlProviderProps) => {
-  const [state, dispatch] = useReducer(rtlReducer, TextDirection.LTR)
+const RtlStylesProvider = ({ children }: RtlProviderProps) => {
+  const [state] = useTextDirection()
   const theme = themeWithDirection(state)
 
   // TODO - Check for best practices. This will happen on every render probably.
@@ -48,23 +50,18 @@ export const RtlProvider = ({ children }: RtlProviderProps) => {
   return (
     <StylesProvider jss={jss}>
       <ThemeProvider theme={theme}>
-        <RtlStateContext.Provider value={state}>
-          <RtlDispatchContext.Provider value={dispatch}>
-            {children}
-          </RtlDispatchContext.Provider>
-        </RtlStateContext.Provider>
+        {children}
       </ThemeProvider>
     </StylesProvider>
   )
 }
 
-export const useRtlContext = (): [TextDirection, Dispatch] => {
-  const state = useContext(RtlStateContext)
-  const dispatch = useContext(RtlDispatchContext)
+const RtlProvider = ({ children }: RtlProviderProps) => (
+  <TextDirectionProvider>
+    <RtlStylesProvider>
+      {children}
+    </RtlStylesProvider>
+  </TextDirectionProvider>
+)
 
-  if (!state || !dispatch) {
-    throw new Error('useRtlContext must be used within a RtlProvider')
-  }
-
-  return [state, dispatch]
-}
+export { RtlProvider, useTextDirection }
