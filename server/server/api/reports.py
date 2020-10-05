@@ -1,7 +1,6 @@
-from server.api import api
+from server.api import api, custom_types
 from flask_restful import Resource, reqparse, abort, marshal
 from server.parsing.attendance_check import Attendance
-from werkzeug.datastructures import FileStorage
 from server import db, auth
 from datetime import datetime
 import pandas as pd
@@ -17,13 +16,13 @@ class ReportsResource(Resource):
     
     def __init__(self):
         super().__init__()
-        self._post_args = reqparse.RequestParser()
+        self._post_args = reqparse.RequestParser(bundle_errors=True)
         self._post_args.add_argument('description', type=str)
-        self._post_args.add_argument('chat_file', type=FileStorage, help="Chat file is required", location='files', required=True)
-        self._post_args.add_argument('time_delta', default=1, type=int)
-        self._post_args.add_argument('date', default=datetime.now().date(), type=lambda x: datetime.strptime(x, '%d/%m/%y'))
-        self._post_args.add_argument('first_sentence', type=str, help='First sentence is required in order to understand when does the check starts', required=True)
-        self._post_args.add_argument('not_included_zoom_users', default=[], type=str, help='Must be a list of strings with zoom names', action="append")
+        self._post_args.add_argument('chat_file', type=custom_types.chat_file, location='files', required=True)
+        self._post_args.add_argument('time_delta', help=RestErrors.INVALID_TIME_DELTA, type=int, required=True)
+        self._post_args.add_argument('date', default=datetime.now().date(), type=custom_types.date)
+        self._post_args.add_argument('first_sentence', type=str, required=True)
+        self._post_args.add_argument('not_included_zoom_users', default=[], type=str, action="append")
 
     def get(self, class_id, report_id=None):
         if report_id is None:

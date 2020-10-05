@@ -1,8 +1,7 @@
-from server.api import api
+from server.api import api, custom_types
 from flask_restful import Resource, reqparse, abort, marshal
 from server import auth, db
 from server.models.orm import TeacherModel, ClassroomModel
-from werkzeug.datastructures import FileStorage
 from server.parsing import parser
 from server.parsing.utils import create_students_df
 import pandas as pd
@@ -16,12 +15,12 @@ class ClassroomsResource(Resource):
 	def __init__(self):
 		super().__init__()
 		
-		self._post_args = reqparse.RequestParser()
-		self._post_args.add_argument('name', type=str, help="Name of the class is required", required=True)
-		self._post_args.add_argument('students_file', type=FileStorage, location='files', help="Student file is required", required=True)
+		self._post_args = reqparse.RequestParser(bundle_errors=True)
+		self._post_args.add_argument('name', type=str, required=True)
+		self._post_args.add_argument('students_file', type=custom_types.students_file, location='files', required=True)
 		
-		self._put_args = reqparse.RequestParser()
-		self._put_args.add_argument('new_name', type=str, help="New name is required in order to update", location="json", required=True)
+		self._put_args = reqparse.RequestParser(bundle_errors=True)
+		self._put_args.add_argument('new_name', type=str, location="json", required=True)
 
 	def get(self, class_id=None):
 		if class_id is None:
@@ -34,7 +33,7 @@ class ClassroomsResource(Resource):
 
 	def post(self, class_id=None):
 		if class_id:
-			return abort(404, message=RestErrors.INVALID_ROUTE)
+			abort(404, message=RestErrors.INVALID_ROUTE)
 		args = self._post_args.parse_args()
 		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
 		students_df = create_students_df(filename, stream)
@@ -50,7 +49,7 @@ class ClassroomsResource(Resource):
 
 	def put(self, class_id=None):
 		if class_id is None:
-			return abort(404, message=RestErrors.INVALID_ROUTE)
+			abort(404, message=RestErrors.INVALID_ROUTE)
 		args = self._put_args.parse_args()
 		current_class = ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() # Making sure the class belongs to the current user
 		if current_class is None:

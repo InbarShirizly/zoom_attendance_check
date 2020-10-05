@@ -6,15 +6,13 @@ from server.config import RestErrors
 
 STATUS_CHOICES = (0, 1, 2)
 
-# arg parsing:
-
 class StudentStatusResource(Resource):
     method_decorators = [auth.login_required]
 
     def __init__(self):
         super().__init__()
 
-        self._put_args = reqparse.RequestParser()
+        self._put_args = reqparse.RequestParser(bundle_errors=True)
         self._put_args.add_argument(
             'new_status', type=int,
             help=f"Bad choice, please pick one of this choices {STATUS_CHOICES}",
