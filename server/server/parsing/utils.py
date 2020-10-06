@@ -10,7 +10,8 @@ def create_chat_df(chat_file):
     chat_df = pd.DataFrame(chat_content, columns=["time", "zoom_name", "message"])
     chat_df['message'] = chat_df['message'].str[:-1].astype(str)
     chat_df["time"] = chat_df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
-
+    if chat_df.empty:
+        raise ValueError("Entered file is empty")
     return chat_df
 
 
@@ -26,6 +27,11 @@ def create_students_df(file_name, file_data):
             df_students = pd.ExcelFile(file_data).parse()
 
     clean_df = clean_student_df(df_students)
+
+    if clean_df.shape[0] > 200:
+        raise ValueError("Input file have to many records")  #TODO: pass amount of records as config
+    if clean_df.empty:
+        raise ValueError("Entered file is empty")
     return clean_df
 
 
@@ -42,9 +48,3 @@ def clean_student_df(df_students):
     return df_students
 
 
-def validate_file_content(df_student): # TODO: needs to be part of the full flow as well
-    if df_student.shape[0] > 200:
-        raise ValueError("Input file have to many records")  #TODO: pass amount of records as config
-    if df_student.empty:
-        raise ValueError("Entered file is empty")
-    return True

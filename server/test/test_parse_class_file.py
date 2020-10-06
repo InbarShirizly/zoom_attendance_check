@@ -27,17 +27,15 @@ class TestParseClassFile:
 
     class TestMashoveFiles:
 
-
         mashov_files_valid_data = [
             ("רשימה מקורית.xls", True, 17),
             ("example_mashov_file_edited_and_saved_97.xls", True, 17),
             ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
             ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
-            ("example_mashov_file_empty.xls", False, 0),
+            #("example_mashov_file_empty.xls", False, 0),
             ("example_excel.xlsx", False, 0),
             ("example_excel_start_in_random_row.xlsx", False, 0),
         ]
-
 
         @pytest.mark.parametrize(("file_name", "expected_output", "num_records"), mashov_files_valid_data)
         def test_check_if_mashov_file(self, parser, folders, file_name, expected_output, num_records):
@@ -56,7 +54,6 @@ class TestParseClassFile:
 
 
     class TestBasicFiles:
-
 
         classic_files_data = [
             ("example_csv.csv", 8),

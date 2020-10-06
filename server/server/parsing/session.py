@@ -33,7 +33,6 @@ class Session:
         df_relevant_chat["id"] = df_relevant_chat["id"].apply(lambda x: int(x) if x == x else -1)
         return df_relevant_chat
 
-
     def zoom_names_table(self, session_id):
         zoom_df = self._relevant_chat.loc[:, ["zoom_name", "id"]].rename(columns={"zoom_name": "name", "id": "student_id"})
         zoom_df['session_id'] = pd.Series([session_id] * zoom_df.shape[0])
