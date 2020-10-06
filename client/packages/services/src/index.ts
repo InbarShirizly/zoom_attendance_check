@@ -6,3 +6,9 @@ export interface StudentData {
   phone?: number
   idNumber?: string
 }
+
+export enum Attendance {
+  Absent = 0,
+  Partial = 1,
+  Attended = 2
+}
