@@ -26,7 +26,7 @@ class Session:
         df_participated["index"] = df_participated["index"].astype(int)
         df_participated = df_participated.loc[:, ["id", "zoom_name", "time", "message", "index"]].set_index("index")
 
-        filt = df_chat['zoom_name'].str.contains('|'.join(meta_data.not_included_zoom_users))
+        filt = df_chat['zoom_name'].str.contains('|'.join(meta_data.zoom_names_to_ignore))
         df_relevant_chat = pd.merge(df_chat[~filt], df_participated, how="left")
 
         df_relevant_chat["relevant"] = df_relevant_chat["id"].apply(lambda x: 1 if x == x else 0)

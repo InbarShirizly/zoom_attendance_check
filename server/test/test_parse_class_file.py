@@ -68,9 +68,12 @@ class TestParseClassFile:
         ]
 
         @pytest.mark.parametrize(("file_name", "num_records"), classic_files_data)
-        def test_mashov_file(self, parser, folders, file_name, student_full_columns_columns, num_records):
+        def test_basic_file(self, parser, folders, file_name, student_full_columns_columns, num_records):
             df_students = create_students_df(file_name, os.path.join(folders["student_list_folder"], file_name))
             result_df = parser.classic_file(df_students)
             assert result_df.shape[0] == num_records
             assert result_df.columns.isin(student_full_columns_columns).all()
+
+
+
 
