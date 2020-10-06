@@ -1,5 +1,6 @@
 import React from 'react'
 import { createMuiTheme, jssPreset, StylesProvider, ThemeProvider } from '@material-ui/core'
+import { heIL, enUS } from '@material-ui/core/locale'
 import { create as createJss } from 'jss'
 import jssRtl from 'jss-rtl'
 import { createProvider } from './create-provider'
@@ -9,12 +10,14 @@ export enum TextDirection {
   LTR = 'ltr'
 }
 
+const localeFromDirection = (direction: TextDirection) => direction === 'rtl' ? heIL : enUS
+
 const themeWithDirection = (direction: TextDirection) => createMuiTheme({
   typography: {
     fontFamily: '"Heebo", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif'
   },
   direction
-})
+}, localeFromDirection(direction))
 
 type Action = { type: 'SET_RTL' } | { type: 'SET_LTR' }
 
