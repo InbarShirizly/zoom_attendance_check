@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
-import { StudentData } from 'services'
+import { Attendance, StudentData } from 'services'
+import { AttendanceIcon } from '../ui/attendance/AttendanceIcon'
 
-interface StudentDataTableProps {
+interface AttendanceTableProps {
   students: StudentData[]
 }
 
-export const AttendanceTable = ({ students }: StudentDataTableProps) => {
+export const AttendanceTable = ({ students }: AttendanceTableProps) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -28,11 +29,14 @@ export const AttendanceTable = ({ students }: StudentDataTableProps) => {
             <TableCell>
               Name
             </TableCell>
-            <TableCell>
+            <TableCell align='center' valign='middle'>
               3.10
             </TableCell>
-            <TableCell>
+            <TableCell align='center' valign='middle'>
               4.10
+            </TableCell>
+            <TableCell align='center' valign='middle'>
+              5.10
             </TableCell>
           </TableRow>
         </TableHead>
@@ -42,11 +46,14 @@ export const AttendanceTable = ({ students }: StudentDataTableProps) => {
               <TableCell>
                 {s.name}
               </TableCell>
-              <TableCell>
-                {s.phone}
+              <TableCell padding='checkbox' align='center' valign='middle'>
+                <AttendanceIcon attendance={Attendance.Attended} />
               </TableCell>
-              <TableCell>
-                {s.idNumber}
+              <TableCell padding='checkbox' align='center' valign='middle'>
+                <AttendanceIcon attendance={Attendance.Partial} />
+              </TableCell>
+              <TableCell padding='checkbox' align='center' valign='middle'>
+                <AttendanceIcon attendance={Attendance.Absent} />
               </TableCell>
             </TableRow>
           ))}
