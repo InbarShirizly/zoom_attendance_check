@@ -7,7 +7,7 @@ import pandas as pd
 from server.models.orm import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
 from server.parsing.utils import create_chat_df
 from server.api.utils import validate_classroom
-from server.config import RestErrors
+from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import student_status_field, reports_list_fields
 
 
@@ -35,6 +35,10 @@ class ReportsResource(Resource):
     def post(self, class_id, report_id=None):
         if report_id:
             abort(404, message=RestErrors.INVALID_REPORT)
+        
+        if len(ReportModel.query.filter_by(class_id=class_id).all()) >= ValidatorsConfig.MAX_REPORTS:
+            abort(400, message=RestErrors.MAX_REPORTS)
+
         args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)

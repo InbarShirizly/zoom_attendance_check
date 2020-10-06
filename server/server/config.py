@@ -35,7 +35,7 @@ class RestErrors:
     INVALID_STATUS = "invalid_status_id"
     USERNAME_TAKEN = "username_taken"
     EMAIL_TAKEN = "email_taken"
-    ILLEGAL_USERNAME_CHARS = 'username_contains_illegal_chars" 
+    ILLEGAL_USERNAME_CHARS = "username_contains_illegal_chars" 
     PASSWORD_TO_SHORT = 'passowrd_to_short'
     PASSWORD_MUST_CONTAIN = "password_dosen't_contain_required_chars"
     INVALID_TIME_DELTA = "invalid_time_delta"
