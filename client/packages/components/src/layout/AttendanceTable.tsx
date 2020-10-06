@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
+import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
 import { Attendance, StudentData } from 'services'
-import { AttendanceCell } from '../ui/attendance/AttendanceCell'
+import { AttendanceRow } from '../ui/attendance/AttendanceRow'
 
 interface AttendanceTableProps {
   students: StudentData[]
@@ -22,8 +22,7 @@ export const AttendanceTable = ({ students }: AttendanceTableProps) => {
 
   return (
     <>
-      <Divider />
-      <Table>
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             <TableCell>
@@ -38,18 +37,35 @@ export const AttendanceTable = ({ students }: AttendanceTableProps) => {
             <TableCell align='center' valign='middle'>
               5.10
             </TableCell>
+            <TableCell align='center' valign='middle'>
+              3.10
+            </TableCell>
+            <TableCell align='center' valign='middle'>
+              4.10
+            </TableCell>
+            <TableCell align='center' valign='middle'>
+              5.10
+            </TableCell>
+            <TableCell align='center' valign='middle'>
+              3.10
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {studentsInPage.map(s => (
-            <TableRow key={s.id}>
-              <TableCell>
-                {s.name}
-              </TableCell>
-              <AttendanceCell attendance={Attendance.Attended} />
-              <AttendanceCell attendance={Attendance.Partial} />
-              <AttendanceCell attendance={Attendance.Absent} />
-            </TableRow>
+            <AttendanceRow
+              key={s.id}
+              student={s}
+              attendances={[
+                Attendance.Attended,
+                Attendance.Partial,
+                Attendance.Absent,
+                Attendance.Attended,
+                Attendance.Partial,
+                Attendance.Absent,
+                Attendance.Attended
+              ]}
+            />
           ))}
         </TableBody>
       </Table>

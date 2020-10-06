@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Fab, makeStyles, Paper, Tab, Tabs, Typography } from '@material-ui/core'
+import { Divider, Fab, makeStyles, Paper, Tab, Tabs, Typography } from '@material-ui/core'
 import { StudentDataTable } from '../layout/StudentsDataTable'
 import { Add as AddIcon } from '@material-ui/icons'
 import { AttendanceTable } from '../layout/AttendanceTable'
@@ -63,6 +63,8 @@ export const Class = () => {
           <Tab label='Student Data' />
           <Tab label='Attendance' />
         </Tabs>
+
+        <Divider />
 
         <TableByTabType
           tabType={tabValue}

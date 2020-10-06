@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
+import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
 import { StudentData } from 'services'
 
 interface StudentDataTableProps {
@@ -21,7 +21,6 @@ export const StudentDataTable = ({ students }: StudentDataTableProps) => {
 
   return (
     <>
-      <Divider />
       <Table>
         <TableHead>
           <TableRow>
