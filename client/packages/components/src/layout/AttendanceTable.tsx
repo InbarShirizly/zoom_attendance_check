@@ -6,7 +6,7 @@ interface StudentDataTableProps {
   students: StudentData[]
 }
 
-export const AttendenceTable = ({ students }: StudentDataTableProps) => {
+export const AttendanceTable = ({ students }: StudentDataTableProps) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
