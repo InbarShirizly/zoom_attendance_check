@@ -38,9 +38,9 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   }
 
   return (
-    <AppBar position='fixed'>
+    <AppBar position='fixed' data-testid='appbar'>
       <Toolbar>
-        <Typography variant='h6' className={classes.title}>
+        <Typography variant='h6' className={classes.title} data-testid='app-title'>
           {t('app_title')}
         </Typography>
 
@@ -62,11 +62,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           keepMounted
           open={!!anchorEl}
           onClose={closeMenu}
+          data-testid='language-menu'
         >
-          <MenuItem onClick={handleMenuClick('en')}>
+          <MenuItem onClick={handleMenuClick('en')} data-testid='english-button'>
             {t('en_name')}
           </MenuItem>
-          <MenuItem onClick={handleMenuClick('he')}>
+          <MenuItem onClick={handleMenuClick('he')} data-testid='hebrew-button'>
             {t('he_name')}
           </MenuItem>
         </Menu>
