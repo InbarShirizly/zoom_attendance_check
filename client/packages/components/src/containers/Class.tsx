@@ -3,6 +3,11 @@ import { Fab, makeStyles, Paper, Tab, Tabs, Typography } from '@material-ui/core
 import { StudentDataTable } from '../layout/StudentsDataTable'
 import { Add as AddIcon } from '@material-ui/icons'
 
+enum TabTypes {
+  StudentData = 0,
+  Attendence = 1
+}
+
 const useStyles = makeStyles(theme => ({
   fab: {
     position: 'fixed',
@@ -21,9 +26,9 @@ const testStudents = (new Array(30)).fill('').map((_, i) => ({
 
 export const Class = () => {
   const classes = useStyles()
-  const [value, setValue] = useState(0)
+  const [tabValue, setTabValue] = useState(TabTypes.StudentData)
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => setValue(newValue)
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: TabTypes) => setTabValue(newValue)
 
   return (
     <>
@@ -33,7 +38,7 @@ export const Class = () => {
 
       <Paper elevation={2}>
         <Tabs
-          value={value}
+          value={tabValue}
           onChange={handleChange}
           indicatorColor='primary'
           textColor='primary'
