@@ -27,7 +27,7 @@ module.exports = {
   },
   overrides: [{
     files: [
-      'packages/**/__tests__/*.{js,ts,jsx,tsx}'
+      'packages/**/__tests__/**/*.{js,ts,jsx,tsx}'
     ],
     env: {
       jest: true
