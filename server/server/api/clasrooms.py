@@ -5,7 +5,7 @@ from server.models.orm import TeacherModel, ClassroomModel
 from server.parsing import parser
 from server.parsing.utils import create_students_df
 import pandas as pd
-from server.config import RestErrors
+from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import classrooms_list_fields, classroom_resource_fields
 
 
@@ -34,6 +34,9 @@ class ClassroomsResource(Resource):
 	def post(self, class_id=None):
 		if class_id:
 			abort(404, message=RestErrors.INVALID_ROUTE)
+		if len(auth.current_user().classrooms) >= ValidatorsConfig.MAX_CLASSROOMS:
+			abort(400, message=RestErrors.MAX_CLASSROOMS)
+
 		args = self._post_args.parse_args()
 		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
 		students_df = create_students_df(filename, stream)

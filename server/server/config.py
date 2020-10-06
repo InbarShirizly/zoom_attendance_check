@@ -25,25 +25,27 @@ class ValidatorsConfig:
     DATE_FORMAT = '%d/%m/%y'
     CHAT_FILE_EXT = [".txt"]
     STUDENTS_FILE_EXT = [".xls", ".xlsx", ".csv"]
-
+    MAX_CLASSROOMS = 10 # Maximum classrooms per students
+    MAX_REPORTS = 7 # Max reports per classroom
 
 class RestErrors:
-    INVALID_ROUTE = "Route does't exist"
-    INVALID_CLASS = "Invalid class id"
-    INVALID_REPORT = "Invalid report id"
-    INVALID_STATUS = "Invalid status id"
-    USERNAME_TAKEN = "Username already taken"
-    EMAIL_TAKEN = "Email already taken"
-    ILLEGAL_USERNAME_CHARS = f'Username can\'t contain the following characthers: "{list(ValidatorsConfig.INVALID_USERNAME_CHARS)}"' 
-    PASSWORD_TO_SHORT = f'Password to short, must be at least {ValidatorsConfig.MIN_PASSWORD_LEN} chars long'
-    PASSWORD_MUST_CONTAIN = 'Password must contain at least one lower case letter one upper case letter and a digit'
-    INVALID_TIME_DELTA = "Time delta must be an int represnting number of minutes"
-    INVALID_STUDENTS_FILE = "Students file must be one of the following formats: " + str(ValidatorsConfig.STUDENTS_FILE_EXT)
-    INVALID_CHAT_FILE = "Chat file must be one of the following formats: " + str(ValidatorsConfig.CHAT_FILE_EXT)
-    INVALID_CREDENTIALS = "Invalid credentials"
-    INVALID_TOKEN = "Token is invalid"
-    TOKEN_EXPIRED = "Token expired"
-    
+    INVALID_ROUTE = "route_doesn't_exists"
+    INVALID_CLASS = "invalid_class_id"
+    INVALID_REPORT = "invalid_report_id"
+    INVALID_STATUS = "invalid_status_id"
+    USERNAME_TAKEN = "username_taken"
+    EMAIL_TAKEN = "email_taken"
+    ILLEGAL_USERNAME_CHARS = "username_contains_illegal_chars" 
+    PASSWORD_TO_SHORT = 'passowrd_to_short'
+    PASSWORD_MUST_CONTAIN = "password_dosen't_contain_required_chars"
+    INVALID_TIME_DELTA = "invalid_time_delta"
+    INVALID_STUDENTS_FILE = "invalid_student_file"
+    INVALID_CHAT_FILE = "invalid_chat_file"
+    INVALID_CREDENTIALS = "credentials_invalid"
+    INVALID_TOKEN = "token_invalid"
+    TOKEN_EXPIRED = "token_expired"
+    MAX_REPORTS = "to_many_reports"
+    MAX_CLASSROOMS = "to_many_classrooms"
 
 class SerializeConfig:
     LOGIN_SALT = 'login'
