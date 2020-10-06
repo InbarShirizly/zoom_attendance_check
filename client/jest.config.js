@@ -15,12 +15,13 @@ module.exports = {
   testRunner: 'jest-circus/runner',
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  testRegex: ['./*.spec.ts$'],
+  testRegex: ['./*.spec.tsx?$'],
   moduleNameMapper: packageAliases,
   globals: {
     'ts-jest': {
       tsConfig: {
-        esModuleInterop: true
+        esModuleInterop: true,
+        jsx: 'react'
       }
     }
   }

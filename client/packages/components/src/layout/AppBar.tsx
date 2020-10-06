@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
-import { useRtlContext } from '../providers'
+import { useTextDirection } from '../providers'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const [_, setTextDirection] = useRtlContext()
+  const [_, setTextDirection] = useTextDirection()
 
   const openMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
   const closeMenu = () => setAnchorEl(null)
@@ -38,9 +38,9 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   }
 
   return (
-    <AppBar position='fixed'>
+    <AppBar position='fixed' data-testid='appbar'>
       <Toolbar>
-        <Typography variant='h6' className={classes.title}>
+        <Typography variant='h6' className={classes.title} data-testid='app-title'>
           {t('app_title')}
         </Typography>
 
@@ -62,11 +62,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           keepMounted
           open={!!anchorEl}
           onClose={closeMenu}
+          data-testid='language-menu'
         >
-          <MenuItem onClick={handleMenuClick('en')}>
+          <MenuItem onClick={handleMenuClick('en')} data-testid='english-button'>
             {t('en_name')}
           </MenuItem>
-          <MenuItem onClick={handleMenuClick('he')}>
+          <MenuItem onClick={handleMenuClick('he')} data-testid='hebrew-button'>
             {t('he_name')}
           </MenuItem>
         </Menu>

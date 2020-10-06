@@ -20,5 +20,8 @@
     "jss-rtl": "^0.3.0",
     "react": "^16.13.1",
     "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "enzyme": "^3.11.0"
   }
 }
