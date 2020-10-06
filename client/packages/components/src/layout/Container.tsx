@@ -1,16 +1,8 @@
-import React from 'react'
-import { Container as MdContainer, ContainerProps, Theme, useTheme, withStyles } from '@material-ui/core'
+import { Container as MdContainer, createStyles, withStyles } from '@material-ui/core'
 
-const createContainer = (theme: Theme) => withStyles({
+export const Container = withStyles(theme => createStyles({
   root: {
     marginTop: 100,
     marginBottom: theme.spacing(2)
   }
-})(MdContainer)
-
-export const Container = (props: ContainerProps) => {
-  const theme = useTheme()
-  const BlankContainer = createContainer(theme)
-
-  return <BlankContainer {...props} />
-}
+}))(MdContainer)
