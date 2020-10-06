@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
 import { Attendance, StudentData } from 'services'
-import { AttendanceIcon } from '../ui/attendance/AttendanceIcon'
+import { AttendanceCell } from '../ui/attendance/AttendanceCell'
 
 interface AttendanceTableProps {
   students: StudentData[]
@@ -46,15 +46,9 @@ export const AttendanceTable = ({ students }: AttendanceTableProps) => {
               <TableCell>
                 {s.name}
               </TableCell>
-              <TableCell padding='checkbox' align='center' valign='middle'>
-                <AttendanceIcon attendance={Attendance.Attended} />
-              </TableCell>
-              <TableCell padding='checkbox' align='center' valign='middle'>
-                <AttendanceIcon attendance={Attendance.Partial} />
-              </TableCell>
-              <TableCell padding='checkbox' align='center' valign='middle'>
-                <AttendanceIcon attendance={Attendance.Absent} />
-              </TableCell>
+              <AttendanceCell attendance={Attendance.Attended} />
+              <AttendanceCell attendance={Attendance.Partial} />
+              <AttendanceCell attendance={Attendance.Absent} />
             </TableRow>
           ))}
         </TableBody>
