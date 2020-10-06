@@ -11,18 +11,18 @@ class Attendance:
      1. report_sessions - session object
      2. student_status_table - df of "student" table
     """
-    def __init__(self, chat_df, students_df, filter_modes, time_delta, start_sentence, not_included_zoom_users):
+    def __init__(self, chat_df, students_df, filter_modes, time_delta, start_sentence, zoom_names_to_ignore):
         """
         :param chat_df: zoom chat (df)
         :param students_df: student class raw data (df)
         :param filter_modes: filters the user picked for parsing the text file (list of str)
         :param time_delta: max time from start sentence to the last message to parse in each session in minutes (int)
         :param start_sentence: start sentence that initiate sessions for parse (str)
-        :param not_included_zoom_users: zoom names that will not be considered (list of str)
+        :param zoom_names_to_ignore: zoom names that will not be considered (list of str)
         :return: data frame with the data from the chat
         """
         meta_data = AttendanceMetaData(filter_modes=filter_modes, time_delta=time_delta,
-                                       start_sentence=start_sentence, not_included_zoom_users=not_included_zoom_users)
+                                       start_sentence=start_sentence, zoom_names_to_ignore=zoom_names_to_ignore)
 
         self.first_message_time = chat_df["time"].sort_values().iloc[0] # get time of first message in the chat
         start_indices = Attendance.get_start_indices(chat_df, meta_data)
@@ -42,7 +42,7 @@ class Attendance:
         :param meta_data: configurations of the user
         :return: list of indices of start of session
         """
-        not_included_zoom_users_filt = df['zoom_name'].str.contains('|'.join(meta_data.not_included_zoom_users))
+        not_included_zoom_users_filt = df['zoom_name'].str.contains('|'.join(meta_data.zoom_names_to_ignore))
         not_included_zoom_users_df = df[not_included_zoom_users_filt]
         check_sentence = lambda string: meta_data.start_sentence.lower() in string.lower()
         start_indices = not_included_zoom_users_df.index[not_included_zoom_users_df['message'].apply(check_sentence)]
@@ -85,25 +85,4 @@ class Attendance:
         df_status_report.rename(columns={"id": "student_id"}, inplace=True)
         return df_status_report.loc[:, ["student_id", "report_id", "status"]]
 
-
-if __name__ == '__main__':
-    from collections import namedtuple
-    from utils import create_chat_df, create_students_df
-
-    AttendanceMetaData = namedtuple('meta_data',
-                                    ['filter_modes', 'time_delta', 'start_sentence', 'not_included_zoom_users'])
-
-    chat_file_path = r"C:\Users\Inbar Shirizly\Documents\python\useful\ITC_programs\zoom_attendance_check\chat files\meeting_example_full_name.txt"
-    excel_file_path = r"C:\Users\Inbar Shirizly\Documents\python\useful\ITC_programs\zoom_attendance_check\student_csv_examples\example_data_already_prepared.xlsx"
-
-
-    with open(chat_file_path, "r", encoding="utf-8") as f:
-        chat_df = create_chat_df(f.readlines())
-    df_students = create_students_df(file_name=excel_file_path.split("\\")[-1], file_data=excel_file_path)
-
-    my_class = Attendance(chat_df, df_students, ['name', "id_number", "phone"], 1, "Attendance check", ["ITC", "Tech", "Challenge"])
-    a = my_class.student_status_table(1)
-    print(a)
-    # df_part_session = my_class._sessions[0]
-    # df_part_session.zoom_names_table(2)
 
