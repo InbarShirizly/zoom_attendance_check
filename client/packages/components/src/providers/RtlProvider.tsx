@@ -19,7 +19,7 @@ const themeWithDirection = (direction: TextDirection) => createMuiTheme({
 type Action = { type: 'SET_RTL' } | { type: 'SET_LTR' }
 
 interface RtlProviderProps {
-  children: React.ReactNodeArray
+  children: React.ReactNodeArray | React.ReactNode
 }
 
 const rtlReducer = (state: TextDirection, action: Action) => {
