@@ -3,7 +3,7 @@ import { CssBaseline } from '@material-ui/core'
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
-import { Login, Register, Classes } from './containers'
+import { Login, Register, Classes, Class } from './containers'
 import { WithTranslateProps } from './external-types'
 import { RtlProvider } from './providers'
 
@@ -25,6 +25,10 @@ export const Application = (i18nProps: WithTranslateProps) => (
 
           <Route path='/home'>
             <Classes />
+          </Route>
+
+          <Route path='/class'>
+            <Class />
           </Route>
 
           <Route path='/'>
