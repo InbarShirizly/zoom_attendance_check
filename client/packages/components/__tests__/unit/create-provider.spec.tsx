@@ -1,7 +1,7 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
-import { createTestEnvironment } from './environment'
-import { createProvider } from '../src/providers/create-provider'
+import { createTestEnvironment } from '../environment'
+import { createProvider } from '../../src/providers/create-provider'
 
 describe('Provider utility tests', () => {
   const env = createTestEnvironment()
