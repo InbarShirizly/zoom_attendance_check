@@ -11,6 +11,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const testStudents = (new Array(30)).fill('').map((_, i) => ({
+  id: i,
+  classId: 1,
+  name: 'John Doe',
+  phone: 501234560 + i,
+  idNumber: '123456789'
+}))
+
 export const Class = () => {
   const classes = useStyles()
   const [value, setValue] = useState(0)
@@ -35,7 +43,7 @@ export const Class = () => {
           <Tab label='Attendence' />
         </Tabs>
 
-        <StudentDataTable />
+        <StudentDataTable students={testStudents} />
       </Paper>
 
       <Fab
