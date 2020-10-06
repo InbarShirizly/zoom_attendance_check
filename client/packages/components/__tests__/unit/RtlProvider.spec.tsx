@@ -6,6 +6,7 @@ import {
   useTextDirection,
   TextDirection
 } from '../../src/providers'
+import { useTheme } from '@material-ui/core'
 
 describe('RtlProvider', () => {
   const env = createTestEnvironment()
@@ -49,9 +50,52 @@ describe('RtlProvider', () => {
         )
       })
 
-      const button = document.querySelector('[data-testid="button"]')
+      const button = document.querySelector('[data-testid="button"]')!
       Simulate.click(button)
       expect(document.body.dir).toEqual(TextDirection.RTL)
+    })
+  })
+
+  describe('Theme manipulation', () => {
+    it('should set the direction field to ltr by default', async () => {
+      const Component = () => {
+        const theme = useTheme()
+
+        return <div data-testid='div'>{theme.direction}</div>
+      }
+
+      act(() => {
+        env.render(
+          <RtlProvider>
+            <Component />
+          </RtlProvider>
+        )
+      })
+
+      const direction = document.querySelector('[data-testid="div"]')!.textContent
+      expect(direction).toEqual('ltr')
+    })
+
+    it('should change the direction field on dispatch', async () => {
+      const Component = () => {
+        const theme = useTheme()
+        const dispatch = useTextDirection()[1]
+        const handleClick = () => dispatch({ type: 'SET_RTL' })
+
+        return <div onClick={handleClick} data-testid='div'>{theme.direction}</div>
+      }
+
+      act(() => {
+        env.render(
+          <RtlProvider>
+            <Component />
+          </RtlProvider>
+        )
+      })
+
+      const div = document.querySelector('[data-testid="div"]')!
+      Simulate.click(div)
+      expect(div.textContent).toEqual('rtl')
     })
   })
 })
