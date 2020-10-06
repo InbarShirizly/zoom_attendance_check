@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Divider, Fab, makeStyles, Paper, Tab, Tabs, Typography } from '@material-ui/core'
+import { Divider, Fab, makeStyles, Paper, Tab, TableContainer, Tabs, Typography } from '@material-ui/core'
 import { StudentDataTable } from '../layout/StudentsDataTable'
 import { Add as AddIcon } from '@material-ui/icons'
 import { AttendanceTable } from '../layout/AttendanceTable'
@@ -15,6 +15,9 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2)
+  },
+  tableContainer: {
+    maxHeight: 587
   }
 }))
 
@@ -32,11 +35,13 @@ interface TableByTabProps {
 }
 
 const TableByTabType = ({ tabType, students }: TableByTabProps) => {
+  const classes = useStyles()
+
   switch (tabType) {
     case TabType.StudentData:
-      return <StudentDataTable students={students} />
+      return <StudentDataTable students={students} classes={classes} />
     case TabType.Attendance:
-      return <AttendanceTable students={students} />
+      return <AttendanceTable students={students} classes={classes} />
   }
 }
 

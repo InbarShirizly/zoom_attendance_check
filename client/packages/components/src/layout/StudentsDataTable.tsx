@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from '@material-ui/core'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core'
 import { StudentData } from 'services'
+
+type RequiredClasses = 'tableContainer'
 
 interface StudentDataTableProps {
   students: StudentData[]
+  classes: Record<RequiredClasses | string, string>
 }
 
-export const StudentDataTable = ({ students }: StudentDataTableProps) => {
+export const StudentDataTable = ({ students, classes }: StudentDataTableProps) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -21,36 +24,38 @@ export const StudentDataTable = ({ students }: StudentDataTableProps) => {
 
   return (
     <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              Name
-            </TableCell>
-            <TableCell>
-              Phone
-            </TableCell>
-            <TableCell>
-              ID Number
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {studentsInPage.map(s => (
-            <TableRow key={s.id}>
+      <TableContainer className={classes.tableContainer}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                {s.name}
+                Name
               </TableCell>
               <TableCell>
-                {s.phone}
+                Phone
               </TableCell>
               <TableCell>
-                {s.idNumber}
+                ID Number
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {studentsInPage.map(s => (
+              <TableRow key={s.id}>
+                <TableCell>
+                  {s.name}
+                </TableCell>
+                <TableCell>
+                  {s.phone}
+                </TableCell>
+                <TableCell>
+                  {s.idNumber}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 15, 30]}
         component='div'
