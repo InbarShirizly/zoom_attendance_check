@@ -7,12 +7,12 @@ export const createTestEnvironment = () => {
   let container: HTMLDivElement | null = null
 
   const beforeAndAfter = () => {
-    beforeAll(() => {
+    beforeEach(() => {
       container = document.createElement('div')
       document.body.appendChild(container)
     })
 
-    afterAll(() => {
+    afterEach(() => {
       if (container !== null) {
         unmountComponentAtNode(container)
         container.remove()
