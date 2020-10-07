@@ -61,4 +61,19 @@ describe('Service tests', () => {
 
     expect(testkit.getClassroomById(someClassroom.id)).not.toBeDefined()
   })
+
+  it("should change a classrom's name", async () => {
+    const someClassroom = {
+      id: 1,
+      name: 'Some Class',
+      students: []
+    }
+    const someName = 'Some New Name'
+
+    testkit.addClassroom(someClassroom)
+
+    await service.changeClassroomName(someClassroom.id, someName)
+
+    expect(testkit.getClassroomById(someClassroom.id).name).toEqual(someName)
+  })
 })
