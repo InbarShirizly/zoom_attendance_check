@@ -1,5 +1,5 @@
 from server.api import api, custom_types
-from flask_restful import Resource, reqparse, abort, marshal
+from flask_restful import Resource, reqparse, abort, marshal, marshal_with
 from server import auth, db
 from server.models.orm import TeacherModel, ClassroomModel
 from server.parsing import parser
@@ -31,6 +31,7 @@ class ClassroomsResource(Resource):
 			abort(400, message=RestErrors.INVALID_CLASS)
 		return marshal(current_class, classroom_resource_fields)
 
+	@marshal_with(classroom_resource_fields)
 	def post(self, class_id=None):
 		if class_id:
 			abort(404, message=RestErrors.INVALID_ROUTE)
@@ -45,7 +46,7 @@ class ClassroomsResource(Resource):
 
 		args['students_file']['class_id'] = pd.Series([new_class.id] * args['students_file'].shape[0])
 		args['students_file'].to_sql('student', con=db.engine, if_exists="append", index=False)
-		return {'class_id': new_class.id}
+		return new_class
 
 	def put(self, class_id=None):
 		if class_id is None:

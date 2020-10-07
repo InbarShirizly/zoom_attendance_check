@@ -1,5 +1,5 @@
 from server.api import api, custom_types
-from flask_restful import Resource, reqparse, abort, marshal
+from flask_restful import Resource, reqparse, abort, marshal, marshal_with
 from server.parsing.attendance import Attendance
 from server import db, auth
 from datetime import datetime
@@ -31,7 +31,8 @@ class ReportsResource(Resource):
         if report is None:
             abort(400, message=RestErrors.INVALID_REPORT)
         return marshal(report, report_resource_field)
-        
+    
+    @marshal_with(report_resource_field)
     def post(self, class_id, report_id=None):
         if report_id:
             abort(404, message=RestErrors.INVALID_REPORT)
@@ -67,7 +68,7 @@ class ReportsResource(Resource):
             session_chat_df = session_object.chat_table(zoom_names_df)
             session_chat_df.to_sql('chat', con=db.engine, if_exists="append", index=False)
 
-        return {"report_id": new_report.id}
+        return new_report
 
     def delete(self, class_id, report_id=None):
         if report_id is None:  # Deleting all reports of class
