@@ -12,3 +12,9 @@ export enum Attendance {
   Partial = 1,
   Attended = 2
 }
+
+export interface Classroom {
+  name: string
+  id: number
+  students: StudentData[]
+}
