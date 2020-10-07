@@ -12,5 +12,12 @@
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "test": "jest"
+  },
+  "dependencies": {
+    "ky": "^0.24.0",
+    "ky-universal": "^0.8.2"
+  },
+  "devDependencies": {
+    "nock": "^13.0.4"
   }
 }
