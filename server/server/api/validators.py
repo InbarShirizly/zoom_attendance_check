@@ -73,11 +73,15 @@ class Validators:
     def date(self, value):
         """
         The function will check that the date is given in the correct format
-        :param value: the input data (str)
+        :param value: the input unixtimestamp (integer)
         :reutrn value: the date (datetime)
         """
-        return datetime.strptime(value, self._date_format)
-    
+        try:
+            value = int(value)
+            return datetime.fromtimestamp(value)
+        except:
+            raise ValueError(RestErrors.INVALID_TIME_STAMP)
+        
     def students_file(self, value):
         """
         The function will make sure the student file has the right extenstion

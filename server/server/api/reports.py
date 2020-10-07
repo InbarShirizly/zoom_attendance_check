@@ -20,7 +20,7 @@ class ReportsResource(Resource):
         self._post_args.add_argument('description', type=str)
         self._post_args.add_argument('chat_file', type=custom_types.chat_file, location='files', required=True)
         self._post_args.add_argument('time_delta', help=RestErrors.INVALID_TIME_DELTA, type=int, required=True)
-        self._post_args.add_argument('date', default=datetime.now().date(), type=custom_types.date)
+        self._post_args.add_argument('date', default=datetime.now(), type=custom_types.date)
         self._post_args.add_argument('first_sentence', type=str, required=True)
         self._post_args.add_argument('not_included_zoom_users', default=[], type=str, action="append")
 
