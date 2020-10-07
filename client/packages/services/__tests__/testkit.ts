@@ -5,6 +5,13 @@ interface TestkitOptions {
   baseUrl: string
 }
 
+interface Teacher {
+  username: string
+  email: string
+  password: string
+  token: string
+}
+
 const parseNum = (str?: string | null) => {
   if (!str) return undefined
   const num = parseInt(str, 10)
@@ -13,6 +20,7 @@ const parseNum = (str?: string | null) => {
 
 const createDataManager = () => {
   const classrooms = new Map<number, Classroom>()
+  const users = new Map<string, Teacher>()
 
   return {
     getClassrooms: () => Array.from(classrooms.values()),
@@ -26,7 +34,12 @@ const createDataManager = () => {
         classroom.name = newName
       }
     },
-    clearClassrooms: () => classrooms.clear()
+    clearClassrooms: () => classrooms.clear(),
+
+    addUser: (user: Omit<Teacher, 'token'>) =>
+      users.set(user.username, { ...user, token: `${user.username}-${user.password}` }),
+    getTokenForUser: (username: string) => users.get(username)?.token,
+    userExists: (username: string) => users.has(username)
   }
 }
 
@@ -81,11 +94,34 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
     })
 }
 
+const patchAuthorizationRoutes = (nockInstance: nock.Scope, dataManager: DataManager) => {
+  return nockInstance
+    .post('/api/login')
+    .reply((_, body) => {
+      const { auth, password } = body
+
+      if (!dataManager.userExists(auth)) return [404, {}]
+
+      const token = dataManager.getTokenForUser(auth)
+      return token === `${auth}-${password}` ? [200, { token }] : [401, {}]
+    })
+    .post('/api/register')
+    .reply((_, body) => {
+      const { username, password, email } = body
+
+      if (dataManager.userExists(username)) return [400, {}]
+
+      dataManager.addUser({ username, password, email })
+      return [200, { token: dataManager.getTokenForUser(username) }]
+    })
+}
+
 export const createTestkit = ({ baseUrl }: TestkitOptions) => {
   const nockInstance = nock(baseUrl).persist()
   const dataManager = createDataManager()
 
   patchClassroomRoutes(nockInstance, dataManager)
+  patchAuthorizationRoutes(nockInstance, dataManager)
 
   return dataManager
 }
