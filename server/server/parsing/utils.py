@@ -1,6 +1,8 @@
 import re
 from datetime import datetime
 import pandas as pd
+from server.config import RestErrors
+
 
 def create_chat_df(chat_file):
 
@@ -11,7 +13,7 @@ def create_chat_df(chat_file):
     chat_df['message'] = chat_df['message'].str[:-1].astype(str)
     chat_df["time"] = chat_df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
     if chat_df.empty:
-        raise ValueError("Entered file is empty")
+        raise ValueError(RestErrors.EMPTY_FILE)
     return chat_df
 
 
@@ -29,9 +31,9 @@ def create_students_df(file_name, file_data):
     clean_df = clean_student_df(df_students)
 
     if clean_df.shape[0] > 200:
-        raise ValueError("Input file have to many records")  #TODO: pass amount of records as config
+        raise ValueError(RestErrors.TO_MANY_RECORDS)  #TODO: pass amount of records as config
     if clean_df.empty:
-        raise ValueError("Entered file is empty")
+        raise ValueError(RestErrors.EMPTY_FILE)
     return clean_df
 
 

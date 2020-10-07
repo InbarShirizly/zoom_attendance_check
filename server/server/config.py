@@ -46,6 +46,8 @@ class RestErrors:
     TOKEN_EXPIRED = "token_expired"
     MAX_REPORTS = "to_many_reports"
     MAX_CLASSROOMS = "to_many_classrooms"
+    EMPTY_FILE = "empy_file"
+    TO_MANY_RECORDS = "to_many_records"
 
 class SerializeConfig:
     LOGIN_SALT = 'login'

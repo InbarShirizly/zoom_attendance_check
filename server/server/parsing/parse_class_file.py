@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+from server.config import RestErrors
 
 DELETE_ROWS_CONTAIN = ["הופק בתאריך"]  #TODO: need to remove to config
 
@@ -60,7 +61,7 @@ class ParseClassFile:
         try:
             df_students = df_students.loc[:, self._mashov_cols]
         except KeyError:
-            raise ValueError("File content is invalid to the program configurations")
+            raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
 
         mashov_name_pattern = re.compile(r"([\u0590-\u05fe ]+)([(\u0590-\u05fe)]+)")
         df_name_gender = df_students['name'].str.extract(mashov_name_pattern, expand=False)
