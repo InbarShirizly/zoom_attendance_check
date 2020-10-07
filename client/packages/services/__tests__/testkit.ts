@@ -23,7 +23,8 @@ const createDataManager = () => {
     updateClassroomNameById: (id: number, newName: string) => {
       const classroom = classrooms.get(id)
       classroom.name = newName
-    }
+    },
+    clearClassrooms: () => classrooms.clear()
   }
 }
 
@@ -40,6 +41,11 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
         .getClassrooms()
         .map(c => ({ id: c.id, name: c.name }))
     ])
+    .delete('/api/classrooms')
+    .reply(() => {
+      dataManager.clearClassrooms()
+      return [204]
+    })
     .get(classroomByIdRegex)
     .reply(uri => {
       const id = parseNum(classroomByIdRegex.exec(uri).groups.id)
@@ -57,6 +63,17 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
       if (!dataManager.clasroomExistsById(id)) return [404, {}]
 
       dataManager.updateClassroomNameById(id, body.new_name)
+
+      return [204]
+    })
+    .delete(classroomByIdRegex)
+    .reply(uri => {
+      const id = parseNum(classroomByIdRegex.exec(uri).groups.id)
+
+      if (!id) return [400, {}]
+      if (!dataManager.clasroomExistsById(id)) return [404, {}]
+
+      dataManager.removeClassroomById(id)
 
       return [204]
     })
