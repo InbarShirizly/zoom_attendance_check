@@ -17,7 +17,6 @@ reports_list_fields = { # Fields list of classrooms
 	'description': fields.String,
 	'id': fields.Integer
 }
-
 report_resource_field = {
 	'id': fields.Integer,
 	'student_statuses': fields.List(StatusItemField)

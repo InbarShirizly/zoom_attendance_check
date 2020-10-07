@@ -38,16 +38,13 @@ class ClassroomsResource(Resource):
 			abort(400, message=RestErrors.MAX_CLASSROOMS)
 
 		args = self._post_args.parse_args()
-		filename, stream = args['students_file'].filename.replace('"', ""), args['students_file'].stream  #TODO: replace here because of postman post request
-		students_df = create_students_df(filename, stream)
-		students = parser.parse_df(students_df)
-		
+	
 		new_class = ClassroomModel(name=args['name'], teacher=auth.current_user())
 		db.session.add(new_class)
 		db.session.commit()
 
-		students['class_id'] = pd.Series([new_class.id] * students.shape[0])
-		students.to_sql('student', con=db.engine, if_exists="append", index=False)
+		args['students_file']['class_id'] = pd.Series([new_class.id] * args['students_file'].shape[0])
+		args['students_file'].to_sql('student', con=db.engine, if_exists="append", index=False)
 		return {'class_id': new_class.id}
 
 	def put(self, class_id=None):

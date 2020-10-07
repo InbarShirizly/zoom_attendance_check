@@ -42,11 +42,7 @@ class ReportsResource(Resource):
         args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
-
-
-        chat_file = args['chat_file'].stream.read().decode("utf-8").split("\n") #TODO: check this in test
-        chat_df = create_chat_df(chat_file)
-        report_object = Attendance(chat_df, students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
+        report_object = Attendance(args['chat_file'], students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
 
         message_time = report_object.first_message_time
         report_time = datetime(args["date"].year, args["date"].month, args["date"].day,
