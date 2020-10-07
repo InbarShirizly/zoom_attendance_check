@@ -34,7 +34,7 @@ class StudentModel(db.Model):
     id_number = db.Column(db.String(10), unique=False, nullable=True)
     org_class = db.Column(db.String(20), unique=False, nullable=True)
     gender = db.Column(db.Boolean, unique=False, nullable=True)  # True means male
-    phone = db.Column(db.Integer, unique=False, nullable=True)
+    phone = db.Column(db.String(12), unique=False, nullable=True)
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom.id'), nullable=False)
     zoom_names = db.relationship('ZoomNamesModel', backref='student', lazy=True)

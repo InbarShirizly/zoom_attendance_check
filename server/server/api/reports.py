@@ -8,7 +8,7 @@ from server.models.orm import StudentModel, ClassroomModel, ReportModel, Session
 from server.parsing.utils import create_chat_df
 from server.api.utils import validate_classroom
 from server.config import RestErrors, ValidatorsConfig
-from server.models.marshals import student_status_field, reports_list_fields
+from server.models.marshals import report_resource_field, reports_list_fields
 
 
 class ReportsResource(Resource):
@@ -30,7 +30,7 @@ class ReportsResource(Resource):
         report = ReportModel.query.filter_by(class_id=class_id, id=report_id).first()
         if report is None:
             abort(400, message=RestErrors.INVALID_REPORT)
-        return marshal(report.student_statuses, student_status_field)
+        return marshal(report, report_resource_field)
         
     def post(self, class_id, report_id=None):
         if report_id:
