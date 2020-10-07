@@ -1,3 +1,5 @@
+import ky from 'ky-universal'
+
 export interface StudentData {
   id: number
   classId: number
@@ -11,4 +13,76 @@ export enum Attendance {
   Absent = 0,
   Partial = 1,
   Attended = 2
+}
+
+export interface Classroom {
+  name: string
+  id: number
+  students: StudentData[]
+}
+
+type ShallowClassroom = Pick<Classroom, 'id' | 'name'>
+
+interface AuthResponse {
+  token: string
+}
+
+interface ClientOptions {
+  baseUrl: string
+}
+
+export const createServiceClient = ({ baseUrl }: ClientOptions) => {
+  const httpClient = ky.extend({
+    prefixUrl: baseUrl
+  })
+
+  const register = (username: string, email: string, password: string) =>
+    httpClient.post('api/register', {
+      json: {
+        username,
+        email,
+        password
+      }
+    }).json<AuthResponse>()
+
+  const login = (username: string, password: string) =>
+    httpClient.post('api/login', {
+      json: {
+        auth: username,
+        password
+      }
+    }).json<AuthResponse>()
+
+  const getClassrooms = () => httpClient.get('api/classrooms').json<ShallowClassroom[]>()
+
+  const getClassroomById = (id: number) => httpClient.get(`api/classrooms/${id}`).json<Classroom>()
+
+  const createClassroom = (name: string, file: File) => {
+    const data = new FormData()
+    data.append('name', name)
+    data.append('student_file', file)
+
+    return httpClient.post('api/classrooms', { body: data }).json<Classroom>()
+  }
+
+  const changeClassroomName = (id: number, newName: string) => httpClient.put(`api/classrooms/${id}`, {
+    json: {
+      new_name: newName
+    }
+  })
+
+  const deleteClassroom = (id: number) => httpClient.delete(`api/classrooms/${id}`).json()
+
+  const deleteAllClassrooms = () => httpClient.delete('api/classrooms').json()
+
+  return {
+    login,
+    register,
+    getClassrooms,
+    createClassroom,
+    deleteClassroom,
+    getClassroomById,
+    deleteAllClassrooms,
+    changeClassroomName
+  }
 }
