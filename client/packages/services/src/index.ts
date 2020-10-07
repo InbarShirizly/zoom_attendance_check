@@ -23,6 +23,10 @@ export interface Classroom {
 
 type ShallowClassroom = Pick<Classroom, 'id' | 'name'>
 
+interface AuthResponse {
+  token: string
+}
+
 interface ClientOptions {
   baseUrl: string
 }
@@ -31,6 +35,23 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
   const httpClient = ky.extend({
     prefixUrl: baseUrl
   })
+
+  const register = (username: string, email: string, password: string) =>
+    httpClient.post('api/register', {
+      json: {
+        username,
+        email,
+        password
+      }
+    }).json<AuthResponse>()
+
+  const login = (username: string, password: string) =>
+    httpClient.post('api/login', {
+      json: {
+        auth: username,
+        password
+      }
+    }).json<AuthResponse>()
 
   const getClassrooms = () => httpClient.get('api/classrooms').json<ShallowClassroom[]>()
 
@@ -55,6 +76,8 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
   const deleteAllClassrooms = () => httpClient.delete('api/classrooms').json()
 
   return {
+    login,
+    register,
     getClassrooms,
     createClassroom,
     deleteClassroom,
