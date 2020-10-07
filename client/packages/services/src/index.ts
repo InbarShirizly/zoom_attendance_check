@@ -28,11 +28,15 @@ interface ClientOptions {
 }
 
 export const createServiceClient = ({ baseUrl }: ClientOptions) => {
-  const getClassrooms = () => {}
+  const httpClient = ky.extend({
+    prefixUrl: baseUrl
+  })
 
-  const getClassroomById = (id: number) => {}
+  const getClassrooms = () => httpClient.get('api/classrooms').json<ShallowClassroom[]>()
 
-  const createClassroom = (classroom: Classroom) => {}
+  const getClassroomById = (id: number) => httpClient.get(`api/classrooms/${id}`).json<Classroom>()
+
+  const createClassroom = (name: string, file: File) => {}
 
   const changeClassroom = (id: number, newName: string) => {}
 
