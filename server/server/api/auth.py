@@ -18,7 +18,7 @@ class LoginResource(Resource):
         user = get_user(args['auth'], args['password'])
         if not user:
             abort(400, message=RestErrors.INVALID_CREDENTIALS)
-        return login_token_serializer.dumps(user.id)
+        return {'token':login_token_serializer.dumps(user.id)}
 
 
 class RegisterResource(Resource):
@@ -31,7 +31,6 @@ class RegisterResource(Resource):
 
     def post(self):
         args = self._post_args.parse_args()
-        
         user = TeacherModel(
             username=args['username'],
             email=args['email'],
@@ -39,7 +38,7 @@ class RegisterResource(Resource):
         )
         db.session.add(user)
         db.session.commit()
-        return '', 204
+        return {'token':login_token_serializer.dumps(user.id)}
         
         
 api.add_resource(RegisterResource, "/register")
