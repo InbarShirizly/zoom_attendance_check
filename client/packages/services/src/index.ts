@@ -36,7 +36,13 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
 
   const getClassroomById = (id: number) => httpClient.get(`api/classrooms/${id}`).json<Classroom>()
 
-  const createClassroom = (name: string, file: File) => {}
+  const createClassroom = (name: string, file: File) => {
+    const data = new FormData()
+    data.append('name', name)
+    data.append('student_file', file)
+
+    return httpClient.post('api/classrooms', { body: data }).json<Classroom>()
+  }
 
   const changeClassroomName = (id: number, newName: string) => httpClient.put(`api/classrooms/${id}`, {
     json: {
