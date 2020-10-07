@@ -38,7 +38,11 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
 
   const createClassroom = (name: string, file: File) => {}
 
-  const changeClassroom = (id: number, newName: string) => {}
+  const changeClassroomName = (id: number, newName: string) => httpClient.put(`api/classrooms/${id}`, {
+    json: {
+      new_name: newName
+    }
+  })
 
   const deleteClassroom = (id: number) => httpClient.delete(`api/classrooms/${id}`).json()
 
@@ -47,9 +51,9 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
   return {
     getClassrooms,
     createClassroom,
-    changeClassroom,
     deleteClassroom,
     getClassroomById,
-    deleteAllClassrooms
+    deleteAllClassrooms,
+    changeClassroomName
   }
 }
