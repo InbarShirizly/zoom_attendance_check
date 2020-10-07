@@ -7,6 +7,32 @@ describe('Service tests', () => {
   const testkit = createTestkit({ baseUrl })
   const service = createServiceClient({ baseUrl })
 
+  it('should create a user', async () => {
+    const someUsername = 'username'
+    const somePassword = 'password'
+    const someEmail = 'a@b.com'
+
+    const { token } = await service.register(someUsername, someEmail, somePassword)
+
+    expect(token).toBeDefined()
+  })
+
+  it('should login', async () => {
+    const someUsername = 'username'
+    const somePassword = 'password'
+    const someEmail = 'a@b.com'
+
+    testkit.addUser({
+      username: someUsername,
+      password: somePassword,
+      email: someEmail
+    })
+
+    const { token } = await service.login(someUsername, somePassword)
+
+    expect(token).toBeDefined()
+  })
+
   it('should return a classroom by id', async () => {
     const someClassroom = {
       id: 1,
