@@ -1,5 +1,5 @@
 from server.api import api, custom_types
-from flask_restful import Resource, reqparse, abort, marshal
+from flask_restful import Resource, reqparse, abort, marshal, marshal_with
 from server.parsing.attendance import Attendance
 from server import db, auth
 from datetime import datetime
@@ -8,7 +8,7 @@ from server.models.orm import StudentModel, ClassroomModel, ReportModel, Session
 from server.parsing.utils import create_chat_df
 from server.api.utils import validate_classroom
 from server.config import RestErrors, ValidatorsConfig
-from server.models.marshals import student_status_field, reports_list_fields
+from server.models.marshals import report_resource_field, reports_list_fields
 
 
 class ReportsResource(Resource):
@@ -20,7 +20,7 @@ class ReportsResource(Resource):
         self._post_args.add_argument('description', type=str)
         self._post_args.add_argument('chat_file', type=custom_types.chat_file, location='files', required=True)
         self._post_args.add_argument('time_delta', help=RestErrors.INVALID_TIME_DELTA, type=int, required=True)
-        self._post_args.add_argument('date', default=datetime.now().date(), type=custom_types.date)
+        self._post_args.add_argument('date', default=datetime.now(), type=custom_types.date)
         self._post_args.add_argument('first_sentence', type=str, required=True)
         self._post_args.add_argument('not_included_zoom_users', default=[], type=str, action="append")
 
@@ -30,8 +30,9 @@ class ReportsResource(Resource):
         report = ReportModel.query.filter_by(class_id=class_id, id=report_id).first()
         if report is None:
             abort(400, message=RestErrors.INVALID_REPORT)
-        return marshal(report.student_statuses, student_status_field)
-        
+        return marshal(report, report_resource_field)
+    
+    @marshal_with(report_resource_field)
     def post(self, class_id, report_id=None):
         if report_id:
             abort(404, message=RestErrors.INVALID_REPORT)
@@ -42,11 +43,7 @@ class ReportsResource(Resource):
         args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
-
-
-        chat_file = args['chat_file'].stream.read().decode("utf-8").split("\n") #TODO: check this in test
-        chat_df = create_chat_df(chat_file)
-        report_object = Attendance(chat_df, students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
+        report_object = Attendance(args['chat_file'], students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
 
         message_time = report_object.first_message_time
         report_time = datetime(args["date"].year, args["date"].month, args["date"].day,
@@ -71,7 +68,7 @@ class ReportsResource(Resource):
             session_chat_df = session_object.chat_table(zoom_names_df)
             session_chat_df.to_sql('chat', con=db.engine, if_exists="append", index=False)
 
-        return {"report_id": new_report.id}
+        return new_report
 
     def delete(self, class_id, report_id=None):
         if report_id is None:  # Deleting all reports of class

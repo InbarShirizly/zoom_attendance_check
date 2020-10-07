@@ -46,7 +46,11 @@ class RestErrors:
     TOKEN_EXPIRED = "token_expired"
     MAX_REPORTS = "to_many_reports"
     MAX_CLASSROOMS = "to_many_classrooms"
+    EMPTY_FILE = "empty_file"
+    TO_MANY_RECORDS = "to_many_records"
+    INVALID_TIME_STAMP = 'invalid_time_stamp'
 
+    
 class SerializeConfig:
     LOGIN_SALT = 'login'
     LOIGN_TOKEN_AGE = 604800 # Week in seconds

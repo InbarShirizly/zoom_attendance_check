@@ -5,7 +5,8 @@ import email_validator
 from datetime import datetime
 import os
 from werkzeug.datastructures import FileStorage
-
+from server.parsing import parser
+from server.parsing.utils import create_chat_df, create_students_df
 
 # The class is responsible for validating diffrent inputs to the API
 class Validators:
@@ -72,30 +73,39 @@ class Validators:
     def date(self, value):
         """
         The function will check that the date is given in the correct format
-        :param value: the input data (str)
+        :param value: the input unixtimestamp (integer)
         :reutrn value: the date (datetime)
         """
-        return datetime.strptime(value, self._date_format)
-    
+        try:
+            value = int(value)
+            return datetime.fromtimestamp(value)
+        except:
+            raise ValueError(RestErrors.INVALID_TIME_STAMP)
+        
     def students_file(self, value):
         """
         The function will make sure the student file has the right extenstion
         :param value: the student file (FileStorage)
-        :return: the student file (FileStorage)
+        :return: all the students from the file (Pandas DataFrame)
         """
         if not Validators.check_ext(value.filename, self._supported_student_files_ext):
             raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
-        return value
+        students_df = create_students_df(
+            value.filename.replace('"', ""), #TODO: replace here because of postman post request
+            value.stream  
+        )
+        return parser.parse_df(students_df)
 
     def chat_file(self, value):
         """
         The function will make sure the chat file has the right extenstion
         :param value: the chat file (FileStorage)
-        :return: the chat file (FileStorage)
+        :return: The chat as dataframe (Pandas Dataframe)
         """
         if not Validators.check_ext(value.filename, self._supported_chat_file_ext):
             raise ValueError(RestErrors.INVALID_CHAT_FILE)
-        return value
+        chat_file = value.stream.read().decode("utf-8").split("\n") #TODO: check this in test
+        return create_chat_df(chat_file)
 
     @staticmethod
     def check_ext(file_name, extenstions):
