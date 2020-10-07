@@ -33,4 +33,32 @@ describe('Service tests', () => {
     expect(classrooms).toHaveLength(1)
     expect(classrooms[0]).toEqual({ id: someClassroom.id, name: someClassroom.name })
   })
+
+  it('should delete a classroom by id', async () => {
+    const someClassroom = {
+      id: 1,
+      name: 'Some Class',
+      students: []
+    }
+
+    testkit.addClassroom(someClassroom)
+
+    await service.deleteClassroom(someClassroom.id)
+
+    expect(testkit.getClassroomById(someClassroom.id)).not.toBeDefined()
+  })
+
+  it('should delete all classrooms', async () => {
+    const someClassroom = {
+      id: 1,
+      name: 'Some Class',
+      students: []
+    }
+
+    testkit.addClassroom(someClassroom)
+
+    await service.deleteAllClassrooms()
+
+    expect(testkit.getClassroomById(someClassroom.id)).not.toBeDefined()
+  })
 })
