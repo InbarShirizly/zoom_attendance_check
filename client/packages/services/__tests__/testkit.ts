@@ -5,7 +5,7 @@ interface TestkitOptions {
   baseUrl: string
 }
 
-const parseNum = (str?: string) => {
+const parseNum = (str?: string | null) => {
   if (!str) return undefined
   const num = parseInt(str, 10)
   return isNaN(num) ? undefined : num
@@ -22,7 +22,9 @@ const createDataManager = () => {
     clasroomExistsById: (id: number) => classrooms.has(id),
     updateClassroomNameById: (id: number, newName: string) => {
       const classroom = classrooms.get(id)
-      classroom.name = newName
+      if (classroom) {
+        classroom.name = newName
+      }
     },
     clearClassrooms: () => classrooms.clear()
   }
@@ -48,7 +50,7 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
     })
     .get(classroomByIdRegex)
     .reply(uri => {
-      const id = parseNum(classroomByIdRegex.exec(uri).groups.id)
+      const id = parseNum(classroomByIdRegex.exec(uri)?.groups?.id)
 
       if (!id) return [400, {}]
       if (!dataManager.clasroomExistsById(id)) return [404, {}]
@@ -56,8 +58,8 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
       return [200, dataManager.getClassroomById(id)]
     })
     .put(classroomByIdRegex)
-    .reply((uri, body: Record<string, any>) => {
-      const id = parseNum(classroomByIdRegex.exec(uri).groups.id)
+    .reply((uri, body) => {
+      const id = parseNum(classroomByIdRegex.exec(uri)?.groups?.id)
 
       if (!id) return [400, {}]
       if (!dataManager.clasroomExistsById(id)) return [404, {}]
@@ -68,7 +70,7 @@ const patchClassroomRoutes = (nockInstance: nock.Scope, dataManager: DataManager
     })
     .delete(classroomByIdRegex)
     .reply(uri => {
-      const id = parseNum(classroomByIdRegex.exec(uri).groups.id)
+      const id = parseNum(classroomByIdRegex.exec(uri)?.groups?.id)
 
       if (!id) return [400, {}]
       if (!dataManager.clasroomExistsById(id)) return [404, {}]
