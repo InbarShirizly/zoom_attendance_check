@@ -7,6 +7,21 @@ describe('Service tests', () => {
   const testkit = createTestkit({ baseUrl })
   const service = createServiceClient({ baseUrl })
 
+  it('should create a classroom', async () => {
+    const someName = 'Some Class'
+    const someFile = new File([], 'students-list.xslx', {})
+
+    await service.createClassroom(someName, someFile)
+
+    const classrooms = testkit.getClassrooms()
+    expect(classrooms).toHaveLength(1)
+    expect(classrooms[0]).toEqual({
+      id: expect.any(Number),
+      name: someName,
+      students: []
+    })
+  })
+
   it('should return a classroom by id', async () => {
     const someClassroom = {
       id: 1,
