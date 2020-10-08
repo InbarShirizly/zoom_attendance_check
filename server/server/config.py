@@ -24,7 +24,6 @@ class ValidatorsConfig:
     INVALID_USERNAME_CHARS = string.punctuation
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
-    DATE_FORMAT = '%d/%m/%y'
     CHAT_FILE_EXT = [".txt"]
     STUDENTS_FILE_EXT = [".xls", ".xlsx", ".csv"]
     MAX_CLASSROOMS = 10  # Max classrooms per students
@@ -51,7 +50,7 @@ class RestErrors:
     MAX_CLASSROOMS = "to_many_classrooms"
     TO_MANY_RECORDS = "to_many_records"
     INVALID_TIME_STAMP = 'invalid_time_stamp'
-
+    INVALID_STUDENT_ID = "invalid_student_id"
     
 class SerializeConfig:
     LOGIN_SALT = 'login'
