@@ -8,7 +8,7 @@
 10:46:20	 From  Inbar Adi : ענבר עדי
 10:46:22	 From  Zeave H : 305696031
 10:48:22	 From  Meitar : 537642324
-
+10:50:00	 From  Yotam : יותם הלפרין
 
 # session 2 - should find ["מיכל קליימן", "ענבר עדי", "אביתר כהן", "עידן אביב"]. here "Zeave H" (wrote another name and then himself - will ignore it). minutes  >=2 for "מיתר כהן"
 10:57:22	 From  Roei teacher : בדיקת נוכחות:
@@ -20,6 +20,7 @@
 10:57:55	 From  Dana : here
 10:58:46	 From  Ron : רון זהבי
 10:58:54	 From  Meitar : 537642324
+11:02:00	 From  Yotam : יותם הלפרין
 
 # session 3 - should find ["מיכל קליימן", "עידן אביב"] - checking not auth user writing the "start sentence"
 
@@ -29,4 +30,4 @@
 11:57:45	 From  Idan Aviv : בדיקת נוכחות
 11:57:46	 From  Elad Visitor : my not relevant message I'm visitor
 11:57:54	 From  Michal : מיכל קליימן
-
+12:02:00	 From  Yotam : יותם הלפרין

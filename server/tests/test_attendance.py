@@ -90,3 +90,21 @@ class TestAttendance:
         for ind in range(len(start_indices)):
             df_session = Attendance.get_df_of_time_segment(chat_df, start_indices, ind, time_delta)
             assert df_session.shape[0] == list_rows_in_session[ind]
+
+
+    chat_files_status_test = [
+        ("chat_file_valid.txt", 1, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 0, 0]),
+        ("chat_file_valid.txt", 2, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 0, 1]),
+        ("chat_file_valid.txt", 4, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 1, 1]),
+        ("chat_file_valid.txt", 5, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 2, 1])
+        ]
+
+    @pytest.mark.parametrize(
+        ("file_name", "time_delta", "start_sentence", "zoom_names_to_ignore", "status_list"),
+        chat_files_status_test)
+    def test_student_status_table(self, folders, student_df, chat_df_func, filter_modes,
+                               file_name, time_delta, start_sentence, zoom_names_to_ignore, status_list):
+        chat_df = chat_df_func(os.path.join(folders["chat_folder"], file_name))
+        attendance = Attendance(chat_df, student_df, filter_modes, time_delta, start_sentence, zoom_names_to_ignore)
+        students_status = attendance.student_status_table(1)
+        assert (students_status['status'] == status_list).all()

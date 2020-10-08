@@ -21,6 +21,7 @@ class Attendance:
         :param zoom_names_to_ignore: zoom names that will not be considered (list of str)
         :return: data frame with the data from the chat
         """
+        # create a nametuple for several values
         meta_data = AttendanceMetaData(filter_modes=filter_modes, time_delta=time_delta,
                                        start_sentence=start_sentence, zoom_names_to_ignore=zoom_names_to_ignore)
 
@@ -37,9 +38,9 @@ class Attendance:
     @staticmethod
     def get_start_indices(df, meta_data):
         """
-        find start indices - when one of the "teachers" writes the "start_sentence"
+        find start indices - when one of the "teachers" (zoom_names_to_ignore) writes the "start_sentence"
         :param df: zoom chat (df)
-        :param meta_data: configurations of the user
+        :param meta_data: configurations of the user (namedtuple)
         :return: list of indices of start of session
         """
         not_included_zoom_users_filt = df['zoom_name'].str.contains('|'.join(meta_data.zoom_names_to_ignore))
@@ -48,16 +49,17 @@ class Attendance:
         start_indices = not_included_zoom_users_df.index[not_included_zoom_users_df['message'].apply(check_sentence)]
         return start_indices
 
-
     @staticmethod
     def get_df_of_time_segment(df, start_indices, ind, time_delta):
         """
-
-        :param df:
-        :param start_indices:
-        :param ind:
-        :param time_delta:
-        :return:
+        slice the data-frame with the relevant chat - according to:
+         1. last message in the time delta
+         2. until next "start_index" (if there is next one)
+        :param df: full chat df of the report (df)
+        :param start_indices: list indices of start of session (list of int)
+        :param ind: index of the current session
+        :param time_delta: input time delta for last message in the session (int - minutes)
+        :return: The relevant df of the session's chat (df)
         """
         if ind < len(start_indices) - 1:
             df = df.iloc[start_indices[ind]:start_indices[ind + 1], :]
@@ -75,11 +77,18 @@ class Attendance:
         return self._sessions
 
     def student_status_table(self, report_id):
+        """
+        create the student statuses table that will be inserted to the database
+        :param report_id: number of referring report in the DB
+        :return: df of relevant data of student's statuses
+        """
         df_status_report = self._df_students.loc[:, ["id", "name"]]
         for i, session_object in enumerate(self.report_sessions):
+            # create columns for each session - if the student name id is part of the relevant chat (which means student wasn't missing) - row=1
             df_status_report[f"session_{i}"] = df_status_report["id"].apply(lambda x: 1 if x in session_object._relevant_chat["id"].values else np.nan)
 
         status = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)  # {0 : "red", 1: "yellow", 2: "green"}
+        # check status of each student according to colors code (0 == missing, 1 == partially missing, 2 == participated in all sessions)
         df_status_report["status"] = df_status_report.loc[:, df_status_report.columns.str.startswith('session')].apply(status, axis=1)
         df_status_report['report_id'] = pd.Series([report_id] * df_status_report.shape[0])
         df_status_report.rename(columns={"id": "student_id"}, inplace=True)
