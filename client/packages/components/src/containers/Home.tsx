@@ -46,7 +46,7 @@ export const Classes = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {classrooms.map(({ name, id }) => <ClassCard name={name} key={id} />)}
+        {classrooms.map(c => <ClassCard classroom={c} key={c.id} />)}
       </Grid>
 
       <Fab
