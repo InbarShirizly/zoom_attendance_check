@@ -16,13 +16,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const data = (new Array(10)).fill('Class Name')
-
 export const Classes = () => {
   const classes = useStyles()
   const [authState] = useAuth()
   const [service] = useService()
-  const [classrooms, dispatch] = useClassrooms()
+  const [{ classrooms }, dispatch] = useClassrooms()
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
@@ -46,7 +44,7 @@ export const Classes = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {data.map((d, i) => <ClassCard name={d} key={i} />)}
+        {classrooms.map(({ name, id }) => <ClassCard name={name} key={id} />)}
       </Grid>
 
       <Fab
