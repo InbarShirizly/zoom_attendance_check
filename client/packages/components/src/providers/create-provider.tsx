@@ -2,11 +2,14 @@ import React, {
   createContext,
   ReactNode,
   ReactNodeArray,
+  Dispatch as ReactDispatch,
+  useCallback,
   useContext,
   useReducer
 } from 'react'
 
-type Dispatch<Action> = (action: Action) => void
+type ActionCreator<State, Action> = (dispatch: ReactDispatch<Action>, state: State) => PromiseLike<Action>
+type Dispatch<State, Action> = (action: Action | ActionCreator<State, Action>) => void
 type Reducer<State, Action> = (state: State, action: Action) => State
 
 export interface ProviderProps {
@@ -18,14 +21,23 @@ export const createProvider = <
   Action extends { type: any; }
 >(resourceName: string, reducer: Reducer<State, Action>, initialState: State) => {
   const StateContext = createContext<State | undefined>(undefined)
-  const DispatchContext = createContext<Dispatch<Action> | undefined>(undefined)
+  const DispatchContext = createContext<Dispatch<State, Action> | undefined>(undefined)
 
   const Provider = ({ children }: ProviderProps) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
+    const customDispatch = useCallback(async (action: Action | ActionCreator<State, Action>) => {
+      if (typeof action === 'function') {
+        const newAction = await action(dispatch, state)
+        return dispatch(newAction)
+      }
+
+      return dispatch(action)
+    }, [])
+
     return (
       <StateContext.Provider value={state}>
-        <DispatchContext.Provider value={dispatch}>
+        <DispatchContext.Provider value={customDispatch}>
           {children}
         </DispatchContext.Provider>
       </StateContext.Provider>
@@ -33,7 +45,7 @@ export const createProvider = <
   }
   Provider.displayName = `${resourceName}Provider`
 
-  const useProvider = (): [State, Dispatch<Action>] => {
+  const useProvider = (): [State, Dispatch<State, Action>] => {
     const state = useContext(StateContext)
     const dispatch = useContext(DispatchContext)
 
