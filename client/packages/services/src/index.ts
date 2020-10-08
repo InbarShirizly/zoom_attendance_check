@@ -29,11 +29,17 @@ export interface AuthResponse {
 
 export interface ClientOptions {
   baseUrl: string
+  token?: string
 }
 
-export const createServiceClient = ({ baseUrl }: ClientOptions) => {
+export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
+  const headers = token
+    ? { Authorization: `Bearer ${token}` }
+    : {}
+
   const httpClient = ky.extend({
-    prefixUrl: baseUrl
+    prefixUrl: baseUrl,
+    headers
   })
 
   const register = (username: string, email: string, password: string) =>
