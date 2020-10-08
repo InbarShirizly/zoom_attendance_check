@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 
 const testStudents = (new Array(30)).fill('').map((_, i) => ({
   id: i,
-  classId: 1,
+  orgClass: '1',
   name: 'John Doe',
   phone: 501234560 + i,
   idNumber: '123456789'
