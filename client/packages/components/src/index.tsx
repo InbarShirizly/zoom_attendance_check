@@ -6,6 +6,15 @@ import { Container } from './layout/Container'
 import { Login, Register, Classes, Class } from './containers'
 import { WithTranslateProps } from './external-types'
 import { RtlProvider } from './providers'
+import { createPack } from 'react-component-pack'
+import { ServiceProvider } from './providers/ServiceProvider'
+import { AuthProvider } from './providers/AuthProvider'
+
+const ProvidersPack = createPack(
+  RtlProvider,
+  ServiceProvider,
+  AuthProvider
+)
 
 const Routes = (i18nProps: WithTranslateProps) => {
   return (
@@ -34,7 +43,7 @@ const Routes = (i18nProps: WithTranslateProps) => {
 }
 
 export const Application = (i18nProps: WithTranslateProps) => (
-  <RtlProvider>
+  <ProvidersPack>
     <CssBaseline />
     <Router>
       <CustomAppBar {...i18nProps} />
@@ -43,5 +52,5 @@ export const Application = (i18nProps: WithTranslateProps) => (
         <Routes {...i18nProps}/>
       </Container>
     </Router>
-  </RtlProvider>
+  </ProvidersPack>
 )
