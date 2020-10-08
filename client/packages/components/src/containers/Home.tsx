@@ -35,7 +35,7 @@ export const Classes = () => {
       <CreateClassDialog
         open={open}
         onClose={handlClose}
-        onFileChange={() => {}}
+        onFormSubmit={actions.create}
       />
 
       <Typography variant='h4' gutterBottom>
