@@ -55,9 +55,14 @@ const authReducer = (state: AuthState, action: Action) => {
 
 export type AuthThunk = Thunk<AuthState, Action>
 
+const initialState = {
+  failed: false,
+  token: window.sessionStorage.getItem('token') ?? undefined
+}
+
 const {
   Provider: AuthProvider,
   useProvider: useAuth
-} = createProvider('Auth', authReducer, { failed: false })
+} = createProvider('Auth', authReducer, initialState)
 
 export { AuthProvider, useAuth }

@@ -30,6 +30,7 @@ const login = (service: Service, { username, password }: LoginState): AuthThunk 
 
   try {
     const { token } = await service.login(username, password)
+    window.sessionStorage.setItem('token', token)
     return dispatch({
       type: 'AUTH_SUCCESS',
       token

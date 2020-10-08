@@ -36,6 +36,7 @@ const register = (service: Service, { username, password, confirmPasword, email 
     const { failed } = getState()
     if (!failed) {
       const { token } = await service.register(username, email, password)
+      window.sessionStorage.setItem('token', token)
       return dispatch({
         type: 'AUTH_SUCCESS',
         token
