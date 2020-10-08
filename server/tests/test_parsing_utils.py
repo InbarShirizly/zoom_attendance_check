@@ -4,7 +4,6 @@ sys.path.append('../')
 from server.parsing.utils import create_chat_df, create_students_df
 import os
 
-# TODO: need to load the file as FileStorage type and then start testing
 
 @pytest.fixture
 def folders():
