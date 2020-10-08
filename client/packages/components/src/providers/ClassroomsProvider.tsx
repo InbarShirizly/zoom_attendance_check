@@ -45,7 +45,14 @@ const classroomsReducer = (state: ClassroomsState, action: Action) => {
     case 'FETCH_CLASSROOMS_SUCCESS':
       return { ...state, classrooms: action.classrooms }
     case 'CREATE_CLASSROOM_SUCCESS':
-      return { ...state, selectedClassroom: action.classroom }
+      return {
+        ...state,
+        classrooms: [
+          ...state.classrooms,
+          { id: action.classroom.id, name: action.classroom.name }
+        ],
+        selectedClassroom: action.classroom
+      }
     case 'FETCH_ERROR':
       return { ...state, classrooms: [] }
     default:
