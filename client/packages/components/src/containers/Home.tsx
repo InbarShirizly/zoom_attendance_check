@@ -37,6 +37,7 @@ export const Classes = () => {
       <CreateClassDialog
         open={open}
         onClose={handlClose}
+        onFileChange={() => {}}
       />
 
       <Typography variant='h4' gutterBottom>

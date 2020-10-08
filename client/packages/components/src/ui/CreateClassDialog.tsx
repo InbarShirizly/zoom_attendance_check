@@ -10,9 +10,10 @@ const useStyles = makeStyles(theme => ({
 
 interface CreateClassDialogProps extends DialogProps {
   open: boolean
+  onFileChange(file: File): void
 }
 
-export const CreateClassDialog = ({ open = false, onClose }: CreateClassDialogProps) => {
+export const CreateClassDialog = ({ open = false, onClose, onFileChange }: CreateClassDialogProps) => {
   const classes = useStyles()
 
   return (
@@ -30,7 +31,7 @@ export const CreateClassDialog = ({ open = false, onClose }: CreateClassDialogPr
           <FileButton
             id='upload-students-file'
             label='Upload students file'
-            onFileChange={() => {}}
+            onFileChange={onFileChange}
           />
         </form>
       </DialogContent>
