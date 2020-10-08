@@ -57,6 +57,11 @@ const classroomsReducer = (state: ClassroomsState, action: Action) => {
         ],
         selectedClassroom: action.classroom
       }
+    case 'SELECT_CLASSROOM_SUCESS':
+      return {
+        ...state,
+        selectedClassroom: action.selectedClassroom
+      }
     case 'FETCH_ERROR':
       return { ...state, classrooms: [] }
     default:

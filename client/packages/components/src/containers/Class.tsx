@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Divider, Fab, makeStyles, Paper, Tab, Tabs, Typography } from '@material-ui/core'
 import { Add as AddIcon } from '@material-ui/icons'
 import { StudentDataTable } from '../layout/StudentsDataTable'
 import { AttendanceTable } from '../layout/AttendanceTable'
 import { StudentData } from 'services'
+import { useClassrooms } from '../providers/ClassroomsProvider'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { useService } from '../providers/ServiceProvider'
+import { createClassroomActions } from '../actions/classroom'
 
 enum TabType {
   StudentData = 0,
@@ -19,14 +23,6 @@ const useStyles = makeStyles(theme => ({
   tableContainer: {
     maxHeight: 587
   }
-}))
-
-const testStudents = (new Array(30)).fill('').map((_, i) => ({
-  id: i,
-  orgClass: '1',
-  name: 'John Doe',
-  phone: 501234560 + i,
-  idNumber: '123456789'
 }))
 
 interface TableByTabProps {
@@ -45,16 +41,34 @@ const TableByTabType = ({ tabType, students }: TableByTabProps) => {
   }
 }
 
-export const Class = () => {
+const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
   const classes = useStyles()
+  const [service] = useService()
+  const [{ selectedClassroom }, dispatch] = useClassrooms()
   const [tabValue, setTabValue] = useState(TabType.StudentData)
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: TabType) => setTabValue(newValue)
 
+  const actions = createClassroomActions(service)
+
+  useEffect(() => {
+    const id = parseInt(match.params.id, 10)
+    if (!isNaN(id)) {
+      dispatch(actions.select(id))
+    } else {
+      history.push('/')
+    }
+  }, [])
+
+  if (!selectedClassroom) {
+    history.push('/')
+    return <></> // To comply with TS compiler
+  }
+
   return (
     <>
       <Typography variant='h4' gutterBottom>
-        Physics
+        {selectedClassroom.name}
       </Typography>
 
       <Paper elevation={2}>
@@ -73,7 +87,7 @@ export const Class = () => {
 
         <TableByTabType
           tabType={tabValue}
-          students={testStudents}
+          students={selectedClassroom.students}
         />
       </Paper>
 
@@ -86,3 +100,5 @@ export const Class = () => {
     </>
   )
 }
+
+export const Class = withRouter(ClassComp)
