@@ -76,8 +76,8 @@ class Validators:
     def date(self, value):
         """
         The function will check that the date is given in the correct format
-        :param value: the input unixtimestamp (integer)
-        :reutrn value: the date (datetime)
+        :param value: the input unix timestamp (integer)
+        :return value: the date (datetime)
         """
         try:
             value = int(value)

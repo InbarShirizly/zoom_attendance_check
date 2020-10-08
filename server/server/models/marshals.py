@@ -19,6 +19,7 @@ reports_list_fields = { # Fields list of classrooms
 	'id': fields.Integer
 }
 report_resource_field = {
+	'description': fields.String,
 	'id': fields.Integer,
 	'time': UnixTimeStamp(attribute="report_time"),
 	'student_statuses': fields.List(StatusItemField)
