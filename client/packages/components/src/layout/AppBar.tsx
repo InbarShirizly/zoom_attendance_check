@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
-import { useTextDirection } from '../providers'
+import { useTextDirection } from '../providers/RtlProvider'
 
 const useStyles = makeStyles(() => ({
   root: {
