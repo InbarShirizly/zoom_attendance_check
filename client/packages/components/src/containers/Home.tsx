@@ -22,7 +22,7 @@ export const Classes = () => {
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
-  const handlClose = () => setOpen(false)
+  const handleClose = () => setOpen(false)
 
   const actions = createClassroomActions(service)
 
@@ -34,8 +34,11 @@ export const Classes = () => {
     <>
       <CreateClassDialog
         open={open}
-        onClose={handlClose}
-        onFormSubmit={(name, file) => dispatch(actions.create(name, file))}
+        onClose={handleClose}
+        onFormSubmit={(name, file) => {
+          dispatch(actions.create(name, file))
+          handleClose()
+        }}
       />
 
       <Typography variant='h4' gutterBottom>
