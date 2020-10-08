@@ -8,7 +8,7 @@ import { WithTranslateProps } from './external-types'
 import { RtlProvider } from './providers'
 import { createPack } from 'react-component-pack'
 import { ServiceProvider } from './providers/ServiceProvider'
-import { AuthProvider } from './providers/AuthProvider'
+import { AuthProvider, useAuth } from './providers/AuthProvider'
 
 const ProvidersPack = createPack(
   RtlProvider,
@@ -17,6 +17,8 @@ const ProvidersPack = createPack(
 )
 
 const Routes = (i18nProps: WithTranslateProps) => {
+  const [authState] = useAuth()
+
   return (
     <Switch>
       <Route path='/login'>
@@ -36,7 +38,7 @@ const Routes = (i18nProps: WithTranslateProps) => {
       </Route>
 
       <Route path='/'>
-        <Redirect to='/login' />
+        {authState.token ? <Redirect to='/login' /> : <Redirect to='/home' />}
       </Route>
     </Switch>
   )
