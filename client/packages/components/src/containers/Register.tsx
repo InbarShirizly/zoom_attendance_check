@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
-import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
+import { FormGroup, Typography, makeStyles, Button } from '@material-ui/core'
 import { WithTranslateProps } from '../external-types'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(theme => ({
   input: {
     marginBottom: theme.spacing(2)
   }

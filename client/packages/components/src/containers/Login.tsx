@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { WithTranslateProps } from '../external-types'
-import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
+import { FormGroup, Typography, makeStyles, Button } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { Service } from 'services'
 import { AuthThunk, useAuth } from '../providers/AuthProvider'
 import { useService } from '../providers/ServiceProvider'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(theme => ({
   input: {
+    marginBottom: theme.spacing(2)
+  },
+  alert: {
     marginBottom: theme.spacing(2)
   }
 }))
@@ -60,6 +63,7 @@ export const Login = ({ t }: WithTranslateProps) => {
           <Alert
             variant='outlined'
             severity='error'
+            className={classes.alert}
           >
             Failed to login. Please try again.
           </Alert>
