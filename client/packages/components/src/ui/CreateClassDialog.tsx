@@ -1,11 +1,20 @@
 import React from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, TextField } from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, makeStyles, TextField } from '@material-ui/core'
+import { FileButton } from './FileButton'
+
+const useStyles = makeStyles(theme => ({
+  nameInput: {
+    marginBottom: theme.spacing(2)
+  }
+}))
 
 interface CreateClassDialogProps extends DialogProps {
   open: boolean
 }
 
 export const CreateClassDialog = ({ open = false, onClose }: CreateClassDialogProps) => {
+  const classes = useStyles()
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>
@@ -15,7 +24,13 @@ export const CreateClassDialog = ({ open = false, onClose }: CreateClassDialogPr
         <form>
           <TextField
             label='Class name'
+            className={classes.nameInput}
             fullWidth
+          />
+          <FileButton
+            id='upload-students-file'
+            label='Upload students file'
+            onFileChange={() => {}}
           />
         </form>
       </DialogContent>
