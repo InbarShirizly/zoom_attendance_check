@@ -10,6 +10,9 @@ from server.models.marshals import classrooms_list_fields, classroom_resource_fi
 
 
 class ClassroomsResource(Resource):
+	"""
+	Resource responisble for class handling (creating new class, getting class informatio, deleting class and more)
+	"""
 	method_decorators = [auth.login_required]
 
 	def __init__(self):
@@ -17,12 +20,18 @@ class ClassroomsResource(Resource):
 		
 		self._post_args = reqparse.RequestParser(bundle_errors=True)
 		self._post_args.add_argument('name', type=str, required=True)
-		self._post_args.add_argument('students_file', type=custom_types.students_file, location='files', required=True)
+		self._post_args.add_argument('students_file', type=custom_types.students_file, location='files', required=True, dest="student_df")
 		
 		self._put_args = reqparse.RequestParser(bundle_errors=True)
 		self._put_args.add_argument('new_name', type=str, location="json", required=True)
 
 	def get(self, class_id=None):
+		"""
+		The function will get inforamtion about all classes or full information about spesific class of a user
+		param is given via the url
+		:param class_id: the class id, or None for all classes (int)
+		:return: information about the requested data (json) - for the object parsing check server.models.custom_fields, server.models.marshals
+		"""
 		if class_id is None:
 			return marshal(auth.current_user().classrooms, classrooms_list_fields)
 
@@ -33,6 +42,15 @@ class ClassroomsResource(Resource):
 
 	@marshal_with(classroom_resource_fields)
 	def post(self, class_id=None):
+		"""
+		The function will create new classroom
+		given from url:
+		:param class_id: always must be None, must be giving due the init of the endpoint, 404 error will be raised if not None
+		params are given in form data of the post request, check server.api.validators for full types:
+		:param name: the name of the classroom (str)
+		:param student_df: the file of the students - converted to df (custom_types.students_file)
+		:return: information about the new classroom (json) - for the object parsing check server.models.custom_fields, server.models.marshals
+		"""
 		if class_id:
 			abort(404, message=RestErrors.INVALID_ROUTE)
 		if len(auth.current_user().classrooms) >= ValidatorsConfig.MAX_CLASSROOMS:
@@ -44,11 +62,19 @@ class ClassroomsResource(Resource):
 		db.session.add(new_class)
 		db.session.commit()
 
-		args['students_file']['class_id'] = pd.Series([new_class.id] * args['students_file'].shape[0])
-		args['students_file'].to_sql('student', con=db.engine, if_exists="append", index=False)
+		args['student_df']['class_id'] = pd.Series([new_class.id] * args['student_df'].shape[0])
+		args['student_df'].to_sql('student', con=db.engine, if_exists="append", index=False)
 		return new_class
 
 	def put(self, class_id=None):
+		"""
+		The function will change the name of the classroom
+		given from url:
+		:param class_id: always must be None, must be giving due the init of the endpoint, 404 error will be raised if not None
+		other param is given in json format
+		:param new_name: the new name of the classroom (str)
+		:return: 204 http code if succeeded
+		"""
 		if class_id is None:
 			abort(404, message=RestErrors.INVALID_ROUTE)
 		args = self._put_args.parse_args()
@@ -60,6 +86,12 @@ class ClassroomsResource(Resource):
 		return "", 204
 
 	def delete(self, class_id=None):
+		"""
+		The function will delete spesific classroom or all classrooms of the user
+		given from url:
+		:param class_id: the class to delete, if None delets all classes
+		:return: 204 http code if succeeded 
+		"""
 		if class_id is None: # Deleting all classes
 			teacher_classes_id = db.session.query(ClassroomModel.id).filter_by(teacher=auth.current_user()).all()
 			for class_data in teacher_classes_id:
