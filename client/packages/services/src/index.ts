@@ -66,7 +66,7 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
   const createClassroom = (name: string, file: File) => {
     const data = new FormData()
     data.append('name', name)
-    data.append('student_file', file)
+    data.append('students_file', file)
 
     return httpClient.post('api/classrooms', { body: data }).json<Classroom>()
   }
