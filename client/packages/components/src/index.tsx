@@ -24,7 +24,7 @@ const Routes = (i18nProps: WithTranslateProps) => {
   return (
     <Switch>
       <Route path='/login'>
-        <Login {...i18nProps} />
+        {authState.token ? <Classes /> : <Login {...i18nProps} />}
       </Route>
 
       <Route path='/register'>
