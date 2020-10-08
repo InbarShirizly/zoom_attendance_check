@@ -20,7 +20,8 @@ def folders():
 @pytest.fixture(scope="module")
 def student_df(folders):
     file_name = "example_excel.xlsx"
-    df_students = create_students_df(file_name, os.path.join(folders["student_list_folder"], file_name))
+    file_ext = "." + file_name.split(".")[-1]
+    df_students = create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
     parser = ParseClassFile.from_object(ParseConfig)
     student_df = parser.parse_df(df_students)
     # add index manually because in the real function it parser the df from the database
