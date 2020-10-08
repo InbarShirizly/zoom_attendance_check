@@ -29,15 +29,19 @@ type SuccessfulCreateAction = {
   classroom: Classroom
 }
 
-type SelectClassroom = {
-  type: 'SELECT_CLASSROOM',
+type SelectAction = {
+  type: 'SELECT_CLASSROOM_START'
+}
+
+type SuccesfulSelectAction = {
+  type: 'SELECT_CLASSROOM_SUCESS',
   selectedClassroom: Classroom
 }
 
 type Action =
   | FetchAction | SuccessfulFetchAction
   | CreateAction | SuccessfulCreateAction
-  | SelectClassroom
+  | SelectAction | SuccesfulSelectAction
   | ErrorAction
 
 const classroomsReducer = (state: ClassroomsState, action: Action) => {

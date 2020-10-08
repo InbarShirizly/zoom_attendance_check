@@ -1,4 +1,4 @@
-import { Service } from 'services'
+import { Service, ShallowClassroom } from 'services'
 import { ClassroomsThunk } from '../providers/ClassroomsProvider'
 
 export const createClassroomActions = (service: Service) => {
@@ -34,8 +34,25 @@ export const createClassroomActions = (service: Service) => {
     }
   }
 
+  const select = (id: number): ClassroomsThunk => async dispatch => {
+    dispatch({ type: 'SELECT_CLASSROOM_START' })
+    try {
+      const classroom = await service.getClassroomById(id)
+      return dispatch({
+        type: 'SELECT_CLASSROOM_SUCESS',
+        selectedClassroom: classroom
+      })
+    } catch (e) {
+      return dispatch({
+        type: 'FETCH_ERROR',
+        error: e
+      })
+    }
+  }
+
   return {
     fetchAll,
-    create
+    create,
+    select
   }
 }
