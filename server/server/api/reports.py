@@ -5,11 +5,11 @@ from server import db, auth
 from datetime import datetime
 import pandas as pd
 from server.models.orm import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
-from server.parsing.utils import create_chat_df
 from server.api.utils import validate_classroom
 from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import report_resource_field, reports_list_fields
-
+from server.models.utils import store_sessions_and_chat_data
+from server.config import FlaskConfig
 
 class ReportsResource(Resource):
     method_decorators = [validate_classroom, auth.login_required]
@@ -52,17 +52,9 @@ class ReportsResource(Resource):
         student_status_df = report_object.student_status_table(new_report.id)
         student_status_df.to_sql('student_status', con=db.engine, if_exists="append", index=False)
 
-        for session_object in report_object.report_sessions:
-            session_table = SessionModel(start_time=session_object._first_message_time, report_id=new_report.id)
-            db.session.add(session_table)
-            db.session.commit()
-
-            zoom_names_df = session_object.zoom_names_table(session_table.id)
-            zoom_names_df.to_sql('zoom_names', con=db.engine, if_exists="append", index=False)
-
-            zoom_names_df = pd.read_sql(ZoomNamesModel.query.filter_by(session_id=session_table.id).statement, con=db.engine)
-            session_chat_df = session_object.chat_table(zoom_names_df)
-            session_chat_df.to_sql('chat', con=db.engine, if_exists="append", index=False)
+        if FlaskConfig.STORE_CHAT:
+            # store all the chat, session and zoom names data from a report -  currently not supported
+            store_sessions_and_chat_data(report_object.report_sessions, new_report.id)
 
         return new_report
 

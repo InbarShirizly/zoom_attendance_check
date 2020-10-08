@@ -4,16 +4,13 @@ sys.path.append('../')
 from server.parsing.utils import create_chat_df, create_students_df
 import os
 
+# TODO: need to load the file as FileStorage type and then start testing
 
 @pytest.fixture
 def folders():
     CHAT_FILES_FOLDER = "./files_to_test/chat_files"
     STUDENT_EXCEL_FILES_FOLDER = "./files_to_test/students_list_excel"
     return {"chat_folder": CHAT_FILES_FOLDER, "student_list_folder": STUDENT_EXCEL_FILES_FOLDER}
-
-
-
-
 
 student_list_files_data = [
         ("example_csv.csv", True),
