@@ -26,13 +26,11 @@ export const CreateClassDialog = ({ open = false, onClose, onFormSubmit }: Creat
     setClassName(event.target.value)
   }, [setClassName])
 
-  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
+  const handleSubmit = useCallback(() => {
     if (className && studentsFile) {
       onFormSubmit(className, studentsFile)
     }
-  }, [studentsFile, className])
+  }, [className, studentsFile])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
@@ -40,7 +38,12 @@ export const CreateClassDialog = ({ open = false, onClose, onFormSubmit }: Creat
         Create class
       </DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={event => {
+            event.preventDefault()
+            handleSubmit()
+          }}
+        >
           <TextField
             label='Class name'
             className={classes.nameInput}
@@ -55,7 +58,10 @@ export const CreateClassDialog = ({ open = false, onClose, onFormSubmit }: Creat
         </form>
       </DialogContent>
       <DialogActions>
-        <Button color='primary'>
+        <Button
+          color='primary'
+          onClick={handleSubmit}
+        >
           Create
         </Button>
       </DialogActions>
