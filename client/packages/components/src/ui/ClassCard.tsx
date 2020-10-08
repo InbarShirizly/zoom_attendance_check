@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -8,24 +7,30 @@ import {
   Grid,
   Typography
 } from '@material-ui/core'
+import { LinkButton } from './LinkButton'
+import { ShallowClassroom } from 'services'
 
 interface ClassCardProps {
-  name: string;
+  classroom: ShallowClassroom
 }
 
-export const ClassCard = ({ name }: ClassCardProps) => (
+export const ClassCard = ({ classroom }: ClassCardProps) => (
   <Grid item md={4} sm={6} xs={12}>
     <Card elevation={2}>
       <CardContent>
         <Typography variant='h5'>
-          {name}
+          {classroom.name}
         </Typography>
       </CardContent>
       <Divider />
       <CardActions>
-        <Button size='small' color='primary'>
+        <LinkButton
+          to={`/class/${classroom.id}`}
+          size='small'
+          color='primary'
+        >
           Create Report
-        </Button>
+        </LinkButton>
       </CardActions>
     </Card>
   </Grid>

@@ -11,7 +11,10 @@ import {
 } from '@material-ui/core'
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
-import { useTextDirection } from '../providers'
+import { useTextDirection } from '../providers/RtlProvider'
+import { LinkButton } from '../ui/LinkButton'
+import { AuthThunk, useAuth } from '../providers/AuthProvider'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,8 +25,9 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
+const CustomAppBarComponent = ({ t, i18n, history }: WithTranslateProps & RouteComponentProps) => {
   const classes = useStyles()
+  const [authState, dispatch] = useAuth()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [_, setTextDirection] = useTextDirection()
 
@@ -37,6 +41,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
     closeMenu()
   }
 
+  const logout = (): AuthThunk => dispatch => {
+    window.sessionStorage.removeItem('token')
+    dispatch({ type: 'LOGOUT' })
+    return history.push('/')
+  }
+
   return (
     <AppBar position='fixed' data-testid='appbar'>
       <Toolbar>
@@ -44,12 +54,29 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           {t('app_title')}
         </Typography>
 
-        <Button color='inherit'>
-          {t('register_title')}
-        </Button>
-        <Button color='inherit'>
-          {t('login_title')}
-        </Button>
+        {
+          authState.token
+            ? (
+              <>
+                <LinkButton to='/home' color='inherit'>
+                  Home
+                </LinkButton>
+                <Button onClick={() => dispatch(logout())} color='inherit'>
+                  Logout
+                </Button>
+              </>
+            )
+            : (
+              <>
+                <LinkButton to='/register' color='inherit'>
+                  {t('register_title')}
+                </LinkButton>
+                <LinkButton to='/login' color='inherit'>
+                  {t('login_title')}
+                </LinkButton>
+              </>
+            )
+        }
 
         <IconButton
           color='inherit'
@@ -75,3 +102,5 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
     </AppBar>
   )
 }
+
+export const CustomAppBar = withRouter(CustomAppBarComponent)

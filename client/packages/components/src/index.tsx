@@ -5,13 +5,26 @@ import { CustomAppBar } from './layout/AppBar'
 import { Container } from './layout/Container'
 import { Login, Register, Classes, Class } from './containers'
 import { WithTranslateProps } from './external-types'
-import { RtlProvider } from './providers'
+import { RtlProvider } from './providers/RtlProvider'
+import { createPack } from 'react-component-pack'
+import { ServiceProvider } from './providers/ServiceProvider'
+import { AuthProvider, useAuth } from './providers/AuthProvider'
+import { ClassroomsProvider } from './providers/ClassroomsProvider'
+
+const ProvidersPack = createPack(
+  RtlProvider,
+  ServiceProvider,
+  AuthProvider,
+  ClassroomsProvider
+)
 
 const Routes = (i18nProps: WithTranslateProps) => {
+  const [authState] = useAuth()
+
   return (
     <Switch>
       <Route path='/login'>
-        <Login {...i18nProps} />
+        {authState.token ? <Redirect to='/home' /> : <Login {...i18nProps} />}
       </Route>
 
       <Route path='/register'>
@@ -19,22 +32,22 @@ const Routes = (i18nProps: WithTranslateProps) => {
       </Route>
 
       <Route path='/home'>
-        <Classes />
+        {authState.token ? <Classes /> : <Redirect to='/login' />}
       </Route>
 
-      <Route path='/class'>
-        <Class />
+      <Route path='/class/:id'>
+        {authState.token ? <Class /> : <Redirect to='/login' />}
       </Route>
 
       <Route path='/'>
-        <Redirect to='/login' />
+        {authState.token ? <Redirect to='/login' /> : <Redirect to='/home' />}
       </Route>
     </Switch>
   )
 }
 
 export const Application = (i18nProps: WithTranslateProps) => (
-  <RtlProvider>
+  <ProvidersPack>
     <CssBaseline />
     <Router>
       <CustomAppBar {...i18nProps} />
@@ -43,5 +56,5 @@ export const Application = (i18nProps: WithTranslateProps) => (
         <Routes {...i18nProps}/>
       </Container>
     </Router>
-  </RtlProvider>
+  </ProvidersPack>
 )

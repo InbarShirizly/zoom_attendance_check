@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Add as AddIcon } from '@material-ui/icons'
 import { Fab, Grid, makeStyles, Theme, Typography } from '@material-ui/core'
 import { ClassCard } from '../ui/ClassCard'
 import { CreateClassDialog } from '../ui/CreateClassDialog'
+import { useService } from '../providers/ServiceProvider'
+import { createClassroomActions } from '../actions/classroom'
+import { useClassrooms } from '../providers/ClassroomsProvider'
 
 const useStyles = makeStyles((theme: Theme) => ({
   fab: {
@@ -12,20 +15,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const data = (new Array(10)).fill('Class Name')
-
 export const Classes = () => {
   const classes = useStyles()
+  const [service] = useService()
+  const [{ classrooms }, dispatch] = useClassrooms()
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
-  const handlClose = () => setOpen(false)
+  const handleClose = () => setOpen(false)
+
+  const actions = createClassroomActions(service)
+
+  useEffect(() => {
+    dispatch(actions.fetchAll())
+  }, [])
 
   return (
     <>
       <CreateClassDialog
         open={open}
-        onClose={handlClose}
+        onClose={handleClose}
+        onFormSubmit={(name, file) => {
+          dispatch(actions.create(name, file))
+          handleClose()
+        }}
       />
 
       <Typography variant='h4' gutterBottom>
@@ -33,7 +46,7 @@ export const Classes = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {data.map((d, i) => <ClassCard name={d} key={i} />)}
+        {classrooms.map(c => <ClassCard classroom={c} key={c.id} />)}
       </Grid>
 
       <Fab

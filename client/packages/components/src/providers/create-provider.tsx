@@ -2,12 +2,39 @@ import React, {
   createContext,
   ReactNode,
   ReactNodeArray,
+  Dispatch,
+  useCallback,
   useContext,
-  useReducer
+  useState,
+  useRef
 } from 'react'
 
-type Dispatch<Action> = (action: Action) => void
+export type ThunkedDispatch<State, Action> = Dispatch<Action | Thunk<State, Action>>
+export type Thunk<State, Action> = (dispatch: ThunkedDispatch<State, Action>, getState: () => State) => void
 type Reducer<State, Action> = (state: State, action: Action) => State
+
+export const useThunkedReducer = <State, Action>(reducer: Reducer<State, Action>, initialState: State): [State, ThunkedDispatch<State, Action>] => {
+  const [internalState, setInternalState] = useState(initialState)
+
+  const state = useRef(internalState)
+  const getState = useCallback(() => state.current, [state])
+  const setState = useCallback((newState: State) => {
+    state.current = newState
+    setInternalState(newState)
+  }, [state, setInternalState])
+
+  const reduce = useCallback((action: Action) => {
+    return reducer(getState(), action)
+  }, [reducer, getState])
+
+  const dispatch: ThunkedDispatch<State, Action> = useCallback((action: any) => {
+    return typeof action === 'function'
+      ? action(dispatch, getState)
+      : setState(reduce(action))
+  }, [getState, setState, reduce])
+
+  return [internalState, dispatch]
+}
 
 export interface ProviderProps {
   children: ReactNode | ReactNodeArray
@@ -18,10 +45,10 @@ export const createProvider = <
   Action extends { type: any; }
 >(resourceName: string, reducer: Reducer<State, Action>, initialState: State) => {
   const StateContext = createContext<State | undefined>(undefined)
-  const DispatchContext = createContext<Dispatch<Action> | undefined>(undefined)
+  const DispatchContext = createContext<ThunkedDispatch<State, Action> | undefined>(undefined)
 
   const Provider = ({ children }: ProviderProps) => {
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [state, dispatch] = useThunkedReducer(reducer, initialState)
 
     return (
       <StateContext.Provider value={state}>
@@ -33,7 +60,7 @@ export const createProvider = <
   }
   Provider.displayName = `${resourceName}Provider`
 
-  const useProvider = (): [State, Dispatch<Action>] => {
+  const useProvider = (): [State, ThunkedDispatch<State, Action>] => {
     const state = useContext(StateContext)
     const dispatch = useContext(DispatchContext)
 
