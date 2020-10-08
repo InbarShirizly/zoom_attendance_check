@@ -35,7 +35,7 @@ const Routes = (i18nProps: WithTranslateProps) => {
         {authState.token ? <Classes /> : <Redirect to='/login' />}
       </Route>
 
-      <Route path='/class'>
+      <Route path='/class/:id'>
         {authState.token ? <Class /> : <Redirect to='/login' />}
       </Route>
 
