@@ -3,25 +3,25 @@ import numpy as np
 import re
 from server.config import RestErrors
 
-DELETE_ROWS_CONTAIN = ["הופק בתאריך"]  #TODO: need to remove to config
 
 class ParseClassFile:
 
-    def __init__(self, file_cols_dict, mashov_cols, gender_dict):
+    def __init__(self, file_cols_dict, mashov_cols, gender_dict, delete_rows_contain):
         self._file_cols_dict = file_cols_dict
         self._mashov_cols = mashov_cols
         self._gender_dict = gender_dict
+        self._delete_rows_contain = delete_rows_contain
 
     @classmethod
     def from_object(cls, config):
         return cls(
             config.FILE_COLS_DICT,
             config.MASHOV_COLS,
-            config.GENDER_DICT
+            config.GENDER_DICT,
+            config.DELETE_ROWS_CONTAIN
         )
 
     def parse_df(self, df_students):
-
         if ParseClassFile.check_if_mashov_file(df_students):
             df_students = self.mashov_file(df_students)
         else:
@@ -53,7 +53,7 @@ class ParseClassFile:
         df_t = df_students.T
         cols_to_drop = []
         for col in df_t.columns:
-            if df_t[col].str.contains('|'.join(DELETE_ROWS_CONTAIN)).any():
+            if df_t[col].str.contains('|'.join(self._delete_rows_contain)).any():
                 cols_to_drop.append(col)
         df_students = df_t.drop(columns=cols_to_drop).T
 
@@ -63,13 +63,12 @@ class ParseClassFile:
         except KeyError:
             raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
 
-        mashov_name_pattern = re.compile(r"([\u0590-\u05fe ]+)([(\u0590-\u05fe)]+)")
+        mashov_name_pattern = re.compile(r"([\u0590-\u05fe ]+)([(\u0590-\u05fe)]+)")  #TODO: move regex to config
         df_name_gender = df_students['name'].str.extract(mashov_name_pattern, expand=False)
         df_students['gender'] = df_name_gender[1].str.extract("\(([\u0590-\u05fe ])\)")
         df_students['gender'] = df_students['gender'].apply(self.gender_assign, gender_dict=self._gender_dict)
         df_students['name'] = df_name_gender[0]
         return df_students
-
 
     def classic_file(self, df_students):
         relevant_cols = [col for col in df_students.columns if not col.startswith("Unnamed")]
@@ -80,10 +79,9 @@ class ParseClassFile:
                     current_excel_dict[key] = df_students[col]
         return pd.DataFrame(current_excel_dict)
 
-
     @staticmethod
     def gender_assign(string, gender_dict):
-        for key, vals in gender_dict.items():
-            if string in vals:
+        for key, values in gender_dict.items():
+            if string in values:
                 return key
         return ""

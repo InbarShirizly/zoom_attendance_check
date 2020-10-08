@@ -8,12 +8,15 @@ from werkzeug.datastructures import FileStorage
 from server.parsing import parser
 from server.parsing.utils import create_chat_df, create_students_df
 
+
 # The class is responsible for validating diffrent inputs to the API
 class Validators:
-    def __init__(self, date_format, supported_chat_file_ext, supported_student_files_ext, invalid_username_chars="", min_password_len=0, required_password_chars=[]):
-        self._date_format = date_format
+    def __init__(self, supported_chat_file_ext, supported_student_files_ext, max_students_in_class,
+                 invalid_username_chars="", min_password_len=0, required_password_chars=[]):
+        #TODO: documentation
         self._supported_chat_file_ext = supported_chat_file_ext
         self._supported_student_files_ext = supported_student_files_ext
+        self._max_students_in_class = max_students_in_class
         self._invalid_username_chars = invalid_username_chars
         self._min_password_len = min_password_len
         self._required_password_chars = required_password_chars
@@ -24,9 +27,9 @@ class Validators:
         The function will init an instance from config object
         """
         return cls(
-            config.DATE_FORMAT,
             config.CHAT_FILE_EXT,
             config.STUDENTS_FILE_EXT,
+            config.MAX_STUDENTS_IN_CLASS,
             config.INVALID_USERNAME_CHARS,
             config.MIN_PASSWORD_LEN,
             config.REQUIRED_PASSWORD_CHARS
@@ -73,8 +76,8 @@ class Validators:
     def date(self, value):
         """
         The function will check that the date is given in the correct format
-        :param value: the input unixtimestamp (integer)
-        :reutrn value: the date (datetime)
+        :param value: the input unix timestamp (integer)
+        :return value: the date (datetime)
         """
         try:
             value = int(value)
@@ -88,12 +91,14 @@ class Validators:
         :param value: the student file (FileStorage)
         :return: all the students from the file (Pandas DataFrame)
         """
-        if not Validators.check_ext(value.filename, self._supported_student_files_ext):
+        ext = Validators.check_ext(value.filename, self._supported_student_files_ext)
+        if not ext:
             raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
-        students_df = create_students_df(
-            value.filename.replace('"', ""), #TODO: replace here because of postman post request
-            value.stream  
-        )
+        students_df = create_students_df(ext, value.stream)
+        if students_df.shape[0] > self._max_students_in_class:
+            raise ValueError(RestErrors.TO_MANY_RECORDS)
+        if students_df.empty:
+            raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
         return parser.parse_df(students_df)
 
     def chat_file(self, value):
@@ -105,18 +110,23 @@ class Validators:
         if not Validators.check_ext(value.filename, self._supported_chat_file_ext):
             raise ValueError(RestErrors.INVALID_CHAT_FILE)
         chat_file = value.stream.read().decode("utf-8").split("\n") #TODO: check this in test
-        return create_chat_df(chat_file)
+        chat_df = create_chat_df(chat_file)
+        if chat_df.empty:
+            raise ValueError(RestErrors.INVALID_CHAT_FILE)
+        return chat_df
 
     @staticmethod
-    def check_ext(file_name, extenstions):
+    def check_ext(file_name, extensions):
         """
-        The function will check if the filename is one of the following extentions types
+        The function will check if the filename is one of the following extensions types
         :param file_name: the name of the file (str)
-        :extenstions: list of extension to check (list)
-        :return: the answer to the boolean question (bool)
+        :param extensions: list of extension to check (list)
+        :return: the extension of the file name or None if don't exists (str
         """
-        file_name = file_name.replace('"', "") # Becasue of wierd quotes postman adds to the filename
-        return any([file_name.endswith(ext) for ext in extenstions])
+        file_name = file_name.replace('"', "")  # Because of weird quotes postman adds to the filename
+        for ext in extensions:
+            if file_name.endswith(ext):
+                return ext
 
     @staticmethod
     def any_of_chars_match(chars, string):
@@ -127,3 +137,5 @@ class Validators:
         :return: the answer to the boolean question (bool)
         """
         return any([c in string for c in chars])
+
+

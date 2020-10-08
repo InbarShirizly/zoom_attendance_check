@@ -12,28 +12,20 @@ def create_chat_df(chat_file):
     chat_df = pd.DataFrame(chat_content, columns=["time", "zoom_name", "message"])
     chat_df['message'] = chat_df['message'].str[:-1].astype(str)
     chat_df["time"] = chat_df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
-    if chat_df.empty:
-        raise ValueError(RestErrors.EMPTY_FILE)
     return chat_df
 
 
-def create_students_df(file_name, file_data):
-    if file_name.endswith(".csv"):
+def create_students_df(file_ext, file_data):
+    if file_ext == ".csv":
         df_students = pd.read_csv(file_data, header=None)
-    elif file_name.endswith(".xlsx"):
+    elif file_ext == ".xlsx":
         df_students = pd.read_excel(file_data, header=None)
     else:
         try:
             df_students = pd.read_html(file_data, header=1)[0]
         except ValueError:
             df_students = pd.ExcelFile(file_data).parse()
-
     clean_df = clean_student_df(df_students)
-
-    if clean_df.shape[0] > 200:
-        raise ValueError(RestErrors.TO_MANY_RECORDS)  #TODO: pass amount of records as config
-    if clean_df.empty:
-        raise ValueError(RestErrors.EMPTY_FILE)
     return clean_df
 
 

@@ -9,4 +9,4 @@ api = Api(api_blueprint)
 custom_types = Validators.from_object(ValidatorsConfig)
 login_token_serializer = URLSafeTimedSerializer(FlaskConfig.SECRET_KEY, salt=SerializeConfig.LOGIN_SALT)
 
-from server.api import auth, clasrooms, reports, student_status
+from server.api import auth, clasrooms, reports, student_status, student

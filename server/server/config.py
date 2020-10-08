@@ -4,6 +4,7 @@ import string
 class FlaskConfig:
     SECRET_KEY = 'TEMP_SECRET_KEY'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
+    STORE_CHAT = False # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
 
 
 class ParseConfig:
@@ -16,17 +17,18 @@ class ParseConfig:
     }
     MASHOV_COLS = ["name", "org_class", "id_number"]
     GENDER_DICT = {1: ["זכר", "ז", "(ז)"], 0: ["נקבה", "נ", "(נ)"]}
+    DELETE_ROWS_CONTAIN = ["הופק בתאריך"]
 
 
 class ValidatorsConfig:
     INVALID_USERNAME_CHARS = string.punctuation
     MIN_PASSWORD_LEN = 4
     REQUIRED_PASSWORD_CHARS = [string.ascii_lowercase, string.ascii_uppercase, string.digits]
-    DATE_FORMAT = '%d/%m/%y'
     CHAT_FILE_EXT = [".txt"]
     STUDENTS_FILE_EXT = [".xls", ".xlsx", ".csv"]
-    MAX_CLASSROOMS = 10 # Maximum classrooms per students
-    MAX_REPORTS = 7 # Max reports per classroom
+    MAX_CLASSROOMS = 10  # Max classrooms per students
+    MAX_REPORTS = 7  # Max reports per classroom
+    MAX_STUDENTS_IN_CLASS = 200
 
 class RestErrors:
     INVALID_ROUTE = "route_doesn't_exists"
@@ -46,10 +48,9 @@ class RestErrors:
     TOKEN_EXPIRED = "token_expired"
     MAX_REPORTS = "to_many_reports"
     MAX_CLASSROOMS = "to_many_classrooms"
-    EMPTY_FILE = "empty_file"
     TO_MANY_RECORDS = "to_many_records"
     INVALID_TIME_STAMP = 'invalid_time_stamp'
-
+    INVALID_STUDENT_ID = "invalid_student_id"
     
 class SerializeConfig:
     LOGIN_SALT = 'login'
