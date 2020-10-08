@@ -4,7 +4,6 @@ import { Fab, Grid, makeStyles, Theme, Typography } from '@material-ui/core'
 import { ClassCard } from '../ui/ClassCard'
 import { CreateClassDialog } from '../ui/CreateClassDialog'
 import { useService } from '../providers/ServiceProvider'
-import { useAuth } from '../providers/AuthProvider'
 import { createClassroomActions } from '../actions/classroom'
 import { useClassrooms } from '../providers/ClassroomsProvider'
 
@@ -18,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const Classes = () => {
   const classes = useStyles()
-  const [authState] = useAuth()
   const [service] = useService()
   const [{ classrooms }, dispatch] = useClassrooms()
   const [open, setOpen] = useState(false)
@@ -26,7 +24,7 @@ export const Classes = () => {
   const handleOpen = () => setOpen(true)
   const handlClose = () => setOpen(false)
 
-  const actions = createClassroomActions(service, authState.token)
+  const actions = createClassroomActions(service)
 
   useEffect(() => {
     dispatch(actions.fetch())
