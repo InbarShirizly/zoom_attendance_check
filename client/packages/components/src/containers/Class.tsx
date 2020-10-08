@@ -8,6 +8,7 @@ import { useClassrooms } from '../providers/ClassroomsProvider'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { useService } from '../providers/ServiceProvider'
 import { createClassroomActions } from '../actions/classroom'
+import { CreateReportDialog } from '../ui/CreateReportDialog'
 
 enum TabType {
   StudentData = 0,
@@ -46,6 +47,10 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
   const [service] = useService()
   const [{ selectedClassroom }, dispatch] = useClassrooms()
   const [tabValue, setTabValue] = useState(TabType.StudentData)
+  const [open, setOpen] = useState(false)
+
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: TabType) => setTabValue(newValue)
 
@@ -67,6 +72,11 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
 
   return (
     <>
+      <CreateReportDialog
+        open={open}
+        onClose={handleClose}
+        onFormSubmit={() => {}}
+      />
       <Typography variant='h4' gutterBottom>
         {selectedClassroom.name}
       </Typography>
@@ -94,6 +104,7 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
       <Fab
         className={classes.fab}
         color='primary'
+        onClick={handleOpen}
       >
         <AddIcon />
       </Fab>
