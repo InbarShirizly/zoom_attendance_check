@@ -51,7 +51,7 @@ const register = (service: Service, { username, password, confirmPasword, email 
 
 export const Register = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
-  const [service] = useService()
+  const [service, dispatchService] = useService()
   const [authState, dispatch] = useAuth()
   const [state, setState] = useState<RegisterState>({
     username: '',
@@ -66,6 +66,10 @@ export const Register = ({ t }: WithTranslateProps) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     dispatch(register(service, state))
+    dispatchService({
+      type: 'SET_TOKEN',
+      token: authState.token
+    })
   }
 
   const passwordsMatch = state.password === state.confirmPasword

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Dispatch, useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { WithTranslateProps } from '../external-types'
 import { FormGroup, Typography, makeStyles, Button } from '@material-ui/core'
@@ -44,7 +44,7 @@ const login = (service: Service, { username, password }: LoginState): AuthThunk 
 
 export const Login = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
-  const [service] = useService()
+  const [service, dispatchService] = useService()
   const [authState, dispatch] = useAuth()
   const [state, setState] = useState<LoginState>({
     username: '',
@@ -57,6 +57,10 @@ export const Login = ({ t }: WithTranslateProps) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     dispatch(login(service, state))
+    dispatchService({
+      type: 'SET_TOKEN',
+      token: authState.token
+    })
   }
 
   return (
