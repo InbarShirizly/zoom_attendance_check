@@ -13,7 +13,8 @@ import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
 import { useTextDirection } from '../providers/RtlProvider'
 import { LinkButton } from '../ui/LinkButton'
-import { useAuth } from '../providers/AuthProvider'
+import { AuthThunk, useAuth } from '../providers/AuthProvider'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,9 +25,9 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
+const CustomAppBarComponent = ({ t, i18n, history }: WithTranslateProps & RouteComponentProps) => {
   const classes = useStyles()
-  const [authState] = useAuth()
+  const [authState, dispatch] = useAuth()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [_, setTextDirection] = useTextDirection()
 
@@ -40,6 +41,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
     closeMenu()
   }
 
+  const logout = (): AuthThunk => dispatch => {
+    window.sessionStorage.removeItem('token')
+    dispatch({ type: 'LOGOUT' })
+    return history.push('/')
+  }
+
   return (
     <AppBar position='fixed' data-testid='appbar'>
       <Toolbar>
@@ -51,12 +58,12 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           authState.token
             ? (
               <>
-                <LinkButton to='/' color='inherit'>
+                <LinkButton to='/home' color='inherit'>
                   Home
                 </LinkButton>
-                <LinkButton to='/' color='inherit'>
+                <Button onClick={() => dispatch(logout())} color='inherit'>
                   Logout
-                </LinkButton>
+                </Button>
               </>
             )
             : (
@@ -95,3 +102,5 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
     </AppBar>
   )
 }
+
+export const CustomAppBar = withRouter(CustomAppBarComponent)
