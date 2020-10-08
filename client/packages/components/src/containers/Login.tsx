@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { WithTranslateProps } from '../external-types'
 import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
+import { Service } from 'services'
+import { AuthThunk, useAuth } from '../providers/AuthProvider'
+import { useService } from '../providers/ServiceProvider'
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -9,9 +12,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
+interface LoginState {
+  username: string
+  password: string
+}
+
+const login = (service: Service, { username, password }: LoginState): AuthThunk => dispatch =>
+  service.login(username, password)
+    .then(({ token }) => {
+      return dispatch({
+        type: 'AUTH_SUCCESS',
+        token
+      })
+    })
+    .catch(() => {
+      return dispatch({
+        type: 'AUTH_FAILED'
+      })
+    })
+
 export const Login = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
-  const [state, setState] = useState({
+  const [service] = useService()
+  const [_, dispatch] = useAuth()
+  const [state, setState] = useState<LoginState>({
     username: '',
     password: ''
   })
@@ -21,7 +45,7 @@ export const Login = ({ t }: WithTranslateProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(state)
+    dispatch(login(service, state))
   }
 
   return (
