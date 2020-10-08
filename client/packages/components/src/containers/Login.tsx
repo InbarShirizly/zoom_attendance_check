@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from 'react'
+import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { WithTranslateProps } from '../external-types'
 import { FormGroup, Typography, makeStyles, Button } from '@material-ui/core'
