@@ -1,11 +1,14 @@
-import React from 'react'
-import { Button, makeStyles } from '@material-ui/core'
+import React, {useCallback, useState} from 'react'
+import { Button, Grid, makeStyles, Typography } from '@material-ui/core'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   input: {
     display: 'none'
+  },
+  label: {
+    marginLeft: theme.spacing(1)
   }
-})
+}))
 
 interface FileButtonProps {
   id: string
@@ -16,14 +19,16 @@ interface FileButtonProps {
 // TODO - Add accept field
 export const FileButton = ({ id, onFileChange, label }: FileButtonProps) => {
   const classes = useStyles()
+  const [filename, setFilename] = useState<string>()
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const [file] = Array.from(event.currentTarget.files ?? [])
 
     if (file) {
       onFileChange(file)
+      setFilename(file.name)
     }
-  }
+  }, [setFilename])
 
   return (
     <>
@@ -33,11 +38,21 @@ export const FileButton = ({ id, onFileChange, label }: FileButtonProps) => {
         onChange={handleChange}
         type='file'
       />
-      <label htmlFor={id}>
-        <Button variant='contained' color='primary' component='span'>
-          {label}
+      <Grid
+        container
+        alignItems='center'
+        component='span'
+        direction='row'
+      >
+        <Button variant='contained' color='primary'>
+          <label htmlFor={id}>
+            {label}
+          </label>
         </Button>
-      </label>
+        <Typography className={classes.label}>
+          {filename || 'No file selected'}
+        </Typography>
+      </Grid>
     </>
   )
 }
