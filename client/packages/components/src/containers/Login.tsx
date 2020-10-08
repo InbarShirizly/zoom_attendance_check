@@ -58,8 +58,7 @@ export const Login = ({ t }: WithTranslateProps) => {
         {
           authState.failed &&
           <Alert
-            elevation={2}
-            variant='filled'
+            variant='outlined'
             severity='error'
           >
             Failed to login. Please try again.
