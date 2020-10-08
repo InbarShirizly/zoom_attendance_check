@@ -47,7 +47,7 @@ const authReducer = (state: AuthState, action: Action) => {
     case 'REGISTER':
       return action.password !== action.confirmPasword
         ? { ...state, failed: true, failureReason: 'password_mismatch' }
-        : state
+        : { ...state, failed: false }
     default:
       return state
   }
