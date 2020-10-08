@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { OutlinedInput } from '../ui/OutlinedInput'
 import { WithTranslateProps } from '../external-types'
 import { FormGroup, Typography, makeStyles, Theme, Button } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import { Service } from 'services'
 import { AuthThunk, useAuth } from '../providers/AuthProvider'
 import { useService } from '../providers/ServiceProvider'
@@ -34,7 +35,7 @@ const login = (service: Service, { username, password }: LoginState): AuthThunk 
 export const Login = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
   const [service] = useService()
-  const [_, dispatch] = useAuth()
+  const [authState, dispatch] = useAuth()
   const [state, setState] = useState<LoginState>({
     username: '',
     password: ''
@@ -54,6 +55,16 @@ export const Login = ({ t }: WithTranslateProps) => {
         {t('login_title')}
       </Typography>
       <form onSubmit={handleSubmit}>
+        {
+          authState.failed &&
+          <Alert
+            elevation={2}
+            variant='filled'
+            severity='error'
+          >
+            Failed to login. Please try again.
+          </Alert>
+        }
         <FormGroup>
           <OutlinedInput
             label={t('username')}
