@@ -12,6 +12,8 @@ import {
 import { Language } from '@material-ui/icons'
 import { WithTranslateProps } from '../external-types'
 import { useTextDirection } from '../providers/RtlProvider'
+import { LinkButton } from '../ui/LinkButton'
+import { useAuth } from '../providers/AuthProvider'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,6 +26,7 @@ const useStyles = makeStyles(() => ({
 
 export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
   const classes = useStyles()
+  const [authState] = useAuth()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [_, setTextDirection] = useTextDirection()
 
@@ -44,12 +47,29 @@ export const CustomAppBar = ({ t, i18n }: WithTranslateProps) => {
           {t('app_title')}
         </Typography>
 
-        <Button color='inherit'>
-          {t('register_title')}
-        </Button>
-        <Button color='inherit'>
-          {t('login_title')}
-        </Button>
+        {
+          authState.token
+            ? (
+              <>
+                <LinkButton to='/' color='inherit'>
+                  Home
+                </LinkButton>
+                <LinkButton to='/' color='inherit'>
+                  Logout
+                </LinkButton>
+              </>
+            )
+            : (
+              <>
+                <LinkButton to='/register' color='inherit'>
+                  {t('register_title')}
+                </LinkButton>
+                <LinkButton to='/login' color='inherit'>
+                  {t('login_title')}
+                </LinkButton>
+              </>
+            )
+        }
 
         <IconButton
           color='inherit'
