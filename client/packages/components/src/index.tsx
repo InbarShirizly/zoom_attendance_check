@@ -9,11 +9,13 @@ import { RtlProvider } from './providers/RtlProvider'
 import { createPack } from 'react-component-pack'
 import { ServiceProvider } from './providers/ServiceProvider'
 import { AuthProvider, useAuth } from './providers/AuthProvider'
+import { ClassroomsProvider } from './providers/ClassroomsProvider'
 
 const ProvidersPack = createPack(
   RtlProvider,
   ServiceProvider,
-  AuthProvider
+  AuthProvider,
+  ClassroomsProvider
 )
 
 const Routes = (i18nProps: WithTranslateProps) => {
