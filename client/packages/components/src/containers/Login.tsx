@@ -21,19 +21,26 @@ interface LoginState {
   password: string
 }
 
-const login = (service: Service, { username, password }: LoginState): AuthThunk => dispatch =>
-  service.login(username, password)
-    .then(({ token }) => {
-      return dispatch({
-        type: 'AUTH_SUCCESS',
-        token
-      })
+const login = (service: Service, { username, password }: LoginState): AuthThunk => async dispatch => {
+  dispatch({
+    type: 'LOGIN',
+    username,
+    password
+  })
+
+  try {
+    const { token } = await service.login(username, password)
+    return dispatch({
+      type: 'AUTH_SUCCESS',
+      token
     })
-    .catch(() => {
-      return dispatch({
-        type: 'AUTH_FAILED'
-      })
+  } catch (e) {
+    return dispatch({
+      type: 'AUTH_FAILED',
+      error: e
     })
+  }
+}
 
 export const Login = ({ t }: WithTranslateProps) => {
   const classes = useStyles()
