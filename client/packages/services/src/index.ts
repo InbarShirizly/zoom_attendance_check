@@ -21,13 +21,13 @@ export interface Classroom {
   students: StudentData[]
 }
 
-type ShallowClassroom = Pick<Classroom, 'id' | 'name'>
+export type ShallowClassroom = Pick<Classroom, 'id' | 'name'>
 
-interface AuthResponse {
+export interface AuthResponse {
   token: string
 }
 
-interface ClientOptions {
+export interface ClientOptions {
   baseUrl: string
 }
 
@@ -86,3 +86,5 @@ export const createServiceClient = ({ baseUrl }: ClientOptions) => {
     changeClassroomName
   }
 }
+
+export type Service = ReturnType<typeof createServiceClient>
