@@ -2,7 +2,7 @@ import ky from 'ky-universal'
 
 export interface StudentData {
   id: number
-  classId: number
+  orgClass: string
 
   name?: string
   phone?: number
@@ -31,6 +31,14 @@ export interface ClientOptions {
   baseUrl: string
   token?: string
 }
+
+const apiStudentToApp = (json: Record<string, any>): StudentData => ({
+  id: json.id,
+  name: json.name,
+  orgClass: json.org_class,
+  phone: json.phone ?? undefined,
+  idNumber: json.id_number ?? undefined
+})
 
 export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
   const headers = token
@@ -61,7 +69,12 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
 
   const getClassrooms = () => httpClient.get('api/classrooms').json<ShallowClassroom[]>()
 
-  const getClassroomById = (id: number) => httpClient.get(`api/classrooms/${id}`).json<Classroom>()
+  const getClassroomById = (id: number): Promise<Classroom> => httpClient.get(`api/classrooms/${id}`)
+    .then(res => res.json())
+    .then(json => ({
+      ...json,
+      students: json.students.map((s: Record<string, any>) => apiStudentToApp(s))
+    }))
 
   const createClassroom = (name: string, file: File) => {
     const data = new FormData()
