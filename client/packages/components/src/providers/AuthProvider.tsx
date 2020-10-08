@@ -1,4 +1,4 @@
-import { createProvider } from './create-provider'
+import { createProvider, Thunk } from './create-provider'
 
 interface AuthState {
   token?: string
@@ -23,6 +23,8 @@ const authReducer = (state: AuthState, action: Action) => {
       return state
   }
 }
+
+export type AuthThunk = Thunk<AuthState, Action>
 
 const {
   Provider: AuthProvider,
