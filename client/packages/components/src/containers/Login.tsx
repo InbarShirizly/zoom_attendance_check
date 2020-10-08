@@ -87,6 +87,7 @@ export const Login = ({ t }: WithTranslateProps) => {
           />
           <OutlinedInput
             label={t('password')}
+            type='password'
             className={classes.input}
             onValueChange={handleChange('password')}
           />
