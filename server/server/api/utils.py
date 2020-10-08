@@ -7,7 +7,8 @@ from server.config import RestErrors, SerializeConfig
 from server.api import login_token_serializer
 from itsdangerous.exc import BadSignature, BadTimeSignature
 
-# This decorator fucntion will make sure that the classroom belongs to the current user
+
+# This decorator function will make sure that the classroom belongs to the current user
 def validate_classroom(fnc):
     def inner(class_id, report_id=None):
         if ClassroomModel.query.filter_by(id=class_id, teacher=auth.current_user()).first() is None:

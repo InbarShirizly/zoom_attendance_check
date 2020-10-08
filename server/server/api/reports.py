@@ -19,7 +19,7 @@ class ReportsResource(Resource):
         self._post_args = reqparse.RequestParser(bundle_errors=True)
         self._post_args.add_argument('description', type=str)
         self._post_args.add_argument('chat_file', type=custom_types.chat_file, location='files', required=True)
-        self._post_args.add_argument('time_delta', help=RestErrors.INVALID_TIME_DELTA, type=int, required=True)
+        self._post_args.add_argument('time_delta', help=RestErrors.INVALID_TIME_DELTA, type=int, required=True) # TODO: limit time up to 15 minutes
         self._post_args.add_argument('date', default=datetime.now(), type=custom_types.date)
         self._post_args.add_argument('first_sentence', type=str, required=True)
         self._post_args.add_argument('not_included_zoom_users', default=[], type=str, action="append")
@@ -45,11 +45,7 @@ class ReportsResource(Resource):
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
         report_object = Attendance(args['chat_file'], students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
 
-        message_time = report_object.first_message_time
-        report_time = datetime(args["date"].year, args["date"].month, args["date"].day,
-                               message_time.hour, message_time.minute, message_time.second)
-
-        new_report = ReportModel(description=args['description'], report_time=report_time, class_id=class_id)
+        new_report = ReportModel(description=args['description'], report_time=args["date"], class_id=class_id)
         db.session.add(new_report)
         db.session.commit()
 
