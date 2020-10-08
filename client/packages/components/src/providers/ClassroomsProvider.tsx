@@ -37,6 +37,6 @@ export type ClassroomsThunk = Thunk<ClassroomsState, Action>
 const {
   Provider: ClassroomsProvider,
   useProvider: useClassrooms
-} = createProvider('Auth', classroomsReducer, { classrooms: [] })
+} = createProvider('Classrooms', classroomsReducer, { classrooms: [] })
 
 export { ClassroomsProvider, useClassrooms }
