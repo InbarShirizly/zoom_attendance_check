@@ -2,7 +2,7 @@ import { Service } from 'services'
 import { ClassroomsThunk } from '../providers/ClassroomsProvider'
 
 export const createClassroomActions = (service: Service) => {
-  const fetch = (): ClassroomsThunk => async dispatch => {
+  const fetchAll = (): ClassroomsThunk => async dispatch => {
     dispatch({ type: 'FETCH_CLASSROOMS_START' })
     try {
       const classrooms = await service.getClassrooms()
@@ -35,7 +35,7 @@ export const createClassroomActions = (service: Service) => {
   }
 
   return {
-    fetch,
+    fetchAll,
     create
   }
 }

@@ -27,7 +27,7 @@ export const Classes = () => {
   const actions = createClassroomActions(service)
 
   useEffect(() => {
-    dispatch(actions.fetch())
+    dispatch(actions.fetchAll())
   }, [])
 
   return (
