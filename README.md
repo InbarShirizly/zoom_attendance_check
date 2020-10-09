@@ -17,18 +17,16 @@ zoom meeting is divided to session according to the chat. In each session the pr
 
 
 ### Table of contents
-- [Usage workflow <a name="usage workflow"></a>](#usage-workflow--a-name--usage-workflow----a-)
-- [Zoom chat file <a name="Zoom chat file"></a>](#zoom-chat-file--a-name--zoom-chat-file----a-)
-  * [Content in the chat file](#content-in-the-chat-file)
-  * [Save chat file - via zoom app](#save-chat-file---via-zoom-app)
-- [Database  - ERD](#database----erd)
+- [Usage workflow](#usage-workflow)
+- [Zoom chat file](#zoom-chat-file)
+- [Database  - ERD](#database---erd)
 
 #### Additional info
 - [server README](./server/README.md) 
 - [client README](./client/README.md)
 - [API doc](https://documenter.getpostman.com/view/4335694/TVRg694k)
 
-### Usage workflow <a name="usage workflow"></a>
+### Usage workflow
 
 - **Register and Login**
 - **Create new classroom** - upload `excel`/`csv` file of your student list class. `examples` can be found [here](./server/tests/files_to_test/students_list_excel).
@@ -42,7 +40,7 @@ zoom meeting is divided to session according to the chat. In each session the pr
     - When report is done, the teacher will submit the report, and it will be stored in the service.
 - **Classroom reports** - The teacher can view and edit reports at any time.
     
-### Zoom chat file <a name="Zoom chat file"></a>
+### Zoom chat file
 
 ![Alt Text](./docs/Images%20for%20README/create%20and%20save%20chat%20file%20from%20zoom%20app.gif)
 
@@ -62,7 +60,7 @@ zoom meeting is divided to session according to the chat. In each session the pr
 ![image](./docs/Images%20for%20README/Save%20chat%20file.jpg)
 
 
-### Database  - ERD
+### Database - ERD
 
 The database keeps track as following:
 
