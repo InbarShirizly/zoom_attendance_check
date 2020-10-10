@@ -5,7 +5,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/InbarShirizly/zoom_attendance_check)
 
 
-### What is this platform?
+### 🔮 What is this platform?
 
 - A platform that automatically detects missing students in [zoom](https://zoom.us/) meetings - using the zoom chat file.
 - **Check actively** which zoom users where present in class - integrate to your student list of the class.
@@ -16,36 +16,36 @@ zoom meeting is divided to session according to the chat. In each session the pr
 - Allow teacher to **edit and manage the report**.
 
 
-### Table of contents
+### 📓 Table of contents
 - [Usage workflow](#usage-workflow)
 - [Zoom chat file](#zoom-chat-file)
 - [Database  - ERD](#database---erd)
 
-#### Additional info
+#### 🔗 Additional info
 - [server README](./server/README.md) 
 - [client README](./client/README.md)
 - [API doc](https://documenter.getpostman.com/view/4335694/TVRg694k)
 
-### Usage workflow
+###  🏃‍♂️ Usage workflow
 
-- **Register and Login**
-- **Create new classroom** - upload `excel`/`csv` file of your student list class. `examples` can be found [here](./server/tests/files_to_test/students_list_excel).
-- **Upload chat file** - upload `.txt` to the platform under the relevant classroom.
-- **Manage report** - managing pop-up will appear with the already filled automatic attendance check for the teacher final decision.
+- 🖊️ **Register and Login**
+- 👥 **Create new classroom** - upload `excel`/`csv` file of your student list class. `examples` can be found [here](./server/tests/files_to_test/students_list_excel).
+- 📄 **Upload chat file** - upload `.txt` to the platform under the relevant classroom.
+- 📝 **Manage report** - managing pop-up will appear with the already filled automatic attendance check for the teacher final decision.
     - For each student the program will assign a status color:
-        - **red - student missing**: the student **didn't attend to any** of the teacher's sessions.
-        - **yellow - student partially missing**: the student **attend only to part** of the teacher's sessions.
-        - **green - student attendant**: means that the student **wrote in all** the teacher's sessions.
+        - ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) - **student missing**: the student **didn't attend to any** of the teacher's sessions.
+        - ![#f6ff00](https://via.placeholder.com/15/f6ff00/000000?text=+) - **student partially missing**: the student **attend only to part** of the teacher's sessions.
+        - ![#27f015](https://via.placeholder.com/15/27f015/000000?text=+) - **student attendant**: means that the student **wrote in all** the teacher's sessions.
     - Teacher can change student's statuses according to his choice.
     - When report is done, the teacher will submit the report, and it will be stored in the service.
-- **Classroom reports** - The teacher can view and edit reports at any time.
+- 📊 **Classroom reports** - The teacher can view and edit reports at any time.
     
-### Zoom chat file
+### 💾 Zoom chat file
 
 ![Alt Text](./docs/Images%20for%20README/create%20and%20save%20chat%20file%20from%20zoom%20app.gif)
 
 
-#### Content in the chat file
+#### 🧾 Content in the chat file
 
 - Attendance check starts with a sentence, for example: "Attendance Check"
 - Each student will have limited time to write some credentials (`ID`/`Phone Number`/`Name`)
@@ -53,14 +53,14 @@ zoom meeting is divided to session according to the chat. In each session the pr
 - `start sentence`, the `accepted credentials` and the `time period` can defined by the teacher
 
 
-#### Save chat file - via zoom app
+#### 👨‍💻 Save chat file - via zoom app
 
-**`Remember`** to save chat file from the zoom meeting when the meeting is about to end
+⚠️ **`Remember`** to save chat file from the zoom meeting when the meeting is about to end
 
 ![image](./docs/Images%20for%20README/Save%20chat%20file.jpg)
 
 
-### Database - ERD
+### 🛢️ Database - ERD
 
 The database keeps track as following:
 
