@@ -16,6 +16,13 @@ zoom meeting is divided to session according to the chat. In each session the pr
 - Allow teacher to **edit and manage the report**.
 
 
+### 🛠️ Project status
+
+- This project is **very close** to having the basic workflow ready for production. Unfortunately, our main frontend developer in the repository contributors can't keep improving the screens. **We are looking for motivated developers to join us in deploying this platform** that can help many teachers, especially during COVID-19.
+- If you're interested in contributing, feel free to reach out via LinkedIn- ![image](https://i.stack.imgur.com/gVE0j.png) [Inbar Shirizly](https://www.linkedin.com/in/inbarshirizly/) 
+- This is our first open-source project so any recommendations of how to maintain it will be welcomed
+
+
 ### 📓 Table of contents
 - [Usage workflow](#usage-workflow)
 - [Zoom chat file](#zoom-chat-file)
@@ -33,9 +40,9 @@ zoom meeting is divided to session according to the chat. In each session the pr
 - 📄 **Upload chat file** - upload `.txt` to the platform under the relevant classroom.
 - 📝 **Manage report** - managing pop-up will appear with the already filled automatic attendance check for the teacher final decision.
     - For each student the program will assign a status color:
-        - ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) - **student missing**: the student **didn't attend to any** of the teacher's sessions.
-        - ![#f6ff00](https://via.placeholder.com/15/f6ff00/000000?text=+) - **student partially missing**: the student **attend only to part** of the teacher's sessions.
-        - ![#27f015](https://via.placeholder.com/15/27f015/000000?text=+) - **student attendant**: means that the student **wrote in all** the teacher's sessions.
+        - 🔴 **student missing**: the student **didn't attend to any** of the teacher's sessions.
+        - ⚠️ **student partially missing**: the student **attend only to part** of the teacher's sessions.
+        - 🟢 **student attendant**: means that the student **attend in all** the teacher's sessions.
     - Teacher can change student's statuses according to his choice.
     - When report is done, the teacher will submit the report, and it will be stored in the service.
 - 📊 **Classroom reports** - The teacher can view and edit reports at any time.
