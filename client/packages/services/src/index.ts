@@ -41,9 +41,7 @@ const apiStudentToApp = (json: Record<string, any>): StudentData => ({
 })
 
 export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
-  const headers = token
-    ? { Authorization: `Bearer ${token}` }
-    : {}
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
   const httpClient = ky.extend({
     prefixUrl: baseUrl,
@@ -51,30 +49,36 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
   })
 
   const register = (username: string, email: string, password: string) =>
-    httpClient.post('api/register', {
-      json: {
-        username,
-        email,
-        password
-      }
-    }).json<AuthResponse>()
+    httpClient
+      .post('api/register', {
+        json: {
+          username,
+          email,
+          password
+        }
+      })
+      .json<AuthResponse>()
 
   const login = (username: string, password: string) =>
-    httpClient.post('api/login', {
-      json: {
-        auth: username,
-        password
-      }
-    }).json<AuthResponse>()
+    httpClient
+      .post('api/login', {
+        json: {
+          auth: username,
+          password
+        }
+      })
+      .json<AuthResponse>()
 
   const getClassrooms = () => httpClient.get('api/classrooms').json<ShallowClassroom[]>()
 
-  const getClassroomById = (id: number): Promise<Classroom> => httpClient.get(`api/classrooms/${id}`)
-    .then(res => res.json())
-    .then(json => ({
-      ...json,
-      students: json.students.map((s: Record<string, any>) => apiStudentToApp(s))
-    }))
+  const getClassroomById = (id: number): Promise<Classroom> =>
+    httpClient
+      .get(`api/classrooms/${id}`)
+      .then(res => res.json())
+      .then(json => ({
+        ...json,
+        students: json.students.map((s: Record<string, any>) => apiStudentToApp(s))
+      }))
 
   const createClassroom = (name: string, file: File) => {
     const data = new FormData()
@@ -84,15 +88,33 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     return httpClient.post('api/classrooms', { body: data }).json<Classroom>()
   }
 
-  const changeClassroomName = (id: number, newName: string) => httpClient.put(`api/classrooms/${id}`, {
-    json: {
-      new_name: newName
-    }
-  })
+  const changeClassroomName = (id: number, newName: string) =>
+    httpClient.put(`api/classrooms/${id}`, {
+      json: {
+        new_name: newName
+      }
+    })
 
   const deleteClassroom = (id: number) => httpClient.delete(`api/classrooms/${id}`).json()
 
   const deleteAllClassrooms = () => httpClient.delete('api/classrooms').json()
+
+  const createReport = (
+    id: number,
+    file: File,
+    timeDelta: number,
+    firstSentence: string,
+    excludedUsers: string,
+    description: string
+  ) => {
+    const data = new FormData()
+    data.append('chat_file', file)
+    data.append('time_delta', timeDelta.toString())
+    data.append('first_sentence', firstSentence)
+    data.append('not_included_zoom_users', excludedUsers)
+    data.append('description', description)
+    return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json()
+  }
 
   return {
     login,
@@ -102,7 +124,8 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     deleteClassroom,
     getClassroomById,
     deleteAllClassrooms,
-    changeClassroomName
+    changeClassroomName,
+    createReport
   }
 }
 
