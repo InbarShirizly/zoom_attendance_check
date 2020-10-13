@@ -7,5 +7,6 @@
   "email": "אימייל",
   "confirm_password": "אשר סיסמה",
   "en_name": "אנגלית",
-  "he_name": "עברית"
+  "he_name": "עברית",
+  "passwords_dont_match": "הסיסמאות לא תואמות"
 }

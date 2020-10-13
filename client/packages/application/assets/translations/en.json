@@ -7,5 +7,6 @@
   "email": "Email",
   "confirm_password": "Confirm Password",
   "en_name": "English",
-  "he_name": "Hebrew"
+  "he_name": "Hebrew",
+  "passwords_dont_match": "Passwords don't match"
 }
