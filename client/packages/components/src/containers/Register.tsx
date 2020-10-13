@@ -111,8 +111,9 @@ export const Register = ({ t }: WithTranslateProps) => {
             label={t('password')}
             className={classes.input}
             type='password'
-            error={!passwordValid}
+            error={!passwordValid && state.password.length > 0}
             onValueChange={handleChange('password')}
+            helperText={t('invalid_password')}
           />
           <OutlinedInput
             label={t('confirm_password')}
