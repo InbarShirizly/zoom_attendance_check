@@ -6,9 +6,11 @@
 2.  `nvm install && nvm use`
 3.  `yarn`
 4.  `yarn build`
-5.  `yarn serve`
+5.  `yarn dev`
 
 Now open `http://localhost:8080` and view the application!
+
+_Note: this current version uses [webpack-dev-server](https://webpack.js.org/configuration/dev-server), a production ready alternative will be added at a later stage in development_
 
 ## Project Structure
 

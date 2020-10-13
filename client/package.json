@@ -15,8 +15,7 @@
   "scripts": {
     "lint": "eslint --max-warnings 0 'packages/*/**/*.{ts,js,json,d.ts}'",
     "build": "tsc -b tsconfig-build.json",
-    "serve": "yarn workspace application serve",
-    "start": "yarn serve"
+    "dev": "yarn workspace application dev"
   },
   "devDependencies": {
     "@types/react": "^16.9.50",

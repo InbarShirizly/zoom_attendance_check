@@ -11,7 +11,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "build:watch": "webpack --colors --watch --progress",
-    "serve": "webpack-dev-server"
+    "dev": "webpack-dev-server"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.1.1",
