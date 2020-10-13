@@ -4,9 +4,14 @@ from server import db, auth
 from server.models.orm import StudentStatus
 from server.config import RestErrors
 
-STATUS_CHOICES = (0, 1, 2)
+
+STATUS_CHOICES = (0, 1, 2)  #TODO: need to move this to config file
+
 
 class StudentStatusResource(Resource):
+    """
+    Resource responsible for student status handling (update students status)
+    """
     method_decorators = [auth.login_required]
 
     def __init__(self):
@@ -20,6 +25,12 @@ class StudentStatusResource(Resource):
         )
 
     def put(self, status_id):
+        """
+        update student status in a classroom that is part of the teachers classroom in a specific report
+        :param status_id: the status id - related to the student that will be updated
+        :param new status: the new status for the user - must be part of the STATUS_CHOICES (check RequestParser)
+        :return: 204 http code if succeeded
+        """
         args = self._put_args.parse_args()
         status = StudentStatus.query.get(status_id)
         if status is None or status.report.classroom.teacher != auth.current_user():

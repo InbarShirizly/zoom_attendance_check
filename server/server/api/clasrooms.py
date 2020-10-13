@@ -11,7 +11,7 @@ from server.models.marshals import classrooms_list_fields, classroom_resource_fi
 
 class ClassroomsResource(Resource):
 	"""
-	Resource responisble for class handling (creating new class, getting class informatio, deleting class and more)
+	Resource responsible for class handling (creating new class, getting class information, deleting class and more)
 	"""
 	method_decorators = [auth.login_required]
 
@@ -27,7 +27,7 @@ class ClassroomsResource(Resource):
 
 	def get(self, class_id=None):
 		"""
-		The function will get inforamtion about all classes or full information about spesific class of a user
+		The function will get information about all classes or full information about specific class of a user
 		param is given via the url
 		:param class_id: the class id, or None for all classes (int)
 		:return: information about the requested data (json) - for the object parsing check server.models.custom_fields, server.models.marshals
@@ -87,9 +87,9 @@ class ClassroomsResource(Resource):
 
 	def delete(self, class_id=None):
 		"""
-		The function will delete spesific classroom or all classrooms of the user
+		The function will delete specific classroom or all classrooms of the user
 		given from url:
-		:param class_id: the class to delete, if None delets all classes
+		:param class_id: the class to delete, if None deletes all classes
 		:return: 204 http code if succeeded 
 		"""
 		if class_id is None: # Deleting all classes
