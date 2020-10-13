@@ -14,7 +14,8 @@ def folders():
 class TestChatAndStudent:
 
     chat_files_data_regular = [
-        "chat_file_valid.txt"
+        "chat_file_valid.txt",
+        "chat_file_valid_english_nba.txt"
     ]
 
     @pytest.mark.parametrize(("file_name"),  chat_files_data_regular)

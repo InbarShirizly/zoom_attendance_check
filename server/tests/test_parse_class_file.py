@@ -32,8 +32,8 @@ class TestParseClassFile:
             ("example_mashov_file_edited_and_saved_97.xls", True, 17),
             ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
             ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
-            #("example_mashov_file_empty.xls", False, 0),
             ("example_excel.xlsx", False, 0),
+            ("example_excel_english.xlsx", False, 0),
             ("example_excel_start_in_random_row.xlsx", False, 0),
         ]
 
@@ -61,6 +61,7 @@ class TestParseClassFile:
             ("example_csv.csv", 8),
             ("example_csv_2.csv", 7),
             ("example_csv_2.csv", 7),
+            ("example_excel.xlsx", 7),
             ("example_excel.xlsx", 7),
             ("example_excel_start_in_random_row.xlsx", 7),
             ("דוגמה לרשימת תלמידים.xlsx", 7)
