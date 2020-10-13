@@ -7,5 +7,7 @@
   "email": "Email",
   "confirm_password": "Confirm Password",
   "en_name": "English",
-  "he_name": "Hebrew"
+  "he_name": "Hebrew",
+  "passwords_dont_match": "Passwords don't match",
+  "invalid_password": "Passwords should contain at least 1 lower case letter, 1 upper case letter, 1 digit and be 4 characters or longer."
 }

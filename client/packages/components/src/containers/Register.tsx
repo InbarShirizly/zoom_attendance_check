@@ -23,7 +23,10 @@ interface RegisterState {
   email: string
 }
 
-const register = (service: Service, { username, password, confirmPasword, email }: RegisterState): AuthThunk => async (dispatch, getState) => {
+const register = (
+  service: Service,
+  { username, password, confirmPasword, email }: RegisterState
+): AuthThunk => async (dispatch, getState) => {
   dispatch({
     type: 'REGISTER',
     username,
@@ -61,8 +64,7 @@ export const Register = ({ t }: WithTranslateProps) => {
     confirmPasword: ''
   })
 
-  const handleChange = (field: string) => (value: string) =>
-    setState({ ...state, [field]: value })
+  const handleChange = (field: string) => (value: string) => setState({ ...state, [field]: value })
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -74,6 +76,13 @@ export const Register = ({ t }: WithTranslateProps) => {
   }
 
   const passwordsMatch = state.password === state.confirmPasword
+  const passwordLong = state.password.length >= 4
+  const passwordLower = !!state.password.match(/[a-z]/g)
+  const passwordUpper = !!state.password.match(/[A-Z]/g)
+  const passwordNum = !!state.password.match(/[0-9]/g)
+
+  const passwordValid =
+    passwordLong && passwordLower && passwordUpper && passwordNum && passwordsMatch
 
   return (
     <>
@@ -81,16 +90,11 @@ export const Register = ({ t }: WithTranslateProps) => {
         {t('register_title')}
       </Typography>
       <form onSubmit={handleSubmit}>
-        {
-          authState.failed &&
-          <Alert
-            variant='outlined'
-            severity='error'
-            className={classes.alert}
-          >
-            Failed to login. Please try again.
+        {authState.failed && (
+          <Alert variant='outlined' severity='error' className={classes.alert}>
+            Failed to register. Please try again.
           </Alert>
-        }
+        )}
         <FormGroup>
           <OutlinedInput
             label={t('username')}
@@ -107,8 +111,9 @@ export const Register = ({ t }: WithTranslateProps) => {
             label={t('password')}
             className={classes.input}
             type='password'
-            error={!passwordsMatch}
+            error={!passwordValid && state.password.length > 0}
             onValueChange={handleChange('password')}
+            helperText={t('invalid_password')}
           />
           <OutlinedInput
             label={t('confirm_password')}
@@ -116,7 +121,7 @@ export const Register = ({ t }: WithTranslateProps) => {
             type='password'
             error={!passwordsMatch}
             onValueChange={handleChange('confirmPasword')}
-            helperText={!passwordsMatch && 'Passwords don\'t match'}
+            helperText={!passwordsMatch && t('passwords_dont_match')}
           />
           <Button variant='contained' color='primary' size='large' type='submit'>
             {t('register_title')}
