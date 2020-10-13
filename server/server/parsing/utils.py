@@ -5,17 +5,32 @@ from server.config import RestErrors
 
 
 def create_chat_df(chat_file):
+    """
+    parse the raw chat file from zoom to a df. if a row is not in the "zoom row format" it will not be part of the df
+    In this way, any text file that don't match zoom chat pattern will return empty data-frame
+    :param chat_file: loaded chat file (TextIowrapper - file after "open" / "stream")
+    :return: chat rows that passed the zoom parsing pattern (df)
+    """
 
     regex_pattern = re.compile(r"(^\d{2}.\d{2}.\d{2})\s+From\s\s([\s\S]+)\s:\s([\s\S]+)")
     chat_content = [re.search(regex_pattern, line).groups() for line in chat_file if re.match(regex_pattern, line)]
 
     chat_df = pd.DataFrame(chat_content, columns=["time", "zoom_name", "message"])
-    chat_df['message'] = chat_df['message'].str[:-1].astype(str)
+    chat_df['message'] = chat_df['message'].str[:-1].astype(str)  # remove end of line (could be "/n" or "/t")
     chat_df["time"] = chat_df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
     return chat_df
 
 
 def create_students_df(file_ext, file_data):
+    """
+    use pandas to create df of loaded file. check extension of the file to use the correct pandas "read" method
+    supporting - "xls", "xlsx", "csv" - the validation for the ext happens in the validation class before this
+    function runs.
+    The dataframe cleans not relevant rows and columns using external function
+    :param file_ext: extension of the current file (str)
+    :param file_data: raw data of the loaded file
+    :return: cleaned df of the students list (df)
+    """
     if file_ext == ".csv":
         df_students = pd.read_csv(file_data, header=None)
     elif file_ext == ".xlsx":
@@ -30,11 +45,19 @@ def create_students_df(file_ext, file_data):
 
 
 def clean_student_df(df_students):
+    """
+    cleaning process over the student list data-frame.
+    1. removes empty rows and columns
+    2. drop columns that don't contain more then 3 unique values (at least title and 2 students)
+    3. set the titles of the columns to be the df headers
+    :param df_students: input df parsed from previous function (df)
+    :return: cleaned df (df)
+    """
     # # first drop al columns that are totally missing (for extreme cases)
     df_students.dropna(axis=0, how="all", inplace=True)
     df_students.dropna(axis=1, how="all", inplace=True)
 
-    # check for unique values in columns - must have at list 3 unique values (min of title and 2 students
+    # check for unique values in columns - must have at list 3 unique values (min of title and 2 students)
     min_nunique_in_cols = max(df_students.nunique().median(), 3)
     filt_relevant_cols = df_students.nunique() >= min_nunique_in_cols
     df_students = df_students.loc[:, filt_relevant_cols]
