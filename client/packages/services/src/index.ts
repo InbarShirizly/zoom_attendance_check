@@ -165,7 +165,7 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     data.append('first_sentence', firstSentence)
     data.append('not_included_zoom_users', excludedUsers)
     data.append('description', description)
-    return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json<{id: number}>()
+    return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json<Report>()
   }
 
   /**

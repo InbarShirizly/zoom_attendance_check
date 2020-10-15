@@ -64,8 +64,7 @@ export const createClassroomActions = (service: Service) => {
   ): ClassroomsThunk => async dispatch => {
     dispatch({ type: 'CREATE_REPORT_START' })
     try {
-      const { id: reportId } = await service.createReport(classId, file, timeDelta, firstSentence, excludedUsers, description)
-      const report = await service.getReport(classId, reportId)
+      const report = await service.createReport(classId, file, timeDelta, firstSentence, excludedUsers, description)
       return dispatch({
         type: 'CREATE_REPORT_SUCCESS',
         report

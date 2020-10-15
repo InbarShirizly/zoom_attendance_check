@@ -45,7 +45,7 @@ export const CreateReportDialog = ({
   const classes = useStyles()
   const [studentsFile, setStudentFile] = useState<File>()
   const [description, setDescription] = useState<string>()
-  const [excludedUsers, setExcludedUsers] = useState<string>()
+  const [excludedUsers, setExcludedUsers] = useState<string>('')
   const [firstSentence, setFirstSentence] = useState<string>()
   const [timeDelta, setTimeDelta] = useState<number>()
 
@@ -84,9 +84,11 @@ export const CreateReportDialog = ({
     [firstSentence]
   )
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    console.log('Handle submit')
     if (description && studentsFile && timeDelta && firstSentence && excludedUsers) {
-      onFormSubmit(studentsFile, timeDelta, firstSentence, excludedUsers, description)
+      await onFormSubmit(studentsFile, timeDelta, firstSentence, excludedUsers, description)
+      console.log('Report created')
     }
   }, [description, studentsFile, excludedUsers, firstSentence, timeDelta])
 
@@ -111,6 +113,7 @@ export const CreateReportDialog = ({
             label='Select chat file'
             onFileChange={handleFileChange}
           />
+          {/* TODO: Add default text values */}
           <TextField
             label='Time Delta'
             className={classes.nameInput}
