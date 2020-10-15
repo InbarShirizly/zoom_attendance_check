@@ -11,6 +11,19 @@
     "preserveSymlinks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "composite": true
-  }
+    "composite": true,
+    "baseUrl": "packages"
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "packages/application/tsconfig.json"
+    },
+    {
+      "path": "packages/services/tsconfig.json"
+    },
+    {
+      "path": "packages/components/tsconfig.json"
+    }
+  ]
 }
