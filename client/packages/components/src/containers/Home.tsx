@@ -6,17 +6,24 @@ import { CreateClassDialog } from '../ui/CreateClassDialog'
 import { useService } from '../providers/ServiceProvider'
 import { createClassroomActions } from '../actions/classroom'
 import { useClassrooms } from '../providers/ClassroomsProvider'
+import { Alert } from '@material-ui/lab'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) => ({
   fab: {
     position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2)
+  },
+  alert: {
+    marginBottom: theme.spacing(2)
   }
 }))
 
 export const Classes = () => {
   const classes = useStyles()
+  // Adding any cast here because for some reason this is coming back as Location<unknown>
+  const location = useLocation() as any
   const [service] = useService()
   const [{ classrooms }, dispatch] = useClassrooms()
   const [open, setOpen] = useState(false)
@@ -40,7 +47,11 @@ export const Classes = () => {
           handleClose()
         }}
       />
-
+      {location?.state?.registrationSuccess && (
+        <Alert variant='outlined' severity={'success'} className={classes.alert}>
+          Registration successful!
+        </Alert>
+      )}
       <Typography variant='h4' gutterBottom>
         My Classes
       </Typography>
