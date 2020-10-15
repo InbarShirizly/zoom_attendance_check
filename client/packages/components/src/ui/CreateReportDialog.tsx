@@ -26,13 +26,12 @@ interface CreateReportDialogProps extends DialogProps {
    * Makes a request to create a new report in the server.
    */
   onFormSubmit(
-    id: number,
     file: File,
     timeDelta: number,
     firstSentence: string,
     excludedUsers: string,
     description: string
-  ): number
+  ): void
 }
 
 /**
@@ -41,7 +40,6 @@ interface CreateReportDialogProps extends DialogProps {
 export const CreateReportDialog = ({
   open = false,
   onClose,
-  classId,
   onFormSubmit
 }: CreateReportDialogProps) => {
   const classes = useStyles()
@@ -88,7 +86,7 @@ export const CreateReportDialog = ({
 
   const handleSubmit = useCallback(() => {
     if (description && studentsFile && timeDelta && firstSentence && excludedUsers) {
-      onFormSubmit(classId, studentsFile, timeDelta, firstSentence, excludedUsers, description)
+      onFormSubmit(studentsFile, timeDelta, firstSentence, excludedUsers, description)
     }
   }, [description, studentsFile, excludedUsers, firstSentence, timeDelta])
 

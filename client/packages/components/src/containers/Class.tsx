@@ -4,7 +4,8 @@ import { Add as AddIcon } from '@material-ui/icons'
 import { StudentDataTable } from '../layout/StudentsDataTable'
 import { AttendanceTable } from '../layout/AttendanceTable'
 import { StudentData } from 'services'
-import { useClassrooms, useService } from 'providers'
+import { useClassrooms } from '../providers/ClassroomsProvider'
+import { useService } from '../providers/ServiceProvider'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { createClassroomActions } from '../actions/classroom'
 import { CreateReportDialog } from '../ui/CreateReportDialog'
@@ -75,13 +76,16 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
         open={open}
         onClose={handleClose}
         onFormSubmit={(
-          id: number,
           file: File,
           timeDelta: number,
           firstSentence: string,
           excludedUsers: string,
           description: string
-        ) => log}
+        ) => {
+          dispatch(actions.createReport(
+            selectedClassroom.id, file, timeDelta, firstSentence, excludedUsers, description
+          ))
+        }}
         classId={parseInt(match.params.id, 10)}
       />
       <Typography variant='h4' gutterBottom>

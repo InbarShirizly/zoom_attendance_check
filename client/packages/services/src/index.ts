@@ -52,11 +52,12 @@ export interface ReportsServerResponse {
   time: number
 }
 
-const apiReportsToApp = (reports: ReportsServerResponse[]): ShallowReport[] => reports.map(({id, description, time}): ShallowReport => ({
- id,
- description,
- timestamp: time 
-}))
+const apiReportsToApp = (reports: ReportsServerResponse[]): ShallowReport[] =>
+  reports.map(({ id, description, time }): ShallowReport => ({
+    id,
+    description,
+    timestamp: time
+  }))
 
 export interface AuthResponse {
   token: string
@@ -164,7 +165,7 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     data.append('first_sentence', firstSentence)
     data.append('not_included_zoom_users', excludedUsers)
     data.append('description', description)
-    return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json()
+    return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json<{id: number}>()
   }
 
   /**
@@ -178,11 +179,10 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
   /**
    * Fetches all reports for a specific class.
    */
-  const getAllClassReports = async (classId: number): Promise<ShallowReport[]> => httpClient.get(`/api/classrooms/${classId}/reports`).json().then((res: ) => res.map({id, description, time}) => ({
-    id,
-    description,
-    time: timestamp
-  }))
+  const getAllClassReports = async (classId: number): Promise<ShallowReport[]> =>
+    httpClient.get(`/api/classrooms/${classId}/reports`)
+      .json<ReportsServerResponse[]>()
+      .then(apiReportsToApp)
 
   return {
     login,
@@ -194,7 +194,8 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     deleteAllClassrooms,
     changeClassroomName,
     createReport,
-    getReport
+    getReport,
+    getAllClassReports
   }
 }
 

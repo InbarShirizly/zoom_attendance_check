@@ -11,6 +11,6 @@
     "preserveSymlinks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "composite": true,
+    "composite": true
   }
 }

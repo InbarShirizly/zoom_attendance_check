@@ -4,10 +4,10 @@
     "rootDir": "src",
     "outDir": "dist",
     "jsx": "react",
-    "baseUrl": "src",
-    "paths": {
-      "providers": ["providers/index.ts"]
-    }
+    // "baseUrl": "src",
+    // "paths": {
+    //   "providers": ["providers/index.ts"]
+    // }
   },
   "include": ["src"],
   "references": [
