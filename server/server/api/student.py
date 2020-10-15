@@ -7,6 +7,9 @@ from server import auth, db
 from server.api.utils import validate_classroom
 
 class StudentResource(Resource):
+    """
+    Resource responsible for student handling (get student information, change student's data)
+    """
     method_decorators = [validate_classroom, auth.login_required]
 
     def __init__(self):
@@ -20,12 +23,26 @@ class StudentResource(Resource):
 
     @marshal_with_field(StudentItemField)
     def get(self, class_id, student_id):
+        """
+        get information about the specific student in the classroom
+        :param class_id: relevant classroom (checked in the "validate classroom decorator)
+        :param student_id: id of student to present
+        :return: student object from db
+        """
         student = StudentModel.query.filter_by(id=student_id).first()
         if not student:
             abort(400, message=RestErrors.INVALID_STUDENT_ID)
         return student
 
     def put(self, class_id, student_id):
+        """
+        update student data - given arguments of data to update from the json request - will update data in the db
+        :param class_id: relevant classroom (checked in the "validate classroom decorator)
+        :param student_id: id of student to update
+        :params - more params passing from the RequestParser of the user
+                - more info about these in the init of in the api-doc
+        :return:
+        """
         student = StudentModel.query.filter_by(id=student_id)
         if not student.first():
             abort(400, message=RestErrors.INVALID_STUDENT_ID)
