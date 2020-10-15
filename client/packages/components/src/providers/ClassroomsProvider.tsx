@@ -1,8 +1,9 @@
-import { Classroom, ShallowClassroom } from 'services'
+import { Classroom, ShallowClassroom, Report } from 'services'
 import { createProvider, Thunk } from './create-provider'
 
 interface ClassroomsState {
   classrooms: ShallowClassroom[]
+  reports: Report[]
   selectedClassroom?: Classroom
 }
 
@@ -38,10 +39,21 @@ type SuccesfulSelectAction = {
   selectedClassroom: Classroom
 }
 
+type CreateReportAction = {
+  type: 'CREATE_REPORT_START',
+}
+
+/** Returns the new report from the database, using its id given by the report creation endpoint. */
+type SuccessfulReportCreationAction = {
+  type: 'CREATE_REPORT_SUCCESS',
+  report: Report
+}
+
 type Action =
   | FetchAction | SuccessfulFetchAction
   | CreateAction | SuccessfulCreateAction
   | SelectAction | SuccesfulSelectAction
+  | CreateReportAction | SuccessfulReportCreationAction
   | ErrorAction
 
 const classroomsReducer = (state: ClassroomsState, action: Action) => {
@@ -62,6 +74,12 @@ const classroomsReducer = (state: ClassroomsState, action: Action) => {
         ...state,
         selectedClassroom: action.selectedClassroom
       }
+    case 'CREATE_REPORT_SUCCESS':
+      return {
+        ...state,
+        reports: [...state.reports, action.report]
+
+      }
     case 'FETCH_ERROR':
       return { ...state, classrooms: [] }
     default:
@@ -74,6 +92,6 @@ export type ClassroomsThunk = Thunk<ClassroomsState, Action>
 const {
   Provider: ClassroomsProvider,
   useProvider: useClassrooms
-} = createProvider('Classrooms', classroomsReducer, { classrooms: [] })
+} = createProvider('Classrooms', classroomsReducer, { classrooms: [], reports: [] })
 
 export { ClassroomsProvider, useClassrooms }

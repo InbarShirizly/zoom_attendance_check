@@ -9,6 +9,7 @@ export interface StudentData {
   idNumber?: string
 }
 
+/** Possible statuses for student attendance in a class. */
 export enum Attendance {
   Absent = 0,
   Partial = 1,
@@ -22,6 +23,40 @@ export interface Classroom {
 }
 
 export type ShallowClassroom = Pick<Classroom, 'id' | 'name'>
+
+/**
+ * The student and their attendance status in the report.
+ */
+export interface StudentStatus {
+  studentId: number
+  status: Attendance
+  studentName: string
+}
+
+/**
+ * The information stored for a report.
+ */
+export interface Report {
+  id: number
+  classId: number
+  description: string
+  timestamp: number
+  studentStatuses: StudentStatus[]
+}
+
+export type ShallowReport = Pick<Report, 'id' | 'description' | 'timestamp'>
+
+export interface ReportsServerResponse {
+  id: number,
+  description: string,
+  time: number
+}
+
+const apiReportsToApp = (reports: ReportsServerResponse[]): ShallowReport[] => reports.map(({id, description, time}): ShallowReport => ({
+ id,
+ description,
+ timestamp: time 
+}))
 
 export interface AuthResponse {
   token: string
@@ -38,6 +73,19 @@ const apiStudentToApp = (json: Record<string, any>): StudentData => ({
   orgClass: json.org_class,
   phone: json.phone ?? undefined,
   idNumber: json.id_number ?? undefined
+})
+
+/** Convert the server response to an object with camel casing. */
+const apiReportToApp = (id: number, json: Record<string, any>): Report => ({
+  id,
+  classId: json.class_id,
+  timestamp: json.timestamp,
+  description: json.description,
+  studentStatuses: json.student_statuses.map((status: Record<string, any>) => ({
+    status: status.status,
+    studentName: status.student_name,
+    studentId: status.student_id
+  }))
 })
 
 export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
@@ -99,6 +147,9 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
 
   const deleteAllClassrooms = () => httpClient.delete('api/classrooms').json()
 
+  /**
+   * Sends a request to the server with the specified parameters to create a report.
+   */
   const createReport = (
     id: number,
     file: File,
@@ -116,6 +167,23 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     return httpClient.post(`api/classrooms/${id}/reports`, { body: data }).json()
   }
 
+  /**
+   * Retrieve a specific report by its id.
+   */
+  const getReport = async (classId: number, reportId: number): Promise<Report> => {
+    const res = await httpClient.get(`api/classrooms/${classId}/reports/${reportId}`).json<Record <string, any>>()
+    return apiReportToApp(reportId, res)
+  }
+
+  /**
+   * Fetches all reports for a specific class.
+   */
+  const getAllClassReports = async (classId: number): Promise<ShallowReport[]> => httpClient.get(`/api/classrooms/${classId}/reports`).json().then((res: ) => res.map({id, description, time}) => ({
+    id,
+    description,
+    time: timestamp
+  }))
+
   return {
     login,
     register,
@@ -125,7 +193,8 @@ export const createServiceClient = ({ baseUrl, token }: ClientOptions) => {
     getClassroomById,
     deleteAllClassrooms,
     changeClassroomName,
-    createReport
+    createReport,
+    getReport
   }
 }
 

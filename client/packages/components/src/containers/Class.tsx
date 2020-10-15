@@ -75,7 +75,15 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
       <CreateReportDialog
         open={open}
         onClose={handleClose}
-        onFormSubmit={() => {}}
+        onFormSubmit={(
+          id: number,
+          file: File,
+          timeDelta: number,
+          firstSentence: string,
+          excludedUsers: string,
+          description: string
+        ) => log}
+        classId={parseInt(match.params.id, 10)}
       />
       <Typography variant='h4' gutterBottom>
         {selectedClassroom.name}

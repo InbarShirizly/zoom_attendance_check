@@ -21,6 +21,10 @@ const useStyles = makeStyles(theme => ({
 interface CreateReportDialogProps extends DialogProps {
   open: boolean
   classId: number
+
+  /**
+   * Makes a request to create a new report in the server.
+   */
   onFormSubmit(
     id: number,
     file: File,
@@ -31,9 +35,13 @@ interface CreateReportDialogProps extends DialogProps {
   ): number
 }
 
+/**
+ * Form dialog for creating a new report for the selected class.
+ */
 export const CreateReportDialog = ({
   open = false,
   onClose,
+  classId,
   onFormSubmit
 }: CreateReportDialogProps) => {
   const classes = useStyles()
@@ -41,7 +49,7 @@ export const CreateReportDialog = ({
   const [description, setDescription] = useState<string>()
   const [excludedUsers, setExcludedUsers] = useState<string>()
   const [firstSentence, setFirstSentence] = useState<string>()
-  const [timeDelta, setTimeDelta] = useState<string>()
+  const [timeDelta, setTimeDelta] = useState<number>()
 
   const handleFileChange = useCallback(
     (file: File) => {
@@ -59,7 +67,7 @@ export const CreateReportDialog = ({
 
   const handleTimeDelta = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setTimeDelta(event.target.value)
+      setTimeDelta(parseInt(event.target.value))
     },
     [timeDelta]
   )
@@ -79,8 +87,8 @@ export const CreateReportDialog = ({
   )
 
   const handleSubmit = useCallback(() => {
-    if (description && studentsFile) {
-      onFormSubmit(description, studentsFile)
+    if (description && studentsFile && timeDelta && firstSentence && excludedUsers) {
+      onFormSubmit(classId, studentsFile, timeDelta, firstSentence, excludedUsers, description)
     }
   }, [description, studentsFile, excludedUsers, firstSentence, timeDelta])
 
