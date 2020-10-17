@@ -24,7 +24,7 @@ class ParseClassFile:
         self._mashov_cols = mashov_cols
         self._gender_dict = gender_dict
         self._delete_rows_contain = delete_rows_contain
-
+        # TODO: should add here the filter modes - which are the columns which must be unique
     @classmethod
     def from_object(cls, config):
         return cls(
@@ -83,7 +83,7 @@ class ParseClassFile:
                 cols_to_drop.append(col)
         df_students = df_t.drop(columns=cols_to_drop).T
 
-        df_students.rename(columns={"ת.ז.": 'id_number', "כיתה": "org_class"}, inplace=True)
+        df_students.rename(columns={"תז": 'id_number', "כיתה": "org_class"}, inplace=True)
         try:
             # slice only the columns of data that is relevant to insert to the DB
             df_students = df_students.loc[:, self._mashov_cols]
@@ -99,6 +99,7 @@ class ParseClassFile:
         df_students['name'] = df_name_gender[0]
         return df_students
 
+
     def classic_file(self, df_students):
         """
         parse "classic" files - get all columns with relevant data and create df accordingly
@@ -113,6 +114,15 @@ class ParseClassFile:
                     current_excel_dict[key] = df_students[col]
         return pd.DataFrame(current_excel_dict)
 
+    def check_filter_columns_unique(self): # TODO: create this function
+        # try:
+        #     # slice only the columns of data that is relevant to insert to the DB
+        #     df_students = df_students.loc[:, self._mashov_cols]
+        # except KeyError:
+        #     # if the file don't contain one of the columns - raises ValueError
+        #     raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
+        pass
+
     @staticmethod
     def gender_assign(string, gender_dict):  # TODO: deal with cases of Unknown gender
         """
@@ -125,3 +135,5 @@ class ParseClassFile:
             if string in values:
                 return key
         return ""
+
+
