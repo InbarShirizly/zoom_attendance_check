@@ -16,8 +16,9 @@ class ParseConfig:
         "org_class": ["כיתה", "org_class", "class"]
     }
     MASHOV_COLS = ["name", "org_class", "id_number"]
-    GENDER_DICT = {1: ["זכר", "ז", "(ז)", "m", "male"], 0: ["נקבה", "נ", "(נ)", "f", "female"]}
+    GENDER_DICT = {1: ["זכר", "ז", "m", "male"], 0: ["נקבה", "נ", "f", "female"]}
     DELETE_ROWS_CONTAIN = ["הופק בתאריך"]
+    UNIQUE_COLUMNS_RESTRICTION = ["phone", "id_number", "name"]
 
 
 class ValidatorsConfig:

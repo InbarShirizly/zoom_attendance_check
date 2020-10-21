@@ -10,7 +10,7 @@ class ParseClassFile:
     supports regular files and "Mashov" format.
     """
 
-    def __init__(self, file_cols_dict, mashov_cols, gender_dict, delete_rows_contain):
+    def __init__(self, file_cols_dict, mashov_cols, gender_dict, delete_rows_contain, unique_columns_restriction):
         """
         receives configurations from "from object" which is initiated in the config module
         :param file_cols_dict: columns name in the DB (keys)
@@ -24,14 +24,15 @@ class ParseClassFile:
         self._mashov_cols = mashov_cols
         self._gender_dict = gender_dict
         self._delete_rows_contain = delete_rows_contain
-        # TODO: should add here the filter modes - which are the columns which must be unique
+        self._unique_columns_restriction = unique_columns_restriction
     @classmethod
     def from_object(cls, config):
         return cls(
             config.FILE_COLS_DICT,
             config.MASHOV_COLS,
             config.GENDER_DICT,
-            config.DELETE_ROWS_CONTAIN
+            config.DELETE_ROWS_CONTAIN,
+            config.UNIQUE_COLUMNS_RESTRICTION
         )
 
     def parse_df(self, df_students):
@@ -47,7 +48,7 @@ class ParseClassFile:
                 df_students[col] = pd.Series([np.nan] * df_students.shape[0])
 
         final_df = df_students[list(self._file_cols_dict.keys())]
-
+        self.check_filter_columns_unique(final_df)  # check that all values in filters columns are unique
         return final_df.reset_index().drop(columns="index")
 
 
@@ -114,14 +115,14 @@ class ParseClassFile:
                     current_excel_dict[key] = df_students[col]
         return pd.DataFrame(current_excel_dict)
 
-    def check_filter_columns_unique(self): # TODO: create this function
-        # try:
-        #     # slice only the columns of data that is relevant to insert to the DB
-        #     df_students = df_students.loc[:, self._mashov_cols]
-        # except KeyError:
-        #     # if the file don't contain one of the columns - raises ValueError
-        #     raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
-        pass
+    def check_filter_columns_unique(self, df_students):
+        # TODO: add docstring
+        for col in self._unique_columns_restriction:
+            if col in df_students.columns:
+                if not df_students[col].is_unique:
+                    raise ValueError(RestErrors.INVALID_STUDENTS_FILE)
+
+
 
     @staticmethod
     def gender_assign(string, gender_dict):  # TODO: deal with cases of Unknown gender
