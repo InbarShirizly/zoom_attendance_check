@@ -1,80 +1,82 @@
 import pytest
-import sys
-sys.path.append('../')
-from server.parsing.parse_class_file import ParseClassFile
-from server.parsing.utils import create_students_df
-from server.config import ParseConfig
 import os
+import numpy as np
 
 
 @pytest.fixture(scope="module")
-def folders():
-    CHAT_FILES_FOLDER = "./files_to_test/chat_files"
-    STUDENT_EXCEL_FILES_FOLDER = "./files_to_test/students_list_excel"
-    return {"chat_folder": CHAT_FILES_FOLDER, "student_list_folder": STUDENT_EXCEL_FILES_FOLDER}
-
-@pytest.fixture(scope="module")
-def parser():
-    return ParseClassFile.from_object(ParseConfig)
-
-
-@pytest.fixture(scope="module")
-def student_full_columns_columns(parser, folders):
-    return ["id", "phone", "id_number", "name", "org_class", "gender"]
+def create_students_with_nonunique():
+    def arrange_df_students_with_nonunique(df_students):
+        print(df_students)
+        return df_students
+    return arrange_df_students_with_nonunique
 
 
 class TestParseClassFile:
 
-    class TestMashoveFiles:
+    student_list_files = [
+        ("example_mashov_file_edited_and_saved_97.xls", True, (17, 4)),
+        ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, (17, 4)),
+        ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, (17, 4)),
+        ("example_csv_english_nba_8_students.csv", False, (8, 4)),
+        ("example_excel_english_nba_7_students.xlsx", False, (7, 3)),
+        ("example_excel_hebrew_7_students.xlsx", False, (7, 3)),
+        ("example_excel_start_in_random_row.xlsx", False, (7, 3)),
+        ("example_excel_english_non_regular_column_names.xlsx", False, (7, 5)),
+        ("דוגמה לרשימת תלמידים.xlsx", False, (7, 3)),
+                      ]
 
-        mashov_files_valid_data = [
-            ("רשימה מקורית.xls", True, 17),
-            ("example_mashov_file_edited_and_saved_97.xls", True, 17),
-            ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
-            ("example_mashov_file_edited_and_saved_97_with_filled_data.xls", True, 17),
-            ("example_excel.xlsx", False, 0),
-            ("example_excel_english.xlsx", False, 0),
-            ("example_excel_start_in_random_row.xlsx", False, 0),
-        ]
+    @pytest.mark.parametrize(("excel_file_name", "expected_output", "df_shape"), student_list_files)
+    def test_check_if_mashov_file(self, parser, folders, create_no_parse_df_students_func, excel_file_name, expected_output, df_shape):
+        df_students = create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        assert parser.check_if_mashov_file(df_students) == expected_output
 
-        @pytest.mark.parametrize(("file_name", "expected_output", "num_records"), mashov_files_valid_data)
-        def test_check_if_mashov_file(self, parser, folders, file_name, expected_output, num_records):
-            file_ext = "." + file_name.split(".")[-1]
-            df_students = create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
-            assert parser.check_if_mashov_file(df_students) == expected_output
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_mashov_file(self, parser, folders, excel_file_name, create_no_parse_df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        if parser.check_if_mashov_file(df_students):
+            result_df = parser.mashov_file(df_students)
+            assert result_df.shape == df_shape
+            assert result_df.columns.isin(student_full_columns).all()
+        else:
+            assert True
 
-        @pytest.mark.parametrize(("file_name", "if_is_mashov_file", "num_records"), mashov_files_valid_data)
-        def test_mashov_file(self, parser, folders, file_name, student_full_columns_columns, if_is_mashov_file, num_records):
-            file_ext = "." + file_name.split(".")[-1]
-            df_students = create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
-            if parser.check_if_mashov_file(df_students):
-                result_df = parser.mashov_file(df_students)
-                assert result_df.shape[0] == num_records
-                assert result_df.columns.isin(student_full_columns_columns).all()
-            else:
-                assert True
-
-
-    class TestBasicFiles:
-
-        classic_files_data = [
-            ("example_csv.csv", 8),
-            ("example_csv_2.csv", 7),
-            ("example_csv_2.csv", 7),
-            ("example_excel.xlsx", 7),
-            ("example_excel.xlsx", 7),
-            ("example_excel_start_in_random_row.xlsx", 7),
-            ("דוגמה לרשימת תלמידים.xlsx", 7)
-        ]
-
-        @pytest.mark.parametrize(("file_name", "num_records"), classic_files_data)
-        def test_basic_file(self, parser, folders, file_name, student_full_columns_columns, num_records):
-            file_ext = "." + file_name.split(".")[-1]
-            df_students = create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_classic_file(self, parser, folders, excel_file_name, create_no_parse_df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        if not parser.check_if_mashov_file(df_students):
             result_df = parser.classic_file(df_students)
-            assert result_df.shape[0] == num_records
-            assert result_df.columns.isin(student_full_columns_columns).all()
+            assert result_df.shape == df_shape
+            assert result_df.columns.isin(student_full_columns).all()
+        else:
+            assert True
+
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_check_filter_columns_unique(self, parser, folders, excel_file_name, create_no_parse_df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        if parser.check_if_mashov_file(df_students):
+            result_df = parser.mashov_file(df_students)
+        else:
+            result_df = parser.classic_file(df_students)
+
+        new_row = {"name": "check name", "org_class": "A2", "id_number": "111111111", "gender": 1, "phone": 528702485}
+        chosen_col = np.random.choice([col for col in result_df.columns if col in parser._unique_columns_restriction])
+        non_unique_value = result_df[chosen_col].sample(1).iloc[0]
+        new_row[chosen_col] = non_unique_value
+        result_df.loc[len(result_df)] = [new_row[col] for col in result_df.columns]
+
+        with pytest.raises(ValueError):
+            assert parser.check_filter_columns_unique(result_df)
 
 
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_parse_df(self, parser, folders, excel_file_name, df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        assert df_students.shape == (df_shape[0], len(student_full_columns))
+
+
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_gender_parsing(self, parser, folders, excel_file_name, df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        assert df_students["gender"].isin([0, 1, np.nan]).all()
 
 

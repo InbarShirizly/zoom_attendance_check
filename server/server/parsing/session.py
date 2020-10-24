@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class Session:
     """
     generate relevant chat for each session. message is marked as relevant if the zoom user wrote something that is

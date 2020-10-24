@@ -8,7 +8,7 @@
 10:46:20	 From  the magic : magic jonnson
 10:46:22	 From  KD : 305696031
 10:48:22	 From  L. Bird : 537642324
-10:50:00	 From  Bill Russell: Bill Russell
+10:50:00	 From  Bill Russell : Bill Russell
 
 # session 2 - should find ["Bill Russell", "Idan Aviv", "Kevin Durant", "James Harden"]. here "the magic" (wrote another name and then himself - will ignore it). minutes  >=1 for "Larry Bird". >=5 "Micheal Jordan"
 10:57:22	 From  Roei teacher : Attendance check
@@ -20,7 +20,7 @@
 10:57:55	 From  Dana : here
 10:58:46	 From  Ron : ron
 10:58:54	 From  L. Bird : Larry Bird
-11:02:00	 From  MJ: Micheal Jordan
+11:02:00	 From  MJ : Micheal Jordan
 
 # session 3 - should find ["Idan Aviv", "Kevin Durant", "James Harden"] - checking not auth user writing the "start sentence". minutes >=5: "Larry Bird"
 

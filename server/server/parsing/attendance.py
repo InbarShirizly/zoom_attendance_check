@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from server.parsing.session import Session
 from server.parsing import AttendanceMetaData
-
+from server.parsing.utils import clean_string
 
 class Attendance:
     """
@@ -23,17 +23,24 @@ class Attendance:
         """
         # create a nametuple for several values
         meta_data = AttendanceMetaData(filter_modes=filter_modes, time_delta=time_delta,
-                                       start_sentence=start_sentence, zoom_names_to_ignore=zoom_names_to_ignore)
+                                       start_sentence=start_sentence.lower(), zoom_names_to_ignore=zoom_names_to_ignore)
 
         self.first_message_time = chat_df["time"].sort_values().iloc[0] # get time of first message in the chat
         start_indices = Attendance.get_start_indices(chat_df, meta_data)
-        df_students_for_report = students_df.set_index("id").astype(str).reset_index()  # set all columns to str except the id
-        self._df_students = df_students_for_report
+        self._df_students, report_df = Attendance.prepare_chat_and_classroom(students_df, chat_df)
 
         self._sessions = []
         for ind in range(len(start_indices)):
-            df_session = Attendance.get_df_of_time_segment(chat_df, start_indices, ind, time_delta)
+            df_session = Attendance.get_df_of_time_segment(report_df, start_indices, ind, time_delta)
             self._sessions.append(Session(self._df_students, df_session, meta_data))
+
+    @staticmethod
+    def prepare_chat_and_classroom(students_df, chat_df):
+        # set all columns to str except the id
+        df_students_for_report = students_df.set_index("id").astype(str)
+        df_students_for_report = df_students_for_report.applymap(clean_string).reset_index()
+        chat_df["message"] = chat_df["message"].apply(clean_string)
+        return df_students_for_report, chat_df
 
     @staticmethod
     def get_start_indices(df, meta_data):
@@ -87,8 +94,8 @@ class Attendance:
             # create columns for each session - if the student name id is part of the relevant chat (which means student wasn't missing) - row=1
             df_status_report[f"session_{i}"] = df_status_report["id"].apply(lambda x: 1 if x in session_object._relevant_chat["id"].values else np.nan)
 
-        status = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)  # {0 : "red", 1: "yellow", 2: "green"}
-        # check status of each student according to colors code (0 == missing, 1 == partially missing, 2 == participated in all sessions)
+        status = lambda row: 0 if row.isna().all() else (1 if row.isna().any() else 2)
+        # check status of each student according to colors code {0 : "red", 1: "yellow", 2: "green"}
         df_status_report["status"] = df_status_report.loc[:, df_status_report.columns.str.startswith('session')].apply(status, axis=1)
         df_status_report['report_id'] = pd.Series([report_id] * df_status_report.shape[0])
         df_status_report.rename(columns={"id": "student_id"}, inplace=True)
