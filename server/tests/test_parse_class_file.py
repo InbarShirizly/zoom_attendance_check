@@ -21,7 +21,7 @@ class TestParseClassFile:
         ("example_excel_english_nba_7_students.xlsx", False, (7, 3)),
         ("example_excel_hebrew_7_students.xlsx", False, (7, 3)),
         ("example_excel_start_in_random_row.xlsx", False, (7, 3)),
-        ("example_excel_english_non_regular_column_names.xlsx", False, (7, 4)),
+        ("example_excel_english_non_regular_column_names.xlsx", False, (7, 5)),
         ("דוגמה לרשימת תלמידים.xlsx", False, (7, 3)),
                       ]
 
@@ -68,8 +68,15 @@ class TestParseClassFile:
             assert parser.check_filter_columns_unique(result_df)
 
 
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_parse_df(self, parser, folders, excel_file_name, df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        assert df_students.shape == (df_shape[0], len(student_full_columns))
 
 
-
+    @pytest.mark.parametrize(("excel_file_name", "if_is_mashov_file", "df_shape"), student_list_files)
+    def test_gender_parsing(self, parser, folders, excel_file_name, df_students_func, student_full_columns, if_is_mashov_file, df_shape):
+        df_students = df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
+        assert df_students["gender"].isin([0, 1, np.nan]).all()
 
 
