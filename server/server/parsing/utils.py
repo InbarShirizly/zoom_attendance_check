@@ -2,8 +2,6 @@ import re
 from datetime import datetime
 import pandas as pd
 import numpy as np
-from server.config import RestErrors
-
 
 def create_chat_df(chat_file):
     """
@@ -46,7 +44,6 @@ def create_students_df(file_ext, file_data):
 
 
 def clean_student_df(df_students):
-    # TODO : need to drop columns that the uniqueness is very low - and after parsing check uniqueness for important columns - here is a problem with this
     """
     cleaning process over the student list data-frame.
     1. removes empty rows and columns
@@ -62,9 +59,13 @@ def clean_student_df(df_students):
     # drop columns with at least 20% missing values
     df_students.dropna(axis=1, thresh=len(df_students) * 0.2, inplace=True)
     df_students = pd.DataFrame(df_students.values[1:], columns=df_students.iloc[0])
-    df_students.columns = [clean_columns_names(col) if isinstance(col, str) else np.nan for col in df_students.columns ]
+    # clean columns names - rename to more generic form
+    df_students.columns = [clean_columns_names(col) if isinstance(col, str) else np.nan for col in df_students.columns]
+    # drop column with the same name - keep the first
+    df_students = df_students.loc[:, ~df_students.columns.duplicated()]   # drop column with the same name - keep the first
     return df_students
 
 
 def clean_columns_names(string):
-    return string.replace('"','').replace("'","").replace(".","").strip()
+    return re.sub(r"['\".\/\\]", "", string=string).lower().replace("_"," ")
+
