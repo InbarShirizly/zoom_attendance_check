@@ -21,6 +21,7 @@ class TestParseClassFile:
         ("example_excel_english_nba_7_students.xlsx", False, (7, 3)),
         ("example_excel_hebrew_7_students.xlsx", False, (7, 3)),
         ("example_excel_start_in_random_row.xlsx", False, (7, 3)),
+        ("example_excel_english_non_regular_column_names.xlsx", False, (7, 4)),
         ("דוגמה לרשימת תלמידים.xlsx", False, (7, 3)),
                       ]
 
@@ -65,6 +66,10 @@ class TestParseClassFile:
 
         with pytest.raises(ValueError):
             assert parser.check_filter_columns_unique(result_df)
+
+
+
+
 
 
 

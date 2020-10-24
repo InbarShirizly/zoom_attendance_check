@@ -107,16 +107,13 @@ class ParseClassFile:
         :param df_students: df of the cleaned "classic" file (df)
         :return: data frame with relevant data to insert to the DB (df)
         """
-
         relevant_cols = [col for col in df_students.columns if not col.startswith("Unnamed")]
         current_excel_dict = {}
-        # TODO: problems here - need to understand how to use the new regex method
         for col in relevant_cols:
             for key, col_options in self._file_cols_dict.items():
-                for option in col_options:
-                    if re.match(rf"\b{option}(e)?(s)?\b", col):
-                        current_excel_dict[key] = df_students[col]
-                        break
+                if re.search(rf"\b{'|'.join(col_options)}(e)?(s)?\b", col):
+                    current_excel_dict[key] = df_students[col]
+                    break
         return pd.DataFrame(current_excel_dict)
 
     def check_filter_columns_unique(self, df_students):
