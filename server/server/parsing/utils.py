@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+
 def create_chat_df(chat_file):
     """
     parse the raw chat file from zoom to a df. if a row is not in the "zoom row format" it will not be part of the df
@@ -60,12 +61,13 @@ def clean_student_df(df_students):
     df_students.dropna(axis=1, thresh=len(df_students) * 0.2, inplace=True)
     df_students = pd.DataFrame(df_students.values[1:], columns=df_students.iloc[0])
     # clean columns names - rename to more generic form
-    df_students.columns = [clean_columns_names(col) if isinstance(col, str) else np.nan for col in df_students.columns]
+    df_students.columns = [clean_string(col) if isinstance(col, str) else np.nan for col in df_students.columns]
     # drop column with the same name - keep the first
     df_students = df_students.loc[:, ~df_students.columns.duplicated()]   # drop column with the same name - keep the first
     return df_students
 
 
-def clean_columns_names(string):
-    return re.sub(r"['\".\/\\]", "", string=string).lower().replace("_"," ")
+def clean_string(string):
+    return re.sub(r"['\".\/\\]", "", string=string).lower().replace("_"," ").strip()
+
 

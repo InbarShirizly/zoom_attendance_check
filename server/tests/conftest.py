@@ -16,6 +16,10 @@ def student_full_columns(parser, folders):
     return ["id", "phone", "id_number", "name", "org_class", "gender"]
 
 @pytest.fixture
+def filter_modes():
+    return ["phone", "id_number", "name"]
+
+@pytest.fixture
 def parser():
     return ParseClassFile.from_object(ParseConfig)
 
@@ -49,3 +53,4 @@ def chat_df_func():
             chat_df = create_chat_df(f.readlines())
         return chat_df
     return arrange_chat_df
+

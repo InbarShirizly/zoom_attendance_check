@@ -2,13 +2,13 @@ import pytest
 import os
 import numpy as np
 
+
 @pytest.fixture(scope="module")
 def create_students_with_nonunique():
     def arrange_df_students_with_nonunique(df_students):
         print(df_students)
         return df_students
     return arrange_df_students_with_nonunique
-
 
 
 class TestParseClassFile:

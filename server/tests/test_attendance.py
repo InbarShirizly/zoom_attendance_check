@@ -5,11 +5,6 @@ from server.parsing.attendance import Attendance
 from server.parsing import AttendanceMetaData
 
 
-@pytest.fixture(scope="module")
-def filter_modes():
-    return ["phone", "id_number", "name"]
-
-
 class TestAttendance:
     chat_files_data = [
         ("chat_file_valid_hebrew_7_students.txt", "example_excel_hebrew_7_students.xlsx", 1, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"]),
@@ -69,8 +64,11 @@ class TestAttendance:
         ("chat_file_valid_hebrew_7_students.txt", "example_excel_hebrew_7_students.xlsx", 2, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 0, 1]),
         ("chat_file_valid_hebrew_7_students.txt", "example_excel_hebrew_7_students.xlsx", 4, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 1, 1]),
         ("chat_file_valid_hebrew_7_students.txt", "example_excel_hebrew_7_students.xlsx", 5, "בדיקת נוכחות", ["Roei teacher", "Elad Visitor"], [1, 1, 2, 1, 1, 2, 1]),
-        ("chat_file_valid_english_nba_7_students.txt", "example_excel_english_nba_7_students.xlsx", 1, "Attendance check", ["Roei teacher", "Elad Visitor"], [1, 2, 0, 1, 2, 0, 1])
-        ]
+        ("chat_file_valid_english_nba_7_students.txt", "example_excel_english_nba_7_students.xlsx", 1, "Attendance check", ["Roei teacher", "Elad Visitor"], [1, 2, 0, 1, 2, 0, 1]),
+        ("chat_file_valid_english_nba_7_students.txt", "example_excel_english_nba_7_students.xlsx", 3, "Attendance check", ["Roei teacher", "Elad Visitor"], [1, 2, 0, 1, 2, 1, 1]),
+        ("chat_file_valid_english_nba_7_students.txt", "example_excel_english_nba_7_students.xlsx", 5, "Attendance check", ["Roei teacher", "Elad Visitor"], [1, 2, 1, 1, 2, 1, 1])
+
+    ]
 
     @pytest.mark.parametrize(
         ("chat_file_name", "excel_file_name", "time_delta", "start_sentence", "zoom_names_to_ignore", "status_list"),
