@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+import json
 from server.config import RestErrors
 
 
@@ -37,6 +38,13 @@ class ParseClassFile:
         )
 
     def parse_df(self, df_students):
+        """
+        parsing the raw df from the file. parse different if mashov file, add all the columns that wasn't in the
+        file but are part of the database. assigns gender for the relevant column. makes sure filter columns are unique
+        and add country name and code as "public" unique data for each student
+        :param df_students: given df
+        :return: df parsed ready to load to db
+        """
         if ParseClassFile.check_if_mashov_file(df_students):
             df_students = self.mashov_file(df_students)
         else:
@@ -50,6 +58,7 @@ class ParseClassFile:
 
         final_df = df_students[list(self._file_cols_dict.keys())]
         final_df['gender'] = final_df['gender'].apply(self.gender_assign)  # assigning gender using the class func
+        final_df = self.add_country_and_code_to_students(final_df)
         self.check_filter_columns_unique(final_df)  # check that all values in filters columns are unique
         return final_df.reset_index().drop(columns="index")
 
@@ -141,5 +150,18 @@ class ParseClassFile:
             if string in values:
                 return key
         return np.nan
-
-
+    
+    @staticmethod
+    def add_country_and_code_to_students(df_students):
+        """
+        add random country and country code to each student
+        :param df_students: df of the students
+        :return: df enriched by country and code
+        """
+        with open(r"server\server\parsing\countries.json") as f:
+            countries_json = json.load(f)
+        countries_df = pd.DataFrame(countries_json).sample(len(df_students)).reset_index().drop(columns="index")
+        countries_df.rename(columns={"name": "country", "code": "country_code"}, inplace=True)
+        return pd.concat([df_students, countries_df], axis=1)
+        
+        
