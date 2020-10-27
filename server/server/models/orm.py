@@ -35,6 +35,8 @@ class StudentModel(db.Model):
     org_class = db.Column(db.String(20), unique=False, nullable=True)
     gender = db.Column(db.Boolean, unique=False, nullable=True)  # True means male
     phone = db.Column(db.String(12), unique=False, nullable=True)
+    country = db.Column(db.String(45), unique=False, nullable=False)  # max chars for a country name in the json file
+    country_code = db.Column(db.String(2), unique=False, nullable=False) # max chars in the country code from json file
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom.id'), nullable=False)
     zoom_names = db.relationship('ZoomNamesModel', backref='student', lazy=True)

@@ -18,7 +18,7 @@ class ParseConfig:
     MASHOV_COLS = ["name", "org_class", "id_number"]
     GENDER_DICT = {1: ["זכר", "ז", "m", "male"], 0: ["נקבה", "נ", "f", "female"]}
     DELETE_ROWS_CONTAIN = ["הופק בתאריך"]
-    UNIQUE_COLUMNS_RESTRICTION = ["phone", "id_number", "name"]
+    UNIQUE_COLUMNS_RESTRICTION = ["phone", "id_number", "name", "country", "country_code"]
 
 
 class ValidatorsConfig:

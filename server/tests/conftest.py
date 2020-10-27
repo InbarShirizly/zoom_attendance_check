@@ -6,14 +6,14 @@ from server.parsing.utils import create_students_df, create_chat_df
 
 @pytest.fixture
 def folders():
-    chat_files_folder = "./files_to_test/chat_files"
-    student_list_files_folder = "./files_to_test/students_list_excel"
+    chat_files_folder = "tests/files_to_test/chat_files"
+    student_list_files_folder = "tests/files_to_test/students_list_excel"
     return {"chat_files_folder": chat_files_folder, "student_list_files_folder": student_list_files_folder}
 
 
 @pytest.fixture
 def student_full_columns(parser, folders):
-    return ["id", "phone", "id_number", "name", "org_class", "gender"]
+    return ["id", "phone", "id_number", "name", "org_class", "gender", "country", "country_code"]
 
 @pytest.fixture
 def filter_modes():
