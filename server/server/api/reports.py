@@ -63,7 +63,10 @@ class ReportsResource(Resource):
         args = self._post_args.parse_args()
 
         students_df = pd.read_sql(StudentModel.query.filter_by(class_id=class_id).statement, con=db.engine)
-        report_object = Attendance(args['chat_file'], students_df, ['name', "id_number", "phone"], args['time_delta'], args['first_sentence'], args['not_included_zoom_users'])
+        report_object = Attendance(args['chat_file'], students_df,
+                                   ['name', "id_number", "phone", "country", "country_code"],
+                                   args['time_delta'], args['first_sentence'],
+                                   args['not_included_zoom_users'])  #TODO: should get "filters" from config
 
         new_report = ReportModel(description=args['description'], report_time=args["date"], class_id=class_id)
         db.session.add(new_report)
