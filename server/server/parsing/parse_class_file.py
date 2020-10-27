@@ -158,7 +158,7 @@ class ParseClassFile:
         :param df_students: df of the students
         :return: df enriched by country and code
         """
-        with open(r"server\server\parsing\countries.json") as f:
+        with open(r"server\parsing\countries.json") as f:
             countries_json = json.load(f)
         countries_df = pd.DataFrame(countries_json).sample(len(df_students)).reset_index().drop(columns="index")
         countries_df.rename(columns={"name": "country", "code": "country_code"}, inplace=True)

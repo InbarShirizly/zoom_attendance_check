@@ -6,8 +6,8 @@ from server.parsing.utils import create_students_df, create_chat_df
 
 @pytest.fixture
 def folders():
-    chat_files_folder = "server/tests/files_to_test/chat_files"
-    student_list_files_folder = "server/tests/files_to_test/students_list_excel"
+    chat_files_folder = "tests/files_to_test/chat_files"
+    student_list_files_folder = "tests/files_to_test/students_list_excel"
     return {"chat_files_folder": chat_files_folder, "student_list_files_folder": student_list_files_folder}
 
 
