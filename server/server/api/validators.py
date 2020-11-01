@@ -87,7 +87,7 @@ class Validators:
         
     def students_file(self, value):
         """
-        The function will make sure the student file has the right extenstion
+        The function will make sure the student file has the right extension
         :param value: the student file (FileStorage)
         :return: all the students from the file (Pandas DataFrame)
         """
@@ -103,7 +103,7 @@ class Validators:
 
     def chat_file(self, value):
         """
-        The function will make sure the chat file has the right extenstion
+        The function will make sure the chat file has the right extension
         :param value: the chat file (FileStorage)
         :return: The chat as dataframe (Pandas Dataframe)
         """

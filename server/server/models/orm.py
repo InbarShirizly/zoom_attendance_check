@@ -1,5 +1,5 @@
 from server import db
-
+from datetime import datetime
 
 class TeacherModel(db.Model):
     __tablename__ = 'teacher'
@@ -8,7 +8,8 @@ class TeacherModel(db.Model):
     username = db.Column(db.String(40), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False) # 60 chars because of the hashing algo
-   
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
     classrooms = db.relationship('ClassroomModel', backref='teacher', lazy=True)
     
     def __repr__(self):
@@ -20,6 +21,7 @@ class ClassroomModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), unique=False, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
     students = db.relationship('StudentModel', backref='classroom', cascade="all,delete", lazy=True)
@@ -49,6 +51,7 @@ class ReportModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text(), unique=False, nullable=True)
     report_time = db.Column(db.DateTime(), unique=False, nullable=False) # first timestamp of chat file, date by user or date of the request
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     class_id = db.Column(db.Integer, db.ForeignKey('classroom.id'), nullable=False)
     sessions = db.relationship('SessionModel', backref='report',cascade="all,delete", lazy=True)
@@ -60,6 +63,7 @@ class SessionModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime(), unique=False, nullable=False) # first timestamp of chat session
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'), nullable=False)
     zoom_names = db.relationship('ZoomNamesModel', backref='session',cascade="all,delete", lazy=True)
@@ -70,6 +74,7 @@ class ZoomNamesModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False, nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=True) # if Null - means the student wasn't present in the session
@@ -83,6 +88,7 @@ class ChatModel(db.Model):
     time = db.Column(db.DateTime, unique=False, nullable=False)  # time the message written
     message = db.Column(db.Text, unique=False, nullable=True)  # message zoom user wrote
     relevant = db.Column(db.Boolean, unique=False, nullable=False)  # True is message is part of the report
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     zoom_names_id = db.Column(db.Integer, db.ForeignKey('zoom_names.id'), nullable=False)
 
@@ -92,6 +98,7 @@ class StudentStatus(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Integer, unique=False, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'), nullable=False)

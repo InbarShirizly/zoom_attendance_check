@@ -8,8 +8,9 @@ from server.models.orm import StudentModel, ClassroomModel, ReportModel, Session
 from server.api.utils import validate_classroom
 from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import report_resource_field, reports_list_fields
-from server.models.utils import store_sessions_and_chat_data
+from server.models.utils import store_sessions_and_chat_data, delete_old_chat_data
 from server.config import FlaskConfig
+
 
 class ReportsResource(Resource):
     """
@@ -73,12 +74,16 @@ class ReportsResource(Resource):
         db.session.commit()
 
         student_status_df = report_object.student_status_table(new_report.id)
+        student_status_df["timestamp"] = datetime.utcnow()
         student_status_df.to_sql('student_status', con=db.engine, if_exists="append", index=False)
 
         # checks if to store the data for the session, chat and zoom names in the report
         if FlaskConfig.STORE_CHAT:
             # store all the chat, session and zoom names data from a report -  currently not supported
             store_sessions_and_chat_data(report_object.report_sessions, new_report.id)
+
+        # delete old chat files  # TODO : should be a cron job and not only when we post new report
+        delete_old_chat_data(ValidatorsConfig.TIME_PERIOD_TO_DELETE_REPORT_DATA)
 
         return new_report
 

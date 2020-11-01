@@ -4,7 +4,7 @@ import string
 class FlaskConfig:
     SECRET_KEY = 'TEMP_SECRET_KEY'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    STORE_CHAT = False # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
+    STORE_CHAT = True # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
 
 
 class ParseConfig:
@@ -28,8 +28,9 @@ class ValidatorsConfig:
     CHAT_FILE_EXT = [".txt"]
     STUDENTS_FILE_EXT = [".xls", ".xlsx", ".csv"]
     MAX_CLASSROOMS = 10  # Max classrooms per students
-    MAX_REPORTS = 7  # Max reports per classroom
+    MAX_REPORTS = 12  # Max reports per classroom
     MAX_STUDENTS_IN_CLASS = 200
+    TIME_PERIOD_TO_DELETE_REPORT_DATA = 60 * 60  # in seconds
 
 class RestErrors:
     INVALID_ROUTE = "route_doesn't_exists"
