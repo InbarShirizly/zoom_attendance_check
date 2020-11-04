@@ -1,28 +1,18 @@
 import pytest
-import sys
-sys.path.append('../')
-from server.parsing.utils import create_chat_df, create_students_df
 import os
 
-
-@pytest.fixture
-def folders():
-    CHAT_FILES_FOLDER = "./files_to_test/chat_files"
-    STUDENT_EXCEL_FILES_FOLDER = "./files_to_test/students_list_excel"
-    return {"chat_folder": CHAT_FILES_FOLDER, "student_list_folder": STUDENT_EXCEL_FILES_FOLDER}
 
 class TestChatAndStudent:
 
     chat_files_data_regular = [
-        "chat_file_valid.txt",
-        "chat_file_valid_english_nba.txt"
+        "chat_file_valid_english_nba_7_students.txt",
+        "chat_file_valid_hebrew_7_students.txt"
     ]
 
-    @pytest.mark.parametrize(("file_name"),  chat_files_data_regular)
-    def test_create_chat_df_validation_regular(self, folders, file_name):
-        with open(os.path.join(folders["chat_folder"], file_name), "r", encoding="utf-8") as f:
-            chat_df = create_chat_df(f.readlines())
-        assert chat_df.empty == False
+    @pytest.mark.parametrize("chat_file_name",  chat_files_data_regular)
+    def test_create_chat_df_validation_regular(self, folders, chat_df_func, chat_file_name):
+        chat_df = chat_df_func(os.path.join(folders["chat_files_folder"], chat_file_name))
+        assert not chat_df.empty
 
     chat_files_data_empty = [
         "chat_file_empty.txt",
@@ -30,28 +20,25 @@ class TestChatAndStudent:
         "chat_file_not_structured_partially.txt",
     ]
 
-    @pytest.mark.parametrize(("file_name"), chat_files_data_empty)
-    def test_create_chat_df_validation_empty(self, folders, file_name):
-        with open(os.path.join(folders["chat_folder"], file_name), "r", encoding="utf-8") as f:
-            with pytest.raises(ValueError):
-                assert create_chat_df(f.readlines())
+    @pytest.mark.parametrize("chat_file_name", chat_files_data_empty)
+    def test_create_chat_df_validation_empty(self, folders, chat_df_func, chat_file_name):
+        with pytest.raises(ValueError):
+            assert chat_df_func(os.path.join(folders["chat_files_folder"], chat_file_name))
+
 
     student_list_files_data = [
-        "example_csv.csv",
-        "example_csv_2.csv",
-        "example_csv_3.csv",
-        "example_csv_4.csv",
-        "example_excel.xlsx",
+        "example_csv_english_nba_8_students.csv",
+        "example_excel_english_nba_7_students.xlsx",
+        "example_excel_hebrew_7_students.xlsx",
         "example_excel_start_in_random_row.xlsx",
         "example_mashov_file_edited_and_saved_97.xls",
         "example_mashov_file_edited_and_saved_97_with_filled_data.xls",
-        "רשימה מקורית.xls",
+        "דוגמה לרשימת תלמידים.xlsx",
     ]
 
-    @pytest.mark.parametrize("file_name", student_list_files_data)
-    def test_create_students_df_validation(self, folders, file_name):
-        file_ext = "." + file_name.split(".")[-1]
-        df_students = create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
+    @pytest.mark.parametrize("excel_file_name", student_list_files_data)
+    def test_create_students_df_validation(self, folders, create_no_parse_df_students_func, excel_file_name):
+        df_students = create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
         assert not df_students.empty
 
     student_list_files_data_problems = [
@@ -59,10 +46,9 @@ class TestChatAndStudent:
         "example_excel_too_much_records.xlsx"
     ]
 
-    @pytest.mark.parametrize("file_name", student_list_files_data_problems)
-    def test_create_students_df_validation_problem(self, folders, file_name):
+    @pytest.mark.parametrize("excel_file_name", student_list_files_data_problems)
+    def test_create_students_df_validation_problem(self, folders, create_no_parse_df_students_func, excel_file_name):
         with pytest.raises(ValueError):
-            file_ext = "." + file_name.split(".")[-1]
-            assert create_students_df(file_ext, os.path.join(folders["student_list_folder"], file_name))
+            assert create_no_parse_df_students_func(os.path.join(folders["student_list_files_folder"], excel_file_name))
 
 

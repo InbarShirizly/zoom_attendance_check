@@ -9,7 +9,9 @@ class StudentItemField(fields.Raw): # Custom field to parse StudentModel object
 			'id_number': value.id_number,
 			'org_class': value.org_class,
 			'gender': value.gender,
-			'phone': value.phone
+			'phone': value.phone,
+			'country': value.country,
+			'country_code': value.country_code
 		}
 
 class StatusItemField(fields.Raw): # Custom field to parse StatusModel

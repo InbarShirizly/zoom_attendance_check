@@ -2,8 +2,6 @@ from server.api import api, custom_types
 from flask_restful import Resource, reqparse, abort, marshal, marshal_with
 from server import auth, db
 from server.models.orm import TeacherModel, ClassroomModel
-from server.parsing import parser
-from server.parsing.utils import create_students_df
 import pandas as pd
 from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import classrooms_list_fields, classroom_resource_fields
