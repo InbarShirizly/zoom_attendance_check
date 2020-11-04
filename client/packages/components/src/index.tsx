@@ -28,7 +28,7 @@ const Routes = (i18nProps: WithTranslateProps) => {
       </Route>
 
       <Route path='/register'>
-        <Register {...i18nProps} />
+        {authState.token ? <Redirect to={{ pathname: '/home', state: { registrationSuccess: true } }} /> : <Register {...i18nProps} />}
       </Route>
 
       <Route path='/home'>
