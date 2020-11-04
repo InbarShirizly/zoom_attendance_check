@@ -3,7 +3,7 @@ import numpy as np
 import re
 import json
 from server.config import RestErrors
-
+import os
 
 class ParseClassFile:
     """
@@ -158,7 +158,8 @@ class ParseClassFile:
         :param df_students: df of the students
         :return: df enriched by country and code
         """
-        with open(r"server\parsing\countries.json") as f:
+        countries_path = os.path.join("server", "parsing", "countries.json")
+        with open(countries_path) as f:
             countries_json = json.load(f)
         countries_df = pd.DataFrame(countries_json).sample(len(df_students)).reset_index().drop(columns="index")
         countries_df.rename(columns={"name": "country", "code": "country_code"}, inplace=True)
