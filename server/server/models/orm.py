@@ -1,5 +1,6 @@
-from server import db
+from server import db, app
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 class TeacherModel(db.Model):
     __tablename__ = 'teacher'
@@ -11,7 +12,10 @@ class TeacherModel(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     classrooms = db.relationship('ClassroomModel', backref='teacher', lazy=True)
-    
+
+    def get_reset_token(self, expires_sec=100):
+        s = Serializer(app.config["SECRET_KEY"], expires_sec)
+
     def __repr__(self):
         return f'Teacher({self.username}, {self.email}, {self.password})'
 

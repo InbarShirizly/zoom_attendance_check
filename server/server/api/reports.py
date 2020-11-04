@@ -8,7 +8,7 @@ from server.models.orm import StudentModel, ClassroomModel, ReportModel, Session
 from server.api.utils import validate_classroom
 from server.config import RestErrors, ValidatorsConfig
 from server.models.marshals import report_resource_field, reports_list_fields
-from server.models.utils import store_sessions_and_chat_data, delete_old_chat_data
+from server.models.utils import store_sessions_and_chat_data, delete_old_report_data
 from server.config import FlaskConfig
 
 
@@ -83,7 +83,7 @@ class ReportsResource(Resource):
             store_sessions_and_chat_data(report_object.report_sessions, new_report.id)
 
         # delete old chat files  # TODO : should be a cron job and not only when we post new report
-        delete_old_chat_data(ValidatorsConfig.TIME_PERIOD_TO_DELETE_REPORT_DATA)
+        delete_old_report_data(ValidatorsConfig.TIME_PERIOD_TO_DELETE_REPORT_DATA)
 
         return new_report
 

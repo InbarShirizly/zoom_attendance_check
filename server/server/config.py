@@ -30,7 +30,7 @@ class ValidatorsConfig:
     MAX_CLASSROOMS = 10  # Max classrooms per students
     MAX_REPORTS = 12  # Max reports per classroom
     MAX_STUDENTS_IN_CLASS = 200
-    TIME_PERIOD_TO_DELETE_REPORT_DATA = 60 * 60  # in seconds
+    TIME_PERIOD_TO_DELETE_REPORT_DATA = 60 * 60  # in seconds -  delete report data after 1 hour
 
 class RestErrors:
     INVALID_ROUTE = "route_doesn't_exists"
