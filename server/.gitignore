@@ -1,3 +1,7 @@
+# Excel sidecar files
+~$*
+
+# Database files
 site.db
 
 ### Python
