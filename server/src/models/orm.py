@@ -1,4 +1,4 @@
-from server import db
+from src import db
 
 
 class TeacherModel(db.Model):

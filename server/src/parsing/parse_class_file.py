@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 import json
-from server.config import RestErrors
+from src.config import RestErrors
 import os
 
 class ParseClassFile:
@@ -106,7 +106,7 @@ class ParseClassFile:
         # extracing the name column from mashov pattern, dealing with gender
         mashov_name_pattern = re.compile(r"([\u0590-\u05fe ]+)([(\u0590-\u05fe)]+)")
         df_name_gender = df_students['name'].str.extract(mashov_name_pattern, expand=False)
-        df_students['gender'] = df_name_gender[1].str.extract("\(([\u0590-\u05fe ])\)")
+        df_students['gender'] = df_name_gender[1].str.extract(r"\(([\u0590-\u05fe ])\)")
         df_students['name'] = df_name_gender[0]
         return df_students
 
@@ -158,7 +158,7 @@ class ParseClassFile:
         :param df_students: df of the students
         :return: df enriched by country and code
         """
-        countries_path = os.path.join("server", "parsing", "countries.json")
+        countries_path = os.path.join("src", "parsing", "countries.json")
         with open(countries_path) as f:
             countries_json = json.load(f)
         countries_df = pd.DataFrame(countries_json).sample(len(df_students)).reset_index().drop(columns="index")

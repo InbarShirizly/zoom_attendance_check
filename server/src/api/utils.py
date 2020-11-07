@@ -1,10 +1,10 @@
 from functools import wraps
 from flask_restful import abort
-from server import auth
-from server.models.orm import ClassroomModel, TeacherModel
-from server import app
-from server.config import RestErrors, SerializeConfig
-from server.api import login_token_serializer
+from src import auth
+from src.models.orm import ClassroomModel, TeacherModel
+from src import app
+from src.config import RestErrors, SerializeConfig
+from src.api import login_token_serializer
 from itsdangerous.exc import BadSignature, BadTimeSignature
 
 

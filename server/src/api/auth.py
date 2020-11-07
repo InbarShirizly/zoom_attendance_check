@@ -1,9 +1,9 @@
-from server import auth, bcrypt, db
+from src import auth, bcrypt, db
 from flask_restful import Resource, reqparse, abort, HTTPException
-from server.api import api, custom_types, login_token_serializer
-from server.models.orm import TeacherModel
-from server.models.utils import get_user
-from server.config import RestErrors
+from src.api import api, custom_types, login_token_serializer
+from src.models.orm import TeacherModel
+from src.models.utils import get_user
+from src.config import RestErrors
 
 
 class LoginResource(Resource):
@@ -46,7 +46,7 @@ class RegisterResource(Resource):
         """
         The function will register new user to the application
         params are given from self._put_args as json in raw post data
-        check server.api.validators class for full details about the types
+        check src.api.validators class for full details about the types
         :param username: username of the new user (custom_types.username)
         :param email: email of the new user (custom_types.email)
         :param password: password of the new user (custom_types.password)

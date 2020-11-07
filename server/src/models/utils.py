@@ -1,5 +1,5 @@
-from server import auth, bcrypt, db
-from server.models.orm import TeacherModel, SessionModel,ZoomNamesModel
+from src import auth, bcrypt, db
+from src.models.orm import TeacherModel, SessionModel,ZoomNamesModel
 import pandas as pd
 
 def get_user(username_or_email, password):

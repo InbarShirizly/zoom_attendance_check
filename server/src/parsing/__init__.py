@@ -1,5 +1,5 @@
-from server.config import ParseConfig
-from server.parsing.parse_class_file import ParseClassFile
+from src.config import ParseConfig
+from src.parsing.parse_class_file import ParseClassFile
 from collections import namedtuple
 
 # create parser instance

@@ -1,10 +1,10 @@
 from flask_restful import Resource, abort, marshal_with_field, reqparse
-from server.api import api
-from server.models.orm import StudentModel
-from server.config import RestErrors
-from server.models.custom_fields import StudentItemField
-from server import auth, db
-from server.api.utils import validate_classroom
+from src.api import api
+from src.models.orm import StudentModel
+from src.config import RestErrors
+from src.models.custom_fields import StudentItemField
+from src import auth, db
+from src.api.utils import validate_classroom
 
 class StudentResource(Resource):
     """

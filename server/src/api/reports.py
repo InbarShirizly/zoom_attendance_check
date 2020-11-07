@@ -1,15 +1,15 @@
-from server.api import api, custom_types
+from src.api import api, custom_types
 from flask_restful import Resource, reqparse, abort, marshal, marshal_with
-from server.parsing.attendance import Attendance
-from server import db, auth
+from src.parsing.attendance import Attendance
+from src import db, auth
 from datetime import datetime
 import pandas as pd
-from server.models.orm import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
-from server.api.utils import validate_classroom
-from server.config import RestErrors, ValidatorsConfig
-from server.models.marshals import report_resource_field, reports_list_fields
-from server.models.utils import store_sessions_and_chat_data
-from server.config import FlaskConfig
+from src.models.orm import StudentModel, ClassroomModel, ReportModel, SessionModel, ZoomNamesModel, StudentStatus
+from src.api.utils import validate_classroom
+from src.config import RestErrors, ValidatorsConfig
+from src.models.marshals import report_resource_field, reports_list_fields
+from src.models.utils import store_sessions_and_chat_data
+from src.config import FlaskConfig
 
 class ReportsResource(Resource):
     """
