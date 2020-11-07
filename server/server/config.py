@@ -5,6 +5,7 @@ class FlaskConfig:
     SECRET_KEY = 'TEMP_SECRET_KEY'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
     STORE_CHAT = False # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ParseConfig:
