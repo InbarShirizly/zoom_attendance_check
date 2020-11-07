@@ -109,7 +109,8 @@ class Validators:
         """
         if not Validators.check_ext(value.filename, self._supported_chat_file_ext):
             raise ValueError(RestErrors.INVALID_CHAT_FILE)
-        chat_file = value.stream.read().decode("utf-8").split("\n") #TODO: check this in test
+        a = value.stream.read().decode("utf-8")
+        chat_file = a.split("\n") #TODO: check this in test -maybe split here is not relevant
         chat_df = create_chat_df(chat_file)
         if chat_df.empty:
             raise ValueError(RestErrors.INVALID_CHAT_FILE)
