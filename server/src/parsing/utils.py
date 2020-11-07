@@ -63,11 +63,11 @@ def clean_student_df(df_students):
     # clean columns names - rename to more generic form
     df_students.columns = [clean_string(col) if isinstance(col, str) else np.nan for col in df_students.columns]
     # drop column with the same name - keep the first
-    df_students = df_students.loc[:, ~df_students.columns.duplicated()]   # drop column with the same name - keep the first
+    df_students = df_students.loc[:, ~df_students.columns.duplicated(keep="first")]  # drop column with the same name - keep the first
     return df_students
 
 
 def clean_string(string):
-    return re.sub(r"['\".\/\\]", "", string=string).lower().replace("_"," ").strip()
+    return re.sub(r"['\".\/\\]", "", string=string).lower().replace("_", " ").strip()
 
 
