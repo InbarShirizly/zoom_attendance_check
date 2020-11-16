@@ -16,7 +16,7 @@ def create_chat_df(chat_file):
     chat_content = [re.search(regex_pattern, line).groups() for line in chat_file if re.match(regex_pattern, line)]
 
     chat_df = pd.DataFrame(chat_content, columns=["time", "zoom_name", "message"])
-    chat_df['message'] = chat_df['message'].astype(str)  # remove end of line (could be "/n" or "/t") #TODO: check on windows if the problem appears now
+    chat_df['message'] = chat_df['message'].astype(str)  
     chat_df["time"] = chat_df["time"].apply(lambda string: datetime.strptime(string, "%H:%M:%S"))
     return chat_df
 
