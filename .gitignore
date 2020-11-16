@@ -1,14 +1,6 @@
 # VSCode env
 .vscode
 
-*.pyc
-*.log
 .idea
-meeting*
-.ipynb_checkpoints
-*.xlsx
-checking_parsing.ipynb
-Server/site.db
-site.db
-*.xls
+*.pyc
 docs/to_ignore
