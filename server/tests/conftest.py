@@ -1,7 +1,7 @@
 import pytest
-from src.parsing.parse_class_file import ParseClassFile
-from src.config import ParseConfig
-from src.parsing.utils import create_students_df, create_chat_df
+from app.parsing.parse_class_file import ParseClassFile
+from app.config import ParseConfig
+from app.parsing.utils import create_students_df, create_chat_df
 import os
 
 

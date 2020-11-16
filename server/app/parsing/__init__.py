@@ -1,5 +1,5 @@
-from src.config import ParseConfig
-from src.parsing.parse_class_file import ParseClassFile
+from app.config import ParseConfig
+from app.parsing.parse_class_file import ParseClassFile
 from collections import namedtuple
 
 # create parser instance

@@ -1,5 +1,5 @@
 from flask_restful import fields
-from src.models.custom_fields import StudentItemField, StatusItemField, UnixTimeStamp
+from app.models.custom_fields import StudentItemField, StatusItemField, UnixTimeStamp
 
 # Fields for classrom.py
 classrooms_list_fields = { # Fields list of classrooms

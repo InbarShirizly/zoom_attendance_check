@@ -1,10 +1,10 @@
-from src.api import api, custom_types
+from app.api import api, custom_types
 from flask_restful import Resource, reqparse, abort, marshal, marshal_with
-from src import auth, db
-from src.models.orm import TeacherModel, ClassroomModel
+from app import auth, db
+from app.models.orm import TeacherModel, ClassroomModel
 import pandas as pd
-from src.config import RestErrors, ValidatorsConfig
-from src.models.marshals import classrooms_list_fields, classroom_resource_fields
+from app.config import RestErrors, ValidatorsConfig
+from app.models.marshals import classrooms_list_fields, classroom_resource_fields
 
 
 class ClassroomsResource(Resource):
@@ -28,7 +28,7 @@ class ClassroomsResource(Resource):
 		The function will get information about all classes or full information about specific class of a user
 		param is given via the url
 		:param class_id: the class id, or None for all classes (int)
-		:return: information about the requested data (json) - for the object parsing check src.models.custom_fields, src.models.marshals
+		:return: information about the requested data (json) - for the object parsing check app.models.custom_fields, app.models.marshals
 		"""
 		if class_id is None:
 			return marshal(auth.current_user().classrooms, classrooms_list_fields)
@@ -44,10 +44,10 @@ class ClassroomsResource(Resource):
 		The function will create new classroom
 		given from url:
 		:param class_id: always must be None, must be giving due the init of the endpoint, 404 error will be raised if not None
-		params are given in form data of the post request, check src.api.validators for full types:
+		params are given in form data of the post request, check app.api.validators for full types:
 		:param name: the name of the classroom (str)
 		:param student_df: the file of the students - converted to df (custom_types.students_file)
-		:return: information about the new classroom (json) - for the object parsing check src.models.custom_fields, src.models.marshals
+		:return: information about the new classroom (json) - for the object parsing check app.models.custom_fields, app.models.marshals
 		"""
 		if class_id:
 			abort(404, message=RestErrors.INVALID_ROUTE)

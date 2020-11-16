@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from src.config import FlaskConfig
+from app.config import FlaskConfig
 from flask_httpauth import HTTPTokenAuth
 from flask_cors import CORS
 
@@ -15,7 +15,7 @@ bcrypt = Bcrypt(app)
 auth = HTTPTokenAuth("Bearer")
 
 
-from src.api import api_blueprint
+from app.api import api_blueprint
 
 app.register_blueprint(api_blueprint)
 

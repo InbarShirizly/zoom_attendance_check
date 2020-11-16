@@ -1,8 +1,8 @@
-from src.api import api
+from app.api import api
 from flask_restful import Resource, reqparse, abort
-from src import db, auth
-from src.models.orm import StudentStatus
-from src.config import RestErrors
+from app import db, auth
+from app.models.orm import StudentStatus
+from app.config import RestErrors
 
 
 STATUS_CHOICES = (0, 1, 2)  #TODO: need to move this to config file

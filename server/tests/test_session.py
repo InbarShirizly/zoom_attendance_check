@@ -1,8 +1,8 @@
 import pytest
 import os
-from src.parsing.attendance import Attendance
-from src.parsing import AttendanceMetaData
-from src.parsing.session import Session
+from app.parsing.attendance import Attendance
+from app.parsing import AttendanceMetaData
+from app.parsing.session import Session
 
 
 class TestSession:

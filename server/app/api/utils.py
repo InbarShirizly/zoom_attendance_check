@@ -1,10 +1,10 @@
 from functools import wraps
 from flask_restful import abort
-from src import auth
-from src.models.orm import ClassroomModel, TeacherModel
-from src import app
-from src.config import RestErrors, SerializeConfig
-from src.api import login_token_serializer
+from app import auth
+from app.models.orm import ClassroomModel, TeacherModel
+from app import app
+from app.config import RestErrors, SerializeConfig
+from app.api import login_token_serializer
 from itsdangerous.exc import BadSignature, BadTimeSignature
 
 
@@ -27,7 +27,7 @@ def not_found(error):
 @auth.verify_token
 def verify_user_token(token):
     try:
-        user_id = login_token_serializer.loads(token, max_age=SerializeConfig.LOIGN_TOKEN_AGE)
+        user_id = login_token_serializer.loads(token, max_age=SerializeConfig.LOGIN_TOKEN_AGE)
         return TeacherModel.query.get(user_id)
     except BadTimeSignature:
         abort(401, message=RestErrors.TOKEN_EXPIRED)

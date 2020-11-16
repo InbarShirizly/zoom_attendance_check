@@ -4,7 +4,7 @@ import string
 class FlaskConfig:
     SECRET_KEY = 'TEMP_SECRET_KEY'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    STORE_CHAT = False # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
+    STORE_CHAT = True # if this variable is True, all the chat, session and zoom names data from a report will be store in the datbase. currently not supported
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -56,4 +56,4 @@ class RestErrors:
     
 class SerializeConfig:
     LOGIN_SALT = 'login'
-    LOIGN_TOKEN_AGE = 604800 # Week in seconds
+    LOGIN_TOKEN_AGE = 604800 # Week in seconds

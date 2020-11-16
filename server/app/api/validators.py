@@ -1,12 +1,12 @@
-from src import db, bcrypt
-from src.models.orm import TeacherModel
-from src.config import RestErrors
+from app import db, bcrypt
+from app.models.orm import TeacherModel
+from app.config import RestErrors
 import email_validator
 from datetime import datetime
 import os
 from werkzeug.datastructures import FileStorage
-from src.parsing import parser
-from src.parsing.utils import create_chat_df, create_students_df
+from app.parsing import parser
+from app.parsing.utils import create_chat_df, create_students_df
 
 
 # The class is responsible for validating diffrent inputs to the API

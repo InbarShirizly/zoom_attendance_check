@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-from src.parsing.session import Session
-from src.parsing import AttendanceMetaData
-from src.parsing.utils import clean_string
+from app.parsing.session import Session
+from app.parsing import AttendanceMetaData
+from app.parsing.utils import clean_string
 
 class Attendance:
     """
