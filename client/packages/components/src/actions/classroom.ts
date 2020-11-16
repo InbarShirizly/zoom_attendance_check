@@ -1,4 +1,4 @@
-import { Service, ShallowClassroom } from 'services'
+import { Service } from 'services'
 import { ClassroomsThunk } from '../providers/ClassroomsProvider'
 
 export const createClassroomActions = (service: Service) => {
@@ -50,9 +50,37 @@ export const createClassroomActions = (service: Service) => {
     }
   }
 
+  /**
+   * Makes a request to create a report in the database with a file to parse
+   * @returns A report object, the parsed file data
+   */
+  const createReport = (
+    classId: number,
+    file: File,
+    timeDelta: number,
+    firstSentence: string,
+    excludedUsers: string,
+    description: string
+  ): ClassroomsThunk => async dispatch => {
+    dispatch({ type: 'CREATE_REPORT_START' })
+    try {
+      const report = await service.createReport(classId, file, timeDelta, firstSentence, excludedUsers, description)
+      return dispatch({
+        type: 'CREATE_REPORT_SUCCESS',
+        report
+      })
+    } catch (error) {
+      return dispatch({
+        type: 'FETCH_ERROR',
+        error
+      })
+    }
+  }
+
   return {
     fetchAll,
     create,
-    select
+    select,
+    createReport
   }
 }

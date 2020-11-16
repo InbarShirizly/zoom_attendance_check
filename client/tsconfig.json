@@ -12,10 +12,18 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "composite": true,
-    "baseUrl": "packages",
-    "paths": {
-      "services": ["services/src/index.ts"],
-      "components": ["components/src/index.ts"]
+    "baseUrl": "packages"
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "packages/application/tsconfig.json"
+    },
+    {
+      "path": "packages/services/tsconfig.json"
+    },
+    {
+      "path": "packages/components/tsconfig.json"
     }
-  }
+  ]
 }

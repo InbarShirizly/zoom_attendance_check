@@ -5,8 +5,8 @@ import { StudentDataTable } from '../layout/StudentsDataTable'
 import { AttendanceTable } from '../layout/AttendanceTable'
 import { StudentData } from 'services'
 import { useClassrooms } from '../providers/ClassroomsProvider'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { useService } from '../providers/ServiceProvider'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { createClassroomActions } from '../actions/classroom'
 import { CreateReportDialog } from '../ui/CreateReportDialog'
 
@@ -75,7 +75,18 @@ const ClassComp = ({ match, history }: RouteComponentProps<{ id: string }>) => {
       <CreateReportDialog
         open={open}
         onClose={handleClose}
-        onFormSubmit={() => {}}
+        onFormSubmit={(
+          file: File,
+          timeDelta: number,
+          firstSentence: string,
+          excludedUsers: string,
+          description: string
+        ) => {
+          dispatch(actions.createReport(
+            selectedClassroom.id, file, timeDelta, firstSentence, excludedUsers, description
+          ))
+        }}
+        classId={parseInt(match.params.id, 10)}
       />
       <Typography variant='h4' gutterBottom>
         {selectedClassroom.name}
