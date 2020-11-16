@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+
+  zoom:
+    build: ./server
+    container_name: server
+    restart: always
+    environment:
+      - APP_NAME=zoom_attendance_check
+    expose:
+      - 5000
