@@ -2,11 +2,18 @@ version: "3.8"
 
 services:
 
-  zoom:
+  server:
     build: ./server
     container_name: server
     restart: always
     environment:
       - APP_NAME=zoom_attendance_check
     expose:
-      - 5000
+      - 8080
+
+  client:
+    build: ./client
+    container_name: client
+    restart: always
+    ports:
+      - 80:80
