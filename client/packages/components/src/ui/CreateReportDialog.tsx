@@ -1,5 +1,14 @@
 import React, { useCallback, useState } from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, makeStyles, TextField } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogProps,
+  DialogTitle,
+  makeStyles,
+  TextField
+} from '@material-ui/core'
 import { FileButton } from './FileButton'
 
 const useStyles = makeStyles(theme => ({
@@ -11,40 +20,87 @@ const useStyles = makeStyles(theme => ({
 
 interface CreateReportDialogProps extends DialogProps {
   open: boolean
-  onFormSubmit(name: string, file: File): void
+  classId: number
+
+  /**
+   * Makes a request to create a new report in the server.
+   */
+  onFormSubmit(
+    file: File,
+    timeDelta: number,
+    firstSentence: string,
+    excludedUsers: string,
+    description: string
+  ): void
 }
 
-export const CreateReportDialog = ({ open = false, onClose, onFormSubmit }: CreateReportDialogProps) => {
+/**
+ * Form dialog for creating a new report for the selected class.
+ */
+export const CreateReportDialog = ({
+  open = false,
+  onClose,
+  onFormSubmit
+}: CreateReportDialogProps) => {
   const classes = useStyles()
   const [studentsFile, setStudentFile] = useState<File>()
   const [description, setDescription] = useState<string>()
+  const [excludedUsers, setExcludedUsers] = useState<string>('')
+  const [firstSentence, setFirstSentence] = useState<string>()
+  const [timeDelta, setTimeDelta] = useState<number>()
 
-  const handleFileChange = useCallback((file: File) => {
-    setStudentFile(file)
-  }, [setStudentFile])
+  const handleFileChange = useCallback(
+    (file: File) => {
+      setStudentFile(file)
+    },
+    [setStudentFile]
+  )
 
-  const handleDescription = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
-  }, [description])
+  const handleDescription = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setDescription(event.target.value)
+    },
+    [description]
+  )
 
-  const handleSubmit = useCallback(() => {
-    if (description && studentsFile) {
-      onFormSubmit(description, studentsFile)
+  const handleTimeDelta = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTimeDelta(parseInt(event.target.value))
+    },
+    [timeDelta]
+  )
+
+  const handleExcludedUsers = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setExcludedUsers(event.target.value)
+    },
+    [excludedUsers]
+  )
+
+  const handleFirstSentence = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFirstSentence(event.target.value)
+    },
+    [firstSentence]
+  )
+
+  const handleSubmit = useCallback(async () => {
+    console.log('Handle submit')
+    if (description && studentsFile && timeDelta && firstSentence && excludedUsers) {
+      await onFormSubmit(studentsFile, timeDelta, firstSentence, excludedUsers, description)
+      console.log('Report created')
     }
-  }, [description, studentsFile])
+  }, [description, studentsFile, excludedUsers, firstSentence, timeDelta])
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle>
-        Create report
-      </DialogTitle>
+      <DialogTitle>Create report</DialogTitle>
       <DialogContent>
         <form
           onSubmit={event => {
             event.preventDefault()
             handleSubmit()
-          }}
-        >
+          }}>
           <TextField
             label='Report description'
             className={classes.nameInput}
@@ -57,11 +113,12 @@ export const CreateReportDialog = ({ open = false, onClose, onFormSubmit }: Crea
             label='Select chat file'
             onFileChange={handleFileChange}
           />
+          {/* TODO: Add default text values */}
           <TextField
             label='Time Delta'
             className={classes.nameInput}
             fullWidth
-            onChange={handleDescription}
+            onChange={handleTimeDelta}
             type='number'
             helperText='The time for parsing each session, in minutes.'
           />
@@ -69,25 +126,23 @@ export const CreateReportDialog = ({ open = false, onClose, onFormSubmit }: Crea
             label='First sentence'
             className={classes.nameInput}
             fullWidth
-            onChange={handleDescription}
-            type='number'
+            onChange={handleFirstSentence}
+            type='text'
             helperText='Sentence for starting a session.'
           />
+          {/* maybe implement this like gmail */}
           <TextField
             label='Excluded Zoom users'
             className={classes.nameInput}
             fullWidth
-            onChange={handleDescription}
-            type='number'
+            onChange={handleExcludedUsers}
+            type='text'
             helperText='Zoom users to exclude from parsing, separated by a comma.'
           />
         </form>
       </DialogContent>
       <DialogActions>
-        <Button
-          color='primary'
-          onClick={handleSubmit}
-        >
+        <Button color='primary' onClick={handleSubmit}>
           Create
         </Button>
       </DialogActions>
